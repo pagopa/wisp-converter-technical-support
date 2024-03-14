@@ -1,1 +1,24 @@
-{}
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "description" : "A service that permits to handle converted WISP requests for technical support",
+    "termsOfService" : "https://www.pagopa.gov.it/",
+    "title" : "wisp-converter-technical-support",
+    "version" : "0.0.0"
+  },
+  "servers" : [ {
+    "url" : "http://localhost",
+    "description" : "Generated server url"
+  } ],
+  "paths" : { },
+  "components" : {
+    "securitySchemes" : {
+      "ApiKey" : {
+        "description" : "The API key to access this function app.",
+        "in" : "header",
+        "name" : "Ocp-Apim-Subscription-Key",
+        "type" : "apiKey"
+      }
+    }
+  }
+}
