@@ -82,7 +82,7 @@ jobs:
     needs: [ deploy ]
     runs-on: ubuntu-latest
     name: Update OpenAPI
-    if: ${{ inputs.target == inputs.environment || inputs.target == 'all' }}
+    #if: ${{ inputs.target == inputs.environment || inputs.target == 'all' }}
     environment: ${{ inputs.environment }}
     steps:
       - name: Checkout
