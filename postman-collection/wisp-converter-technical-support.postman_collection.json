@@ -11,7 +11,13 @@
 			"name": "findByNoticeNumber",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Ocp-Apim-Subscription-Key",
+						"value": "{{API_KEY}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{SERVER}}/organizations/:organization/notice-number/:notice-number?dateFrom=2024-03-18&dateTo=2024-03-18",
 					"host": [
@@ -51,7 +57,13 @@
 			"name": "findByIuv",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Ocp-Apim-Subscription-Key",
+						"value": "{{API_KEY}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{SERVER}}/organizations/:organization/iuv/:iuv?dateFrom=2024-03-18&dateTo=2024-03-18",
 					"host": [
@@ -91,7 +103,13 @@
 			"name": "findBySessionId",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Ocp-Apim-Subscription-Key",
+						"value": "{{API_KEY}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{SERVER}}/session-id/:session-id?dateFrom=2024-03-18&dateTo=2024-03-18",
 					"host": [
@@ -125,7 +143,13 @@
 			"name": "getPayloadByPayloadRefId",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Ocp-Apim-Subscription-Key",
+						"value": "{{API_KEY}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{SERVER}}/payload-ref-id/:payload-ref-id",
 					"host": [
