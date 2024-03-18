@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: ""
   image:
     repository: ghcr.io/pagopa/pagopa-wisp-converter-technical-support
-    tag: "0.0.0-2-NOD-735-dismissione-wisp-api-di-assistenza"
+    tag: "0.0.0-3-NOD-735-dismissione-wisp-api-di-assistenza"
     pullPolicy: Always
   livenessProbe:
     httpGet:
