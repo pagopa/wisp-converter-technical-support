@@ -2,6 +2,8 @@ prefix    = "pagopa"
 env       = "uat"
 env_short = "u"
 
+location_short = "weu"
+
 tags = {
   CreatedBy   = "Terraform"
   Environment = "Uat"

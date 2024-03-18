@@ -21,7 +21,7 @@ resource "azurerm_api_management_api_version_set" "api_version_set_wisp_converte
 module "wisp_converter_api_v1" {
   source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//api_management_api?ref=v6.7.0"
 
-  name                  = format("%s-technical-support-api", var.env_short)
+  name                  = format("%s-technical-support-api", local.project)
   api_management_name   = local.apim.name
   resource_group_name   = local.apim.rg
   product_ids           = [local.apim.product_id]
