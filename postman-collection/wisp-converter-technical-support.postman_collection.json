@@ -1,0 +1,161 @@
+{
+	"info": {
+		"_postman_id": "102af751-dcbc-41c5-8c71-b68ecc9d6fa0",
+		"name": "wisp-converter-technical-support",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2040508",
+		"_collection_link": "https://speeding-station-482612.postman.co/workspace/Nodo-doc~ec880f84-0a42-4ca9-bbd1-454d00bbe20c/collection/2040508-102af751-dcbc-41c5-8c71-b68ecc9d6fa0?action=share&source=collection_link&creator=2040508"
+	},
+	"item": [
+		{
+			"name": "findByNoticeNumber",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SERVER}}/api/ts/v1/organizations/:organization/notice-number/:notice-number?dateFrom=2024-03-18&dateTo=2024-03-18",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"api",
+						"ts",
+						"v1",
+						"organizations",
+						":organization",
+						"notice-number",
+						":notice-number"
+					],
+					"query": [
+						{
+							"key": "dateFrom",
+							"value": "2024-03-18"
+						},
+						{
+							"key": "dateTo",
+							"value": "2024-03-18"
+						}
+					],
+					"variable": [
+						{
+							"key": "organization",
+							"value": "12345678900"
+						},
+						{
+							"key": "notice-number",
+							"value": "3982273480765907"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findByIuv",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SERVER}}/api/ts/v1/organizations/:organization/iuv/:iuv?dateFrom=2024-03-18&dateTo=2024-03-18",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"api",
+						"ts",
+						"v1",
+						"organizations",
+						":organization",
+						"iuv",
+						":iuv"
+					],
+					"query": [
+						{
+							"key": "dateFrom",
+							"value": "2024-03-18"
+						},
+						{
+							"key": "dateTo",
+							"value": "2024-03-18"
+						}
+					],
+					"variable": [
+						{
+							"key": "organization",
+							"value": "12345678900"
+						},
+						{
+							"key": "iuv",
+							"value": "982273480765907"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findBySessionId",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SERVER}}/api/ts/v1/session-id/:session-id?dateFrom=2024-03-18&dateTo=2024-03-18",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"api",
+						"ts",
+						"v1",
+						"session-id",
+						":session-id"
+					],
+					"query": [
+						{
+							"key": "dateFrom",
+							"value": "2024-03-18"
+						},
+						{
+							"key": "dateTo",
+							"value": "2024-03-18"
+						}
+					],
+					"variable": [
+						{
+							"key": "session-id",
+							"value": "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getPayloadByPayloadRefId",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SERVER}}/api/ts/v1/payload-ref-id/:payload-ref-id",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"api",
+						"ts",
+						"v1",
+						"payload-ref-id",
+						":payload-ref-id"
+					],
+					"variable": [
+						{
+							"key": "payload-ref-id",
+							"value": "2024-03-18_-230539074458600920"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -7,7 +7,7 @@ fi
 
 # run the collection
 # TODO: add your files and edit the following command
-newman run yourfile.postman_collection.json \
-  --environment=local.postman_environment.json \
+newman run wisp-converter-technical-support.postman_collection.json \
+  --environment=wisp-converter-technical-support_LOCAL.postman_environment.json \
   --reporters cli,junit \
   --reporter-junit-export Results/results-TEST.xml
