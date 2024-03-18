@@ -106,8 +106,6 @@ public class ReService {
     @PostConstruct
     private void init() {
         this.tableServiceClient = new TableServiceClientBuilder().connectionString(reTableStorageConnString).buildClient();
-        this.tableServiceClient.createTableIfNotExists(reTableStorageTableName);
-
         this.blobServiceClient = new BlobServiceClientBuilder().connectionString(reBlobStorageConnString).buildClient();
     }
 
