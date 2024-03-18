@@ -40,7 +40,7 @@ public class ReService {
     private static final String COMPONENTE = "componente";
     private static final String CACTEGORIA_EVENTO = "categoria_evento";
     private static final String SOTTO_TIPO_EVENTO = "sotto_tipo_evento";
-    private static final String ID_DOMINIO = "id_dominio"; //FIXME
+    private static final String ID_DOMINIO = "id_dominio";
     private static final String IUV = "iuv";
     private static final String CCP = "ccp";
     private static final String PSP = "psp";
