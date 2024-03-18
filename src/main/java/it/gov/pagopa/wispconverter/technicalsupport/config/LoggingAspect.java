@@ -14,6 +14,7 @@ import org.aspectj.lang.reflect.CodeSignature;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,7 @@ import java.util.UUID;
 
 
 @Aspect
-@Component
+@Configuration
 @Slf4j
 public class LoggingAspect {
 

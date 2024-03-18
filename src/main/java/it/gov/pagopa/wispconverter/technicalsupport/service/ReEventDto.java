@@ -42,6 +42,4 @@ public class ReEventDto {
 
   private String payloadRefId;
   private Integer payloadLength;
-  private String payloadContainerName;
-  private String payloadStorageAccount;
 }

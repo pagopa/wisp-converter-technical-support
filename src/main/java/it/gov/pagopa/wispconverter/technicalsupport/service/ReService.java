@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -39,7 +40,7 @@ public class ReService {
     private static final String COMPONENTE = "componente";
     private static final String CACTEGORIA_EVENTO = "categoria_evento";
     private static final String SOTTO_TIPO_EVENTO = "sotto_tipo_evento";
-    private static final String ID_DOMINIO = "id_dominio";
+    private static final String ID_DOMINIO = "id_dominio"; //FIXME
     private static final String IUV = "iuv";
     private static final String CCP = "ccp";
     private static final String PSP = "psp";
@@ -65,8 +66,6 @@ public class ReService {
     private static final String STAND_IN = "stand_in";
     private static final String PAYLOAD_REF_ID = "payload_ref_id";
     private static final String PAYLOAD_LENGTH = "payload_length";
-    private static final String PAYLOAD_CONTAINER_NAME = "payload_container_name";
-    private static final String PAYLOAD_STORAGE_ACCOUNT = "payload_storage_account";
 
     private List<String> propertiesToSelect = Arrays.asList(
         INSERTED_TIMESTAMP,
@@ -98,9 +97,7 @@ public class ReService {
         SESSION_ID_ORIGINAL,
         STAND_IN,
         PAYLOAD_REF_ID,
-        PAYLOAD_LENGTH,
-        PAYLOAD_CONTAINER_NAME,
-        PAYLOAD_STORAGE_ACCOUNT);
+        PAYLOAD_LENGTH);
 
     private TableServiceClient tableServiceClient = null;
     private BlobServiceClient blobServiceClient = null;
@@ -114,32 +111,47 @@ public class ReService {
         this.blobServiceClient = new BlobServiceClientBuilder().connectionString(reBlobStorageConnString).buildClient();
     }
 
-    public List<ReEventDto> findByIuv(LocalDate datefrom, LocalDate dateTo, String creditorInstitution, String noticeNumber){
+    public List<ReEventDto> findByNoticeNumber(LocalDate datefrom, LocalDate dateTo, String organization, String noticeNumber){
         return runQuery(
-                String.format("PartitionKey ge '%s' and PartitionKey le '%s' and "+ID_DOMINIO+" eq '%s' and "+NOTICE_NUMBER+" eq '%s'",
+                String.format("PartitionKey ge '%s' and PartitionKey le '%s' and %s eq '%s' and %s eq '%s'",
                         format(datefrom),
                         format(dateTo),
-                        creditorInstitution,
-                        noticeNumber)
+                        ID_DOMINIO, organization,
+                        NOTICE_NUMBER, noticeNumber)
         );
     }
 
-    public List<ReEventDto> findByNav(LocalDate datefrom, LocalDate dateTo, String creditorInstitution, String iuv){
+    public List<ReEventDto> findByIuv(LocalDate datefrom, LocalDate dateTo, String organization, String iuv){
         return runQuery(
-                String.format("PartitionKey ge '%s' and PartitionKey le '%s' and "+ID_DOMINIO+" eq '%s' and "+IUV+" eq '%s'",
+                String.format("PartitionKey ge '%s' and PartitionKey le '%s' and %s eq '%s' and %s eq '%s'",
                         format(datefrom),
                         format(dateTo),
-                        creditorInstitution,
-                        iuv)
+                        ID_DOMINIO, organization,
+                        IUV, iuv)
         );
     }
 
-    public String fetchPayload(String payloadRefId){
+    public List<ReEventDto> findBySessionId(LocalDate datefrom, LocalDate dateTo, String sessionId){
+        return runQuery(
+                String.format("PartitionKey ge '%s' and PartitionKey le '%s' and %s eq '%s'",
+                        format(datefrom),
+                        format(dateTo),
+                        SESSION_ID, sessionId)
+        );
+    }
+
+    public PayloadDto fetchPayload(String payloadRefId){
         BinaryData binaryData = this.blobServiceClient.getBlobContainerClient(reBlobStorageBlobName)
                 .getBlobClient(payloadRefId)
                 .downloadContent();
         byte[] byteArray = binaryData.toBytes();
-        return new String(Base64.getEncoder().encode(byteArray), StandardCharsets.UTF_8);
+        Long length = binaryData.getLength();
+        String gZipPayload = new String(Base64.getEncoder().encode(byteArray), StandardCharsets.UTF_8);
+        return PayloadDto.builder()
+                .payloadRefId(payloadRefId)
+                .payloadLength(length)
+                .payload(gZipPayload)
+                .build();
     }
 
     private List<ReEventDto> runQuery(String filter){
@@ -156,58 +168,49 @@ public class ReService {
     private String format(LocalDate d) {
         return d.format(DateTimeFormatter.ISO_DATE);
     }
-    private String getString(Object o) {
+
+    private <T> T convert(Object o, Class<T> clazz) {
         if (o == null) return null;
-        return (String) o;
-    }
-    private LocalDateTime getLocalDateTime(Object o) {
-        if (o == null) return null;
-        return (LocalDateTime) o;
-    }
-    private Boolean getBoolean(Object o) {
-        if (o == null) return null;
-        return (Boolean) o;
-    }
-    private Integer getInteger(Object o) {
-        if (o == null) return null;
-        return (Integer) o;
+        try {
+            return clazz.cast(o);
+        } catch(ClassCastException e) {
+            return null;
+        }
     }
 
     private ReEventDto tableEntityToEventEntity(TableEntity e) {
-        ReEventDto ee = new ReEventDto();
-        ee.setInsertedTimestamp(getLocalDateTime(e.getProperty(INSERTED_TIMESTAMP)));
-        ee.setComponente(getString(e.getProperty(COMPONENTE)));
-        ee.setCategoriaEvento(getString(e.getProperty(CACTEGORIA_EVENTO)));
-        ee.setSottoTipoEvento(getString(e.getProperty(SOTTO_TIPO_EVENTO)));
-        ee.setIdDominio(getString(e.getProperty(ID_DOMINIO)));
-        ee.setIuv(getString(e.getProperty(IUV)));
-        ee.setCcp(getString(e.getProperty(CCP)));
-        ee.setPsp(getString(e.getProperty(PSP)));
-        ee.setTipoVersamento(getString(e.getProperty(TIPO_VERSAMENTO)));
-        ee.setTipoEvento(getString(e.getProperty(TIPO_EVENTO)));
-        ee.setFruitore(getString(e.getProperty(FRUITORE)));
-        ee.setErogatore(getString(e.getProperty(EROGATORE)));
-        ee.setStazione(getString(e.getProperty(STAZIONE)));
-        ee.setCanale(getString(e.getProperty(CANALE)));
-        ee.setParametriSpecificiInterfaccia(getString(e.getProperty(PARAMETRI_SPECIFICI_INTERFACCIA)));
-        ee.setEsito(getString(e.getProperty(ESITO)));
-        ee.setSessionId(getString(e.getProperty(SESSION_ID)));
-        ee.setStatus(getString(e.getProperty(STATUS)));
-        ee.setInfo(getString(e.getProperty(INFO)));
-        ee.setBusinessProcess(getString(e.getProperty(BUSINESS_PROCESS)));
-        ee.setFruitoreDescr(getString(e.getProperty(FRUITORE_DESCR)));
-        ee.setErogatoreDescr(getString(e.getProperty(EROGATORE_DESCR)));
-        ee.setPspDescr(getString(e.getProperty(PSP_DESCR)));
-        ee.setNoticeNumber(getString(e.getProperty(NOTICE_NUMBER)));
-        ee.setCreditorReferenceId(getString(e.getProperty(CREDITOR_REFERENCE_ID)));
-        ee.setPaymentToken(getString(e.getProperty(PAYMENT_TOKEN)));
-        ee.setSessionIdOriginal(getString(e.getProperty(SESSION_ID_ORIGINAL)));
-        ee.setStandIn(getBoolean(e.getProperty(STAND_IN)));
-        ee.setPayloadRefId(getString(e.getProperty(PAYLOAD_REF_ID)));
-        ee.setPayloadLength(getInteger(e.getProperty(PAYLOAD_LENGTH)));
-        ee.setPayloadContainerName(getString(e.getProperty(PAYLOAD_CONTAINER_NAME)));
-        ee.setPayloadStorageAccount(getString(e.getProperty(PAYLOAD_STORAGE_ACCOUNT)));
-        return ee;
+        return ReEventDto.builder()
+                .insertedTimestamp(convert(e.getProperty(INSERTED_TIMESTAMP), LocalDateTime.class))
+                .componente(convert(e.getProperty(COMPONENTE), String.class))
+                .categoriaEvento(convert(e.getProperty(CACTEGORIA_EVENTO), String.class))
+                .sottoTipoEvento(convert(e.getProperty(SOTTO_TIPO_EVENTO), String.class))
+                .idDominio(convert(e.getProperty(ID_DOMINIO), String.class))
+                .iuv(convert(e.getProperty(IUV), String.class))
+                .ccp(convert(e.getProperty(CCP), String.class))
+                .psp(convert(e.getProperty(PSP), String.class))
+                .tipoVersamento(convert(e.getProperty(TIPO_VERSAMENTO), String.class))
+                .tipoEvento(convert(e.getProperty(TIPO_EVENTO), String.class))
+                .fruitore(convert(e.getProperty(FRUITORE), String.class))
+                .erogatore(convert(e.getProperty(EROGATORE), String.class))
+                .stazione(convert(e.getProperty(STAZIONE), String.class))
+                .canale(convert(e.getProperty(CANALE), String.class))
+                .parametriSpecificiInterfaccia(convert(e.getProperty(PARAMETRI_SPECIFICI_INTERFACCIA), String.class))
+                .esito(convert(e.getProperty(ESITO), String.class))
+                .sessionId(convert(e.getProperty(SESSION_ID), String.class))
+                .status(convert(e.getProperty(STATUS), String.class))
+                .info(convert(e.getProperty(INFO), String.class))
+                .businessProcess(convert(e.getProperty(BUSINESS_PROCESS), String.class))
+                .fruitoreDescr(convert(e.getProperty(FRUITORE_DESCR), String.class))
+                .erogatoreDescr(convert(e.getProperty(EROGATORE_DESCR), String.class))
+                .pspDescr(convert(e.getProperty(PSP_DESCR), String.class))
+                .noticeNumber(convert(e.getProperty(NOTICE_NUMBER), String.class))
+                .creditorReferenceId(convert(e.getProperty(CREDITOR_REFERENCE_ID), String.class))
+                .paymentToken(convert(e.getProperty(PAYMENT_TOKEN), String.class))
+                .sessionIdOriginal(convert(e.getProperty(SESSION_ID_ORIGINAL), String.class))
+                .standIn(convert(e.getProperty(STAND_IN), Boolean.class))
+                .payloadRefId(convert(e.getProperty(PAYLOAD_REF_ID), String.class))
+                .payloadLength(convert(e.getProperty(PAYLOAD_LENGTH), Integer.class))
+                .build();
     }
 
 }
