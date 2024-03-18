@@ -13,14 +13,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{SERVER}}/api/ts/v1/organizations/:organization/notice-number/:notice-number?dateFrom=2024-03-18&dateTo=2024-03-18",
+					"raw": "{{SERVER}}/organizations/:organization/notice-number/:notice-number?dateFrom=2024-03-18&dateTo=2024-03-18",
 					"host": [
 						"{{SERVER}}"
 					],
 					"path": [
-						"api",
-						"ts",
-						"v1",
 						"organizations",
 						":organization",
 						"notice-number",
@@ -56,14 +53,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{SERVER}}/api/ts/v1/organizations/:organization/iuv/:iuv?dateFrom=2024-03-18&dateTo=2024-03-18",
+					"raw": "{{SERVER}}/organizations/:organization/iuv/:iuv?dateFrom=2024-03-18&dateTo=2024-03-18",
 					"host": [
 						"{{SERVER}}"
 					],
 					"path": [
-						"api",
-						"ts",
-						"v1",
 						"organizations",
 						":organization",
 						"iuv",
@@ -99,14 +93,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{SERVER}}/api/ts/v1/session-id/:session-id?dateFrom=2024-03-18&dateTo=2024-03-18",
+					"raw": "{{SERVER}}/session-id/:session-id?dateFrom=2024-03-18&dateTo=2024-03-18",
 					"host": [
 						"{{SERVER}}"
 					],
 					"path": [
-						"api",
-						"ts",
-						"v1",
 						"session-id",
 						":session-id"
 					],
@@ -136,14 +127,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{SERVER}}/api/ts/v1/payload-ref-id/:payload-ref-id",
+					"raw": "{{SERVER}}/payload-ref-id/:payload-ref-id",
 					"host": [
 						"{{SERVER}}"
 					],
 					"path": [
-						"api",
-						"ts",
-						"v1",
 						"payload-ref-id",
 						":payload-ref-id"
 					],

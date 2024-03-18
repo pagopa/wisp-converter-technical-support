@@ -25,7 +25,6 @@ import static it.gov.pagopa.wispconverter.technicalsupport.util.Constants.*;
 
 @RestController
 @Validated
-@RequestMapping("/api/ts/v1/")
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Technical Support", description = "API for read event and payload from table storage")
