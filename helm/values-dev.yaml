@@ -82,7 +82,7 @@ microservice-chart:
       # required
       APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-d-connection-string'
       OTEL_EXPORTER_OTLP_HEADERS: elastic-apm-secret-token
-      AZURE_STORAGE_CONNECTION_STRING: 'wisp-converter-re-sa-connection-string'
+      AZURE_STORAGE_CONNECTION_STRING: 'wisp-converter-re-sa-connection-string-key'
     keyvault:
       name: "pagopa-d-nodo-kv"
       tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
