@@ -95,7 +95,7 @@ class TechnicalSupportControllerTest {
         assertThat(forEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertNotNull(reEventResponse);
         assertThat(reEventResponse.getCount()).isEqualTo(1);
-        assertThat(reEventResponse.getData().size()).isEqualTo(1);
+        assertThat(reEventResponse.getData()).hasSize(1);
         assertThat(reEventResponse.getData().get(0).getOrganizationId()).isEqualTo(organizationId);
         assertThat(reEventResponse.getData().get(0).getIuv()).isEqualTo(iuv);
     }
@@ -128,7 +128,7 @@ class TechnicalSupportControllerTest {
         assertThat(forEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertNotNull(reEventResponse);
         assertThat(reEventResponse.getCount()).isEqualTo(1);
-        assertThat(reEventResponse.getData().size()).isEqualTo(1);
+        assertThat(reEventResponse.getData()).hasSize(1);
         assertThat(reEventResponse.getData().get(0).getOrganizationId()).isEqualTo(organizationId);
         assertThat(reEventResponse.getData().get(0).getNoticeNumber()).isEqualTo(noticeNumber);
     }
@@ -160,7 +160,7 @@ class TechnicalSupportControllerTest {
         assertThat(forEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertNotNull(reEventResponse);
         assertThat(reEventResponse.getCount()).isEqualTo(1);
-        assertThat(reEventResponse.getData().size()).isEqualTo(1);
+        assertThat(reEventResponse.getData()).hasSize(1);
         assertThat(reEventResponse.getData().get(0).getSessionId()).isEqualTo(sessionId);
     }
 

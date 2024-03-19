@@ -172,7 +172,7 @@ public class ReService {
                 .listEntities(options, null, null)
                 .stream()
                 .map(this::tableEntityToEventEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private String format(LocalDate d) {
