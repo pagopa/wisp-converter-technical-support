@@ -13,7 +13,7 @@
 
     <groupId>it.gov.pagopa</groupId>
     <artifactId>wisp-converter-technical-support</artifactId>
-    <version>0.0.0-4-NOD-735-dismissione-wisp-api-di-assistenza</version>
+    <version>0.0.1</version>
     <name>pagoPA WISP Converter Technical support</name>
     <description>A service that permits to handle converted WISP requests for technical support</description>
 
