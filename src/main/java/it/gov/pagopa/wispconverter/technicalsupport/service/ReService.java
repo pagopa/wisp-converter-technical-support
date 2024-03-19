@@ -8,6 +8,8 @@ import com.azure.data.tables.models.TableEntity;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +24,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ReService {
-
     @Value("${re-table-storage.connection-string}")
     private String reTableStorageConnString;
 
@@ -35,6 +37,24 @@ public class ReService {
 
     @Value("${re-blob-storage.blob-name}")
     private String reBlobStorageBlobName;
+
+    private TableServiceClient tableServiceClient;
+    private BlobServiceClient blobServiceClient;
+
+    private TableServiceClient getTableServiceClient(){
+        if(this.tableServiceClient==null){
+            log.info("Init tableServiceClient");
+            this.tableServiceClient = new TableServiceClientBuilder().connectionString(reTableStorageConnString).buildClient();
+        }
+        return this.tableServiceClient;
+    }
+    private BlobServiceClient getBlobServiceClient(){
+        if(this.blobServiceClient==null){
+            log.info("Init blobServiceClient");
+            this.blobServiceClient = new BlobServiceClientBuilder().connectionString(reBlobStorageConnString).buildClient();
+        }
+        return this.blobServiceClient;
+    }
 
     public static final String INSERTED_TIMESTAMP = "inserted_timestamp";
     public static final String COMPONENTE = "componente";
@@ -99,15 +119,6 @@ public class ReService {
         PAYLOAD_REF_ID,
         PAYLOAD_LENGTH);
 
-    private TableServiceClient tableServiceClient = null;
-    private BlobServiceClient blobServiceClient = null;
-
-
-    @PostConstruct
-    private void init() {
-        this.tableServiceClient = new TableServiceClientBuilder().connectionString(reTableStorageConnString).buildClient();
-        this.blobServiceClient = new BlobServiceClientBuilder().connectionString(reBlobStorageConnString).buildClient();
-    }
 
     public List<ReEventDto> findByNoticeNumber(LocalDate datefrom, LocalDate dateTo, String organization, String noticeNumber){
         return runQuery(
@@ -140,7 +151,7 @@ public class ReService {
 
 
     public PayloadDto fetchPayload(String payloadRefId){
-        BinaryData binaryData = this.blobServiceClient.getBlobContainerClient(reBlobStorageBlobName)
+        BinaryData binaryData = getBlobServiceClient().getBlobContainerClient(reBlobStorageBlobName)
                 .getBlobClient(payloadRefId)
                 .downloadContent();
         byte[] byteArray = binaryData.toBytes();
@@ -157,7 +168,7 @@ public class ReService {
         ListEntitiesOptions options = new ListEntitiesOptions()
                 .setFilter(filter)
                 .setSelect(propertiesToSelect);
-        return this.tableServiceClient.getTableClient(reTableStorageTableName)
+        return getTableServiceClient().getTableClient(reTableStorageTableName)
                 .listEntities(options, null, null)
                 .stream()
                 .map(this::tableEntityToEventEntity)
