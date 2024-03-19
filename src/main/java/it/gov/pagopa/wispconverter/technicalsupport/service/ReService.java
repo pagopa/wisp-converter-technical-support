@@ -36,36 +36,36 @@ public class ReService {
     @Value("${re-blob-storage.blob-name}")
     private String reBlobStorageBlobName;
 
-    private static final String INSERTED_TIMESTAMP = "inserted_timestamp";
-    private static final String COMPONENTE = "componente";
-    private static final String CACTEGORIA_EVENTO = "categoria_evento";
-    private static final String SOTTO_TIPO_EVENTO = "sotto_tipo_evento";
-    private static final String ID_DOMINIO = "id_dominio";
-    private static final String IUV = "iuv";
-    private static final String CCP = "ccp";
-    private static final String PSP = "psp";
-    private static final String TIPO_VERSAMENTO = "tipo_versamento";
-    private static final String TIPO_EVENTO = "tipo_evento";
-    private static final String FRUITORE = "fruitore";
-    private static final String EROGATORE = "erogatore";
-    private static final String STAZIONE = "stazione";
-    private static final String CANALE = "canale";
-    private static final String PARAMETRI_SPECIFICI_INTERFACCIA = "parametri_specifici_interfaccia";
-    private static final String ESITO = "esito";
-    private static final String SESSION_ID = "session_id";
-    private static final String STATUS = "status";
-    private static final String INFO = "info";
-    private static final String BUSINESS_PROCESS = "business_process";
-    private static final String FRUITORE_DESCR = "fruitore_descr";
-    private static final String EROGATORE_DESCR = "erogatore_descr";
-    private static final String PSP_DESCR = "psp_descr";
-    private static final String NOTICE_NUMBER = "notice_number";
-    private static final String CREDITOR_REFERENCE_ID = "creditor_reference_id";
-    private static final String PAYMENT_TOKEN = "payment_token";
-    private static final String SESSION_ID_ORIGINAL = "session_id_original";
-    private static final String STAND_IN = "stand_in";
-    private static final String PAYLOAD_REF_ID = "payload_ref_id";
-    private static final String PAYLOAD_LENGTH = "payload_length";
+    public static final String INSERTED_TIMESTAMP = "inserted_timestamp";
+    public static final String COMPONENTE = "componente";
+    public static final String CACTEGORIA_EVENTO = "categoria_evento";
+    public static final String SOTTO_TIPO_EVENTO = "sotto_tipo_evento";
+    public static final String ID_DOMINIO = "id_dominio";
+    public static final String IUV = "iuv";
+    public static final String CCP = "ccp";
+    public static final String PSP = "psp";
+    public static final String TIPO_VERSAMENTO = "tipo_versamento";
+    public static final String TIPO_EVENTO = "tipo_evento";
+    public static final String FRUITORE = "fruitore";
+    public static final String EROGATORE = "erogatore";
+    public static final String STAZIONE = "stazione";
+    public static final String CANALE = "canale";
+    public static final String PARAMETRI_SPECIFICI_INTERFACCIA = "parametri_specifici_interfaccia";
+    public static final String ESITO = "esito";
+    public static final String SESSION_ID = "session_id";
+    public static final String STATUS = "status";
+    public static final String INFO = "info";
+    public static final String BUSINESS_PROCESS = "business_process";
+    public static final String FRUITORE_DESCR = "fruitore_descr";
+    public static final String EROGATORE_DESCR = "erogatore_descr";
+    public static final String PSP_DESCR = "psp_descr";
+    public static final String NOTICE_NUMBER = "notice_number";
+    public static final String CREDITOR_REFERENCE_ID = "creditor_reference_id";
+    public static final String PAYMENT_TOKEN = "payment_token";
+    public static final String SESSION_ID_ORIGINAL = "session_id_original";
+    public static final String STAND_IN = "stand_in";
+    public static final String PAYLOAD_REF_ID = "payload_ref_id";
+    public static final String PAYLOAD_LENGTH = "payload_length";
 
     private List<String> propertiesToSelect = Arrays.asList(
         INSERTED_TIMESTAMP,
@@ -137,6 +137,7 @@ public class ReService {
                         SESSION_ID, sessionId)
         );
     }
+
 
     public PayloadDto fetchPayload(String payloadRefId){
         BinaryData binaryData = this.blobServiceClient.getBlobContainerClient(reBlobStorageBlobName)

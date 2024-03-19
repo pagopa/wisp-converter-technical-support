@@ -28,7 +28,7 @@ import static it.gov.pagopa.wispconverter.technicalsupport.util.Constants.*;
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Technical Support", description = "API for read event and payload from table storage")
-public class TechnicalSupport {
+public class TechnicalSupportController {
 
     private final ReService reService;
     private final TechnicalSupportMapperDto technicalSupportMapperDto;

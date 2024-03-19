@@ -22,7 +22,7 @@ public class ReEvent {
   @Schema(example = "RESP", description = "Identifica il tipo di morsetto in base alla categoriaEvento. Esempio: REQ, RESP, INTERN")
   private String sottoTipoEvento;
   @Schema(example = "12345678900", description = "Id dell'EC")
-  private String idDominio;
+  private String organizationId;
   @Schema(example = "982273480765907", description = "Identificativo univoco versamento")
   private String iuv;
   @Schema(example = "TEST_4178733642", description = "Codice contesto pagmaneto")
