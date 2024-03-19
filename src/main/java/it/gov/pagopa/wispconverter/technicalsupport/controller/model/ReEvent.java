@@ -15,11 +15,11 @@ import java.time.LocalDateTime;
 public class ReEvent {
   @Schema(example = "2024-03-18T09:04:27.42017Z", description = "Data di inserimento evento")
   private LocalDateTime insertedTimestamp;
-  @Schema(example = "FESP", description = "Componente che identifica chi ha scritto l'evento. Esempio: FESP")
+  @Schema(example = "FESP", description = "Identifica chi ha scritto l'evento. Esempio: FESP")
   private String componente;
-  @Schema(example = "INTERFACCIA", description = "Componente che identifica se è un evento ai morsetti, ovvero di interfaccia, o interno, come cambio stato. Esempio: INTERFACCIA, INTERNO")
+  @Schema(example = "INTERFACCIA", description = "Identifica se è un evento ai morsetti, ovvero di interfaccia, o interno, come cambio stato. Esempio: INTERFACCIA, INTERNO")
   private String categoriaEvento;
-  @Schema(example = "RESP", description = "Componente che identifica il tipo di morsetto in base alla categoriaEvento. Esempio: REQ, RESP, INTERN")
+  @Schema(example = "RESP", description = "Identifica il tipo di morsetto in base alla categoriaEvento. Esempio: REQ, RESP, INTERN")
   private String sottoTipoEvento;
   @Schema(example = "12345678900", description = "Id dell'EC")
   private String idDominio;
