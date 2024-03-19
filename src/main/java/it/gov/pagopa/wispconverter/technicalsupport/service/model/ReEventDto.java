@@ -1,4 +1,4 @@
-package it.gov.pagopa.wispconverter.technicalsupport.service;
+package it.gov.pagopa.wispconverter.technicalsupport.service.model;
 
 import lombok.*;
 

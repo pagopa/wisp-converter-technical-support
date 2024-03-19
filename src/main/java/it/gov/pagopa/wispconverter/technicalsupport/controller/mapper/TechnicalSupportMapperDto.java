@@ -2,8 +2,8 @@ package it.gov.pagopa.wispconverter.technicalsupport.controller.mapper;
 
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.PayloadResponse;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.ReEvent;
-import it.gov.pagopa.wispconverter.technicalsupport.service.PayloadDto;
-import it.gov.pagopa.wispconverter.technicalsupport.service.ReEventDto;
+import it.gov.pagopa.wispconverter.technicalsupport.service.model.PayloadDto;
+import it.gov.pagopa.wispconverter.technicalsupport.service.model.ReEventDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;

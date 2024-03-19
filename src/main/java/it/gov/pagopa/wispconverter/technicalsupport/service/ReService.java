@@ -7,21 +7,19 @@ import com.azure.data.tables.models.ListEntitiesOptions;
 import com.azure.data.tables.models.TableEntity;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
+import it.gov.pagopa.wispconverter.technicalsupport.service.model.PayloadDto;
+import it.gov.pagopa.wispconverter.technicalsupport.service.model.ReEventDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j

@@ -9,8 +9,8 @@ import it.gov.pagopa.wispconverter.technicalsupport.controller.mapper.TechnicalS
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.PayloadResponse;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.ReEvent;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.ReEventResponse;
-import it.gov.pagopa.wispconverter.technicalsupport.service.PayloadDto;
-import it.gov.pagopa.wispconverter.technicalsupport.service.ReEventDto;
+import it.gov.pagopa.wispconverter.technicalsupport.service.model.PayloadDto;
+import it.gov.pagopa.wispconverter.technicalsupport.service.model.ReEventDto;
 import it.gov.pagopa.wispconverter.technicalsupport.service.ReService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
