@@ -14,19 +14,20 @@ import org.aspectj.lang.reflect.CodeSignature;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 
 @Aspect
-@Component
+@Configuration
 @Slf4j
 public class LoggingAspect {
 
@@ -141,7 +142,7 @@ public class LoggingAspect {
     @AfterReturning(value = "execution(* *..exception.ErrorHandler.*(..))", returning = "result")
     public void trowingApiInvocation(JoinPoint joinPoint, ResponseEntity<ProblemJson> result) {
         MDC.put(STATUS, "KO");
-        MDC.put(CODE, String.valueOf(result.getStatusCodeValue()));
+        MDC.put(CODE, String.valueOf(result.getStatusCode().value()));
         MDC.put(RESPONSE_TIME, getExecutionTime());
         MDC.put(FAULT_CODE, getTitle(result));
         MDC.put(FAULT_DETAIL, getDetail(result));
