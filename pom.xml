@@ -23,21 +23,22 @@
         <springdoc-openapi-starter-webmvc-ui>2.4.0</springdoc-openapi-starter-webmvc-ui>
         <java-ecs-logging.version>1.6.0</java-ecs-logging.version>
         <aspectjrt.version>1.9.20.1</aspectjrt.version>
-        <azure-sdk-bom.version>1.2.21</azure-sdk-bom.version>
+<!--        <azure-sdk-bom.version>1.2.21</azure-sdk-bom.version>-->
         <netty.version>4.1.101.Final</netty.version>
+        <cosmos-data-version>5.10.0</cosmos-data-version>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.azure</groupId>
-                <artifactId>azure-sdk-bom</artifactId>
-                <version>${azure-sdk-bom.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+<!--    <dependencyManagement>-->
+<!--        <dependencies>-->
+<!--            <dependency>-->
+<!--                <groupId>com.azure</groupId>-->
+<!--                <artifactId>azure-sdk-bom</artifactId>-->
+<!--                <version>${azure-sdk-bom.version}</version>-->
+<!--                <type>pom</type>-->
+<!--                <scope>import</scope>-->
+<!--            </dependency>-->
+<!--        </dependencies>-->
+<!--    </dependencyManagement>-->
 
     <dependencies>
         <dependency>
@@ -56,13 +57,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.azure</groupId>-->
+<!--            <artifactId>azure-data-tables</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.azure</groupId>-->
+<!--            <artifactId>azure-storage-blob</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.azure</groupId>
-            <artifactId>azure-data-tables</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.azure</groupId>
-            <artifactId>azure-storage-blob</artifactId>
+            <artifactId>azure-spring-data-cosmos</artifactId>
+            <version>${cosmos-data-version}</version>
         </dependency>
 
         <!-- Spring utils-->

@@ -1,20 +1,28 @@
-package it.gov.pagopa.wispconverter.technicalsupport.service.model;
+package it.gov.pagopa.wispconverter.technicalsupport.repository.model;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.*;
+import com.azure.spring.data.cosmos.core.mapping.Container;
+import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
+import it.gov.pagopa.wispconverter.technicalsupport.repository.model.enumz.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 
 import java.time.Instant;
 
+@Container(containerName = "re")
 @Data
-@EqualsAndHashCode
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@JsonPropertyOrder()
-//@Accessors(fluent = true,chain = true)
-public class ReEventDto {
+public class ReEventEntity {
   //// START KEY
+  @Id
   private String id;
+
+  @PartitionKey
+  private String partitionKey;
   //// END KEY
 
   //// START LOGICAL REF
