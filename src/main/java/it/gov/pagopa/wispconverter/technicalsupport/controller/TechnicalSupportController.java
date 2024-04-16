@@ -6,18 +6,20 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.mapper.TechnicalSupportMapperDto;
-import it.gov.pagopa.wispconverter.technicalsupport.controller.model.PayloadResponse;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.ReEvent;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.ReEventResponse;
-import it.gov.pagopa.wispconverter.technicalsupport.service.model.PayloadDto;
-import it.gov.pagopa.wispconverter.technicalsupport.service.model.ReEventDto;
 import it.gov.pagopa.wispconverter.technicalsupport.service.ReService;
+import it.gov.pagopa.wispconverter.technicalsupport.service.model.ReEventDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -80,12 +82,12 @@ public class TechnicalSupportController {
             description = "Successfully retrieved event",
             content = @Content( schema = @Schema(implementation = ReEventResponse.class)))
     })
-    @GetMapping(value = "/session-id/{"+SESSION_ID+"}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ReEventResponse findBySessionId(
-            @PathVariable(name = SESSION_ID) @Schema(example = "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf", description = "Identificativo dell'operazione eseguita") String sessionId,
+    @GetMapping(value = "/operation-id/{"+OPERATION_ID+"}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ReEventResponse findByOperationId(
+            @PathVariable(name = OPERATION_ID) @Schema(example = "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf", description = "Identificativo dell'operazione eseguita") String operationId,
             @RequestParam(name = DATE_FROM) @Schema(example = "2024-03-18", description = "Data di ricerca DA") LocalDate dateFrom,
             @RequestParam(name = DATE_TO) @Schema(example = "2024-03-18", description = "Data di ricerca A") LocalDate dateTo) {
-        List<ReEventDto> byNoticeNumber = reService.findBySessionId(dateFrom, dateTo, sessionId);
+        List<ReEventDto> byNoticeNumber = reService.findByOperationId(dateFrom, dateTo, operationId);
         List<ReEvent> reEventList = technicalSupportMapperDto.toReEventList(byNoticeNumber);
         return ReEventResponse.builder()
                 .count(reEventList.size())
@@ -93,16 +95,4 @@ public class TechnicalSupportController {
                 .build();
     }
 
-    @ApiResponses( value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Successfully retrieved gzip payload",
-                    content = @Content( schema = @Schema(implementation = PayloadResponse.class)))
-    })
-    @GetMapping(value = "/payload-ref-id/{"+PAYLOAD_REF_ID+"}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public PayloadResponse getPayloadByPayloadRefId(
-            @PathVariable(name = PAYLOAD_REF_ID) @Schema(example = "2024-03-18_-230539074458600920", description = "Nome del file") String payloadRefId) {
-        PayloadDto payloadDto = reService.fetchPayload(payloadRefId);
-        return technicalSupportMapperDto.toPayloadResponse(payloadDto);
-    }
 }

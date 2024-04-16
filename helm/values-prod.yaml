@@ -74,15 +74,14 @@ microservice-chart:
     OTEL_METRICS_EXPORTER: otlp
     OTEL_LOGS_EXPORTER: none
     OTEL_TRACES_SAMPLER: "always_on"
-    AZURE_STORAGE_TABLE_NAME: "events"
-    AZURE_STORAGE_BLOB_NAME: "payloads"
+    COSMOS_URI: "https://pagopa-weu-nodo-wispconv-cosmos-account.documents.azure.com:443/"
   secretProvider:
     create: true
     envSecrets:
       # required
       APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-p-connection-string'
       OTEL_EXPORTER_OTLP_HEADERS: elastic-apm-secret-token
-      AZURE_STORAGE_CONNECTION_STRING: 'wisp-converter-re-sa-connection-string-key'
+      COSMOS_KEY: 'cosmosdb-wisp-converter-account-key'
     keyvault:
       name: "pagopa-p-nodo-kv"
       tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"

@@ -19,7 +19,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{SERVER}}/organizations/:organization/notice-number/:notice-number?dateFrom=2024-03-18&dateTo=2024-03-18",
+					"raw": "{{SERVER}}/organizations/:organization/notice-number/:notice-number?dateFrom=2024-04-12&dateTo=2024-04-12",
 					"host": [
 						"{{SERVER}}"
 					],
@@ -32,11 +32,11 @@
 					"query": [
 						{
 							"key": "dateFrom",
-							"value": "2024-03-18"
+							"value": "2024-04-12"
 						},
 						{
 							"key": "dateTo",
-							"value": "2024-03-18"
+							"value": "2024-04-12"
 						}
 					],
 					"variable": [
@@ -65,7 +65,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{SERVER}}/organizations/:organization/iuv/:iuv?dateFrom=2024-03-18&dateTo=2024-03-18",
+					"raw": "{{SERVER}}/organizations/:organization/iuv/:iuv?dateFrom=2024-04-12&dateTo=2024-04-12",
 					"host": [
 						"{{SERVER}}"
 					],
@@ -78,11 +78,11 @@
 					"query": [
 						{
 							"key": "dateFrom",
-							"value": "2024-03-18"
+							"value": "2024-04-12"
 						},
 						{
 							"key": "dateTo",
-							"value": "2024-03-18"
+							"value": "2024-04-12"
 						}
 					],
 					"variable": [
@@ -92,7 +92,7 @@
 						},
 						{
 							"key": "iuv",
-							"value": "982273480765907"
+							"value": "89526368033623489"
 						}
 					]
 				}
@@ -100,7 +100,7 @@
 			"response": []
 		},
 		{
-			"name": "findBySessionId",
+			"name": "findByOperationId",
 			"request": {
 				"method": "GET",
 				"header": [
@@ -111,58 +111,28 @@
 					}
 				],
 				"url": {
-					"raw": "{{SERVER}}/session-id/:session-id?dateFrom=2024-03-18&dateTo=2024-03-18",
+					"raw": "{{SERVER}}/operation-id/:operation-id?dateFrom=2024-04-10&dateTo=2024-04-10",
 					"host": [
 						"{{SERVER}}"
 					],
 					"path": [
-						"session-id",
-						":session-id"
+						"operation-id",
+						":operation-id"
 					],
 					"query": [
 						{
 							"key": "dateFrom",
-							"value": "2024-03-18"
+							"value": "2024-04-10"
 						},
 						{
 							"key": "dateTo",
-							"value": "2024-03-18"
+							"value": "2024-04-10"
 						}
 					],
 					"variable": [
 						{
-							"key": "session-id",
-							"value": "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "getPayloadByPayloadRefId",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Ocp-Apim-Subscription-Key",
-						"value": "{{API_KEY}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{SERVER}}/payload-ref-id/:payload-ref-id",
-					"host": [
-						"{{SERVER}}"
-					],
-					"path": [
-						"payload-ref-id",
-						":payload-ref-id"
-					],
-					"variable": [
-						{
-							"key": "payload-ref-id",
-							"value": "2024-03-18_-230539074458600920"
+							"key": "operation-id",
+							"value": "2917be45-9b11-4937-9345-e57dd00149a6"
 						}
 					]
 				}
