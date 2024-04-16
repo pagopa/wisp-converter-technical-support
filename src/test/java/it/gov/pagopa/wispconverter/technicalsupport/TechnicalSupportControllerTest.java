@@ -4,7 +4,6 @@ package it.gov.pagopa.wispconverter.technicalsupport;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.ReEventResponse;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.ReEventRepository;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.model.ReEventEntity;
-import it.gov.pagopa.wispconverter.technicalsupport.service.ReService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +12,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -45,10 +45,7 @@ class TechnicalSupportControllerTest {
     @LocalServerPort
     private int port;
 
-    @Autowired
-    ReService reService;
-
-    @Mock
+    @MockBean
     private ReEventRepository reEventRepository;
 
     @Test
@@ -128,7 +125,7 @@ class TechnicalSupportControllerTest {
 
         List<ReEventEntity> reEventEntityList = Collections.singletonList(ReEventEntity.builder()
                 .partitionKey(dateFrom)
-                .operationId(organizationId)
+                .operationId(operationId)
                 .build());
 
         Mockito.when(reEventRepository.findByOperationId(any(),any(),any())).thenReturn(reEventEntityList);
@@ -161,13 +158,13 @@ class TechnicalSupportControllerTest {
         String compressedPayload = base64Encode(zip(payload));
         Integer compressedPayloadLength = compressedPayload.length();
 
-        List<ReEventEntity> reEventEntity = Collections.singletonList(ReEventEntity.builder()
+        List<ReEventEntity> reEventEntityList = Collections.singletonList(ReEventEntity.builder()
                 .partitionKey(dateFrom)
-                .operationId(organizationId)
+                .operationId(operationId)
                 .compressedPayload(compressedPayload)
                 .compressedPayloadLength(compressedPayloadLength)
                 .build());
-
+        Mockito.when(reEventRepository.findByOperationId(any(),any(),any())).thenReturn(reEventEntityList);
 
         String url = String.format("http://localhost:%s/operation-id/%s?dateFrom=%s&dateTo=%s",
                 port,
