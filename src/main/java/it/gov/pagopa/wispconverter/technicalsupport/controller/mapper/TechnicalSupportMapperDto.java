@@ -11,8 +11,9 @@ import java.util.List;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface TechnicalSupportMapperDto {
 
-  @Mapping(source = "idDominio", target = "organizationId")
-  ReEvent toReEvent(ReEventDto source);
-  List<ReEvent> toReEventList(List<ReEventDto> reEventDtoList);
+    @Mapping(source = "domainId", target = "organizationId")
+    ReEvent toReEvent(ReEventDto source);
+
+    List<ReEvent> toReEventList(List<ReEventDto> reEventDtoList);
 
 }
