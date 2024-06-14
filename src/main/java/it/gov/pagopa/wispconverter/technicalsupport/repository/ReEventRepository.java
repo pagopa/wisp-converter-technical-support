@@ -12,21 +12,21 @@ import java.util.List;
 @Repository
 public interface ReEventRepository extends CosmosRepository<ReEventEntity, String> {
 
-    @Query("select * from c where c.partitionKey >= @dateFrom and c.partitionKey <= @dateTo and c.idDominio = @idDominio and c.noticeNumber = @noticeNumber")
+    @Query("select * from c where c.partitionKey >= @dateFrom and c.partitionKey <= @dateTo and c.domainId = @organizationId and c.noticeNumber = @noticeNumber")
     List<ReEventEntity> findByIdDominioAndNoticeNumber(@Param("dateFrom") String dateFrom,
                                                        @Param("dateTo") String dateTo,
-                                                       @Param("idDominio") String idDominio,
+                                                       @Param("organizationId") String organizationId,
                                                        @Param("noticeNumber") String noticeNumber);
 
-    @Query("select * from c where c.partitionKey >= @dateFrom and c.partitionKey <= @dateTo and c.idDominio = @idDominio and c.iuv = @iuv")
+    @Query("select * from c where c.partitionKey >= @dateFrom and c.partitionKey <= @dateTo and c.domainId = @organizationId and c.iuv = @iuv")
     List<ReEventEntity> findByIdDominioAndIuv(@Param("dateFrom") String dateFrom,
                                               @Param("dateTo") String dateTo,
-                                              @Param("idDominio") String idDominio,
+                                              @Param("organizationId") String organizationId,
                                               @Param("iuv") String iuv);
 
     @Query("select * from c where c.partitionKey >= @dateFrom and c.partitionKey <= @dateTo and c.operationId = @operationId")
     List<ReEventEntity> findByOperationId(@Param("dateFrom") String dateFrom,
-                                              @Param("dateTo") String dateTo,
-                                              @Param("operationId") String operationId);
+                                          @Param("dateTo") String dateTo,
+                                          @Param("operationId") String operationId);
 
 }
