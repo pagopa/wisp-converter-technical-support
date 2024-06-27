@@ -33,27 +33,18 @@ public class ReEvent {
     //// END LOGICAL REF
 
     //// START FIELD FOR INTERFACE AND INTERN CHANGE
-    @Schema(example = "INTERFACCIA", description = "Identifica se è un evento ai morsetti, ovvero di interfaccia, o interno, come cambio stato. Esempio: INTERFACCIA, INTERNO")
-    private EventCategoryEnum categoriaEvento;
+    @Schema(example = "INTERFACE", description = "Identifica se è un evento ai morsetti, ovvero di interfaccia, o interno, come cambio stato. Esempio: INTERFACE, INTERN")
+    private EventCategoryEnum eventCategory;
     @Schema(example = "RESP", description = "Identifica il tipo di morsetto in base alla categoriaEvento. Esempio: REQ, RESP, INTERN")
-    private EventSubcategoryEnum sottoTipoEvento;
+    private EventSubcategoryEnum eventSubcategory;
     //// END FIELD FOR INTERFACE AND INTERN CHANGE
 
     //// START FIELD FOR INTERFACE
     @Schema(example = "SERVER", description = "Identifica il tipo di chiamata. Esempio: SERVER, CLIENT")
     private CallTypeEnum callType;
 
-    @Schema(example = "11111111111_05", description = "Chi utilizza la primitiva")
-    private String fruitore;
-    @Schema(example = "11111111111_05", description = "Descrizione di chi utilizza la primitiva")
-    private String fruitoreDescr;
-    @Schema(example = "NodoDeiPagamentiSPC", description = "Chi espone la primitiva")
-    private String erogatore;
-    @Schema(example = "NodoDeiPagamentiSPC", description = "Descrizione di chi espone la primitiva")
-    private String erogatoreDescr;
-
-    @Schema(example = "INVIATA", description = "Esito dell'operazione eseguita. Esempio: INVIATA, INVIATA_KO, RICEVUTA, RICEVUTA_KO, NO_RICEVUTA, CAMBIO_STATO")
-    private OutcomeEnum esito;
+    @Schema(example = "SEND", description = "Esito dell'operazione eseguita. Esempio: SEND, SEND_FAILURE, RECEIVED, RECEIVED_FAILURE, NEVER_RECEIVED, EXECUTED_INTERNAL_STEP")
+    private OutcomeEnum outcome;
 
     @Schema(example = "POST", description = "HTTP method")
     private String httpMethod;
@@ -88,40 +79,32 @@ public class ReEvent {
     //// END FIELD FOR INTERFACE
 
     //// START FIELD FOR INTERN CHANGE
-    @Schema(example = "12345678900", description = "Id dell'EC")
-    private String organizationId;
+    @Schema(example = "nodoInviaRPT", description = "Nome della primitiva")
+    private String primitive;
+    @Schema(example = "982273480765907", description = "Identificativo dell'operazione asincrona già eseguita")
+    private String sessionId;
+    @Schema(example = "12345678900982273480765907-0001", description = "Identificativo del carrello")
+    private String cartId;
     @Schema(example = "982273480765907", description = "Identificativo univoco versamento")
     private String iuv;
+    @Schema(example = "3982273480765907", description = "Numero avviso")
+    private String noticeNumber;
+    @Schema(example = "12345678900", description = "Id dell'EC")
+    private String domainId;
     @Schema(example = "TEST_4178733642", description = "Codice contesto pagmaneto")
     private String ccp;
     @Schema(example = "60000000001", description = "Id del prestatore servizi di pagamento")
     private String psp;
-    @Schema(example = "PO", description = "Tipo di pagmaneto. Esempio: BBT, BP, AD, CP, PO, OBEP, OTH, JIF, MYBK, PPAL")
-    private String tipoVersamento;
-    @Schema(example = "nodoInviaRPT", description = "Nome della primitiva")
-    private String tipoEvento;
     @Schema(example = "11111111111_05", description = "Identificativo della stazione che eroga i servizi per la PA")
-    private String stazione;
+    private String station;
     @Schema(example = "60000000001_01", description = "Identificativo del canale che eroga i servizi per il PSP")
-    private String canale;
-    @Schema(example = "?standIn", description = "Informazioni aggiuntive di chi ha chiamato o di chi sta chiamando")
-    private String parametriSpecificiInterfaccia;
-    @Schema(example = "RPT_RICEVUTA_NODO", description = "Stato dell'RPT o del Carrello se la categoriaEvento è INTERN, altrienti è null")
+    private String channel;
+    @Schema(example = "EXTRACTED_DATA_FROM_RPT", description = "Stato dell'RPT o del Carrello se la categoriaEvento è INTERN, altrienti è null")
     private String status;
-    @Schema(example = "https://api.platform.pagopa.it/nodo/nodo-per-psp/v1", description = "Informazioni generiche, es URI di chi ha chiamato o di chi sta chiamando")
-    private String info;
-    @Schema(example = "PSP Test", description = "Descrizione del prestatore servizi di pagamento")
-    private String pspDescr;
-    @Schema(example = "3982273480765907", description = "Numero avviso")
-    private String noticeNumber;
-    @Schema(example = "982273480765907", description = "Identificativo univoco assegnato dall EC")
-    private String creditorReferenceId;
     @Schema(example = "AABB123", description = "Numero univoco del pagamento")
     private String paymentToken;
-    @Schema(example = "982273480765907", description = "Identificativo dell'operazione asincrona già eseguita")
-    private String sessionIdOriginal;
-    @Schema(example = "true", description = "Se il pagamneto è eseguito in Stand-In")
-    private Boolean standIn;
+    @Schema(example = "https://api.platform.pagopa.it/nodo/nodo-per-psp/v1", description = "Informazioni generiche, es URI di chi ha chiamato o di chi sta chiamando")
+    private String info;
     //// END FIELD FOR INTERN CHANGE
 
 }
