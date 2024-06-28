@@ -4,7 +4,7 @@
     "description": "A service that permits to handle converted WISP requests for technical support",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "wisp-converter-technical-support",
-    "version": "0.0.5"
+    "version": "0.0.5-1-PAGOPA-1890"
   },
   "servers": [
     {
@@ -19,6 +19,50 @@
     }
   ],
   "paths": {
+    "/info": {
+      "get": {
+        "operationId": "healthCheck",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppInfoResponse"
+                }
+              }
+            },
+            "description": "OK.",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "summary": "Return OK if application is started",
+        "tags": [
+          "Home"
+        ]
+      },
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
     "/operation-id/{operationId}": {
       "get": {
         "operationId": "findByOperationId",
@@ -274,6 +318,20 @@
   },
   "components": {
     "schemas": {
+      "AppInfoResponse": {
+        "type": "object",
+        "properties": {
+          "environment": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          }
+        }
+      },
       "ReEvent": {
         "type": "object",
         "description": "Lista dei record trovati",
@@ -292,24 +350,20 @@
               "CLIENT"
             ]
           },
-          "canale": {
+          "cartId": {
             "type": "string",
-            "description": "Identificativo del canale che eroga i servizi per il PSP",
-            "example": "60000000001_01"
-          },
-          "categoriaEvento": {
-            "type": "string",
-            "description": "Identifica se Ã¨ un evento ai morsetti, ovvero di interfaccia, o interno, come cambio stato. Esempio: INTERFACCIA, INTERNO",
-            "example": "INTERFACCIA",
-            "enum": [
-              "INTERFACCIA",
-              "INTERNO"
-            ]
+            "description": "Identificativo del carrello",
+            "example": "12345678900982273480765907-0001"
           },
           "ccp": {
             "type": "string",
             "description": "Codice contesto pagmaneto",
             "example": "TEST_4178733642"
+          },
+          "channel": {
+            "type": "string",
+            "description": "Identificativo del canale che eroga i servizi per il PSP",
+            "example": "60000000001_01"
           },
           "clientOperationId": {
             "type": "string",
@@ -336,32 +390,28 @@
             "format": "int32",
             "example": 454
           },
-          "creditorReferenceId": {
+          "domainId": {
             "type": "string",
-            "description": "Identificativo univoco assegnato dall EC",
-            "example": "982273480765907"
+            "description": "Id dell'EC",
+            "example": "12345678900"
           },
-          "erogatore": {
+          "eventCategory": {
             "type": "string",
-            "description": "Chi espone la primitiva",
-            "example": "NodoDeiPagamentiSPC"
-          },
-          "erogatoreDescr": {
-            "type": "string",
-            "description": "Descrizione di chi espone la primitiva",
-            "example": "NodoDeiPagamentiSPC"
-          },
-          "esito": {
-            "type": "string",
-            "description": "Esito dell'operazione eseguita. Esempio: INVIATA, INVIATA_KO, RICEVUTA, RICEVUTA_KO, NO_RICEVUTA, CAMBIO_STATO",
-            "example": "INVIATA",
+            "description": "Identifica se Ã¨ un evento ai morsetti, ovvero di interfaccia, o interno, come cambio stato. Esempio: INTERFACE, INTERN",
+            "example": "INTERFACE",
             "enum": [
-              "INVIATA",
-              "INVIATA_KO",
-              "RICEVUTA",
-              "RICEVUTA_KO",
-              "NO_RICEVUTA",
-              "CAMBIO_STATO"
+              "INTERFACE",
+              "INTERNAL"
+            ]
+          },
+          "eventSubcategory": {
+            "type": "string",
+            "description": "Identifica il tipo di morsetto in base alla categoriaEvento. Esempio: REQ, RESP, INTERN",
+            "example": "RESP",
+            "enum": [
+              "REQ",
+              "RESP",
+              "INTERN"
             ]
           },
           "executionTimeMs": {
@@ -369,16 +419,6 @@
             "description": "HTTP execution time",
             "format": "int64",
             "example": 456
-          },
-          "fruitore": {
-            "type": "string",
-            "description": "Chi utilizza la primitiva",
-            "example": "11111111111_05"
-          },
-          "fruitoreDescr": {
-            "type": "string",
-            "description": "Descrizione di chi utilizza la primitiva",
-            "example": "11111111111_05"
           },
           "httpCallRemoteAddress": {
             "type": "string",
@@ -457,75 +497,53 @@
             "description": "Stato complessivo. Success|Failed",
             "example": "Success"
           },
-          "organizationId": {
+          "outcome": {
             "type": "string",
-            "description": "Id dell'EC",
-            "example": "12345678900"
-          },
-          "parametriSpecificiInterfaccia": {
-            "type": "string",
-            "description": "Informazioni aggiuntive di chi ha chiamato o di chi sta chiamando",
-            "example": "?standIn"
+            "description": "Esito dell'operazione eseguita. Esempio: SEND, SEND_FAILURE, RECEIVED, RECEIVED_FAILURE, NEVER_RECEIVED, EXECUTED_INTERNAL_STEP",
+            "example": "SEND",
+            "enum": [
+              "SEND",
+              "SEND_FAILURE",
+              "RECEIVED",
+              "RECEIVED_FAILURE",
+              "NEVER_RECEIVED",
+              "EXECUTED_INTERNAL_STEP"
+            ]
           },
           "paymentToken": {
             "type": "string",
             "description": "Numero univoco del pagamento",
             "example": "AABB123"
           },
+          "primitive": {
+            "type": "string",
+            "description": "Nome della primitiva",
+            "example": "nodoInviaRPT"
+          },
           "psp": {
             "type": "string",
             "description": "Id del prestatore servizi di pagamento",
             "example": "60000000001"
-          },
-          "pspDescr": {
-            "type": "string",
-            "description": "Descrizione del prestatore servizi di pagamento",
-            "example": "PSP Test"
           },
           "requestId": {
             "type": "string",
             "description": "Request Id",
             "example": "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
           },
-          "sessionIdOriginal": {
+          "sessionId": {
             "type": "string",
             "description": "Identificativo dell'operazione asincrona giÃ  eseguita",
             "example": "982273480765907"
           },
-          "sottoTipoEvento": {
-            "type": "string",
-            "description": "Identifica il tipo di morsetto in base alla categoriaEvento. Esempio: REQ, RESP, INTERN",
-            "example": "RESP",
-            "enum": [
-              "REQ",
-              "RESP",
-              "INTERN"
-            ]
-          },
-          "standIn": {
-            "type": "boolean",
-            "description": "Se il pagamneto Ã¨ eseguito in Stand-In",
-            "example": true
-          },
-          "status": {
-            "type": "string",
-            "description": "Stato dell'RPT o del Carrello se la categoriaEvento Ã¨ INTERN, altrienti Ã¨ null",
-            "example": "RPT_RICEVUTA_NODO"
-          },
-          "stazione": {
+          "station": {
             "type": "string",
             "description": "Identificativo della stazione che eroga i servizi per la PA",
             "example": "11111111111_05"
           },
-          "tipoEvento": {
+          "status": {
             "type": "string",
-            "description": "Nome della primitiva",
-            "example": "nodoInviaRPT"
-          },
-          "tipoVersamento": {
-            "type": "string",
-            "description": "Tipo di pagmaneto. Esempio: BBT, BP, AD, CP, PO, OBEP, OTH, JIF, MYBK, PPAL",
-            "example": "PO"
+            "description": "Stato dell'RPT o del Carrello se la categoriaEvento Ã¨ INTERN, altrienti Ã¨ null",
+            "example": "EXTRACTED_DATA_FROM_RPT"
           }
         }
       },
