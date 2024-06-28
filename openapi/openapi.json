@@ -1,521 +1,577 @@
 {
-  "openapi" : "3.0.1",
-  "info" : {
-    "description" : "A service that permits to handle converted WISP requests for technical support",
-    "termsOfService" : "https://www.pagopa.gov.it/",
-    "title" : "wisp-converter-technical-support",
-    "version" : "0.0.5"
+  "openapi": "3.0.1",
+  "info": {
+    "description": "A service that permits to handle converted WISP requests for technical support",
+    "termsOfService": "https://www.pagopa.gov.it/",
+    "title": "wisp-converter-technical-support",
+    "version": "0.0.5-1-PAGOPA-1890"
   },
-  "servers" : [ {
-    "url" : "http://localhost",
-    "description" : "Generated server url"
-  } ],
-  "tags" : [ {
-    "description" : "API for read event and payload from table storage",
-    "name" : "Technical Support"
-  } ],
-  "paths" : {
-    "/info" : {
-      "get" : {
-        "operationId" : "healthCheck",
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/AppInfoResponse"
+  "servers": [
+    {
+      "url": "http://localhost",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "description": "API for read event and payload from table storage",
+      "name": "Technical Support"
+    }
+  ],
+  "paths": {
+    "/info": {
+      "get": {
+        "operationId": "healthCheck",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppInfoResponse"
                 }
               }
             },
-            "description" : "OK.",
-            "headers" : {
-              "X-Request-Id" : {
-                "description" : "This header identifies the call",
-                "schema" : {
-                  "type" : "string"
+            "description": "OK.",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
           }
         },
-        "security" : [ {
-          "ApiKey" : [ ]
-        } ],
-        "summary" : "Return OK if application is started",
-        "tags" : [ "Home" ]
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "summary": "Return OK if application is started",
+        "tags": [
+          "Home"
+        ]
       },
-      "parameters" : [ {
-        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
-        "in" : "header",
-        "name" : "X-Request-Id",
-        "schema" : {
-          "type" : "string"
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "schema": {
+            "type": "string"
+          }
         }
-      } ]
+      ]
     },
-    "/operation-id/{operationId}" : {
-      "get" : {
-        "operationId" : "findByOperationId",
-        "parameters" : [ {
-          "description" : "Identificativo dell'operazione eseguita",
-          "example" : "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf",
-          "in" : "path",
-          "name" : "operationId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "description" : "Identificativo dell'operazione eseguita",
-            "example" : "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
+    "/operation-id/{operationId}": {
+      "get": {
+        "operationId": "findByOperationId",
+        "parameters": [
+          {
+            "description": "Identificativo dell'operazione eseguita",
+            "example": "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf",
+            "in": "path",
+            "name": "operationId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Identificativo dell'operazione eseguita",
+              "example": "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
+            }
+          },
+          {
+            "description": "Data di ricerca DA",
+            "example": "2024-03-18",
+            "in": "query",
+            "name": "dateFrom",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Data di ricerca DA",
+              "example": "2024-03-18"
+            }
+          },
+          {
+            "description": "Data di ricerca A",
+            "example": "2024-03-18",
+            "in": "query",
+            "name": "dateTo",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Data di ricerca A",
+              "example": "2024-03-18"
+            }
           }
-        }, {
-          "description" : "Data di ricerca DA",
-          "example" : "2024-03-18",
-          "in" : "query",
-          "name" : "dateFrom",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "description" : "Data di ricerca DA",
-            "example" : "2024-03-18"
-          }
-        }, {
-          "description" : "Data di ricerca A",
-          "example" : "2024-03-18",
-          "in" : "query",
-          "name" : "dateTo",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "description" : "Data di ricerca A",
-            "example" : "2024-03-18"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ReEventResponse"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReEventResponse"
                 }
               }
             },
-            "description" : "Successfully retrieved event",
-            "headers" : {
-              "X-Request-Id" : {
-                "description" : "This header identifies the call",
-                "schema" : {
-                  "type" : "string"
+            "description": "Successfully retrieved event",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
           }
         },
-        "tags" : [ "Technical Support" ]
+        "tags": [
+          "Technical Support"
+        ]
       },
-      "parameters" : [ {
-        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
-        "in" : "header",
-        "name" : "X-Request-Id",
-        "schema" : {
-          "type" : "string"
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "schema": {
+            "type": "string"
+          }
         }
-      } ]
+      ]
     },
-    "/organizations/{organizationId}/iuv/{iuv}" : {
-      "get" : {
-        "operationId" : "findByIuv",
-        "parameters" : [ {
-          "description" : "Id dell'EC",
-          "example" : 12345678900,
-          "in" : "path",
-          "name" : "organizationId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "description" : "Id dell'EC",
-            "example" : 12345678900
+    "/organizations/{organizationId}/iuv/{iuv}": {
+      "get": {
+        "operationId": "findByIuv",
+        "parameters": [
+          {
+            "description": "Id dell'EC",
+            "example": 12345678900,
+            "in": "path",
+            "name": "organizationId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Id dell'EC",
+              "example": 12345678900
+            }
+          },
+          {
+            "description": "Identificativo univoco del versamento",
+            "example": 982273480765907,
+            "in": "path",
+            "name": "iuv",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Identificativo univoco del versamento",
+              "example": 982273480765907
+            }
+          },
+          {
+            "description": "Data di ricerca DA",
+            "example": "2024-03-18",
+            "in": "query",
+            "name": "dateFrom",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Data di ricerca DA",
+              "example": "2024-03-18"
+            }
+          },
+          {
+            "description": "Data di ricerca A",
+            "example": "2024-03-18",
+            "in": "query",
+            "name": "dateTo",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Data di ricerca A",
+              "example": "2024-03-18"
+            }
           }
-        }, {
-          "description" : "Identificativo univoco del versamento",
-          "example" : 982273480765907,
-          "in" : "path",
-          "name" : "iuv",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "description" : "Identificativo univoco del versamento",
-            "example" : 982273480765907
-          }
-        }, {
-          "description" : "Data di ricerca DA",
-          "example" : "2024-03-18",
-          "in" : "query",
-          "name" : "dateFrom",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "description" : "Data di ricerca DA",
-            "example" : "2024-03-18"
-          }
-        }, {
-          "description" : "Data di ricerca A",
-          "example" : "2024-03-18",
-          "in" : "query",
-          "name" : "dateTo",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "description" : "Data di ricerca A",
-            "example" : "2024-03-18"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ReEventResponse"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReEventResponse"
                 }
               }
             },
-            "description" : "Successfully retrieved event",
-            "headers" : {
-              "X-Request-Id" : {
-                "description" : "This header identifies the call",
-                "schema" : {
-                  "type" : "string"
+            "description": "Successfully retrieved event",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
           }
         },
-        "tags" : [ "Technical Support" ]
+        "tags": [
+          "Technical Support"
+        ]
       },
-      "parameters" : [ {
-        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
-        "in" : "header",
-        "name" : "X-Request-Id",
-        "schema" : {
-          "type" : "string"
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "schema": {
+            "type": "string"
+          }
         }
-      } ]
+      ]
     },
-    "/organizations/{organizationId}/notice-number/{noticeNumber}" : {
-      "get" : {
-        "operationId" : "findByNoticeNumber",
-        "parameters" : [ {
-          "description" : "Id dell'EC",
-          "example" : 12345678900,
-          "in" : "path",
-          "name" : "organizationId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "description" : "Id dell'EC",
-            "example" : 12345678900
+    "/organizations/{organizationId}/notice-number/{noticeNumber}": {
+      "get": {
+        "operationId": "findByNoticeNumber",
+        "parameters": [
+          {
+            "description": "Id dell'EC",
+            "example": 12345678900,
+            "in": "path",
+            "name": "organizationId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Id dell'EC",
+              "example": 12345678900
+            }
+          },
+          {
+            "description": "Numero avviso",
+            "example": 3982273480765907,
+            "in": "path",
+            "name": "noticeNumber",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Numero avviso",
+              "example": 3982273480765907
+            }
+          },
+          {
+            "description": "Data di ricerca DA",
+            "example": "2024-03-18",
+            "in": "query",
+            "name": "dateFrom",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Data di ricerca DA",
+              "example": "2024-03-18"
+            }
+          },
+          {
+            "description": "Data di ricerca A",
+            "example": "2024-03-18",
+            "in": "query",
+            "name": "dateTo",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Data di ricerca A",
+              "example": "2024-03-18"
+            }
           }
-        }, {
-          "description" : "Numero avviso",
-          "example" : 3982273480765907,
-          "in" : "path",
-          "name" : "noticeNumber",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "description" : "Numero avviso",
-            "example" : 3982273480765907
-          }
-        }, {
-          "description" : "Data di ricerca DA",
-          "example" : "2024-03-18",
-          "in" : "query",
-          "name" : "dateFrom",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "description" : "Data di ricerca DA",
-            "example" : "2024-03-18"
-          }
-        }, {
-          "description" : "Data di ricerca A",
-          "example" : "2024-03-18",
-          "in" : "query",
-          "name" : "dateTo",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "description" : "Data di ricerca A",
-            "example" : "2024-03-18"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ReEventResponse"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReEventResponse"
                 }
               }
             },
-            "description" : "Successfully retrieved event",
-            "headers" : {
-              "X-Request-Id" : {
-                "description" : "This header identifies the call",
-                "schema" : {
-                  "type" : "string"
+            "description": "Successfully retrieved event",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
           }
         },
-        "tags" : [ "Technical Support" ]
+        "tags": [
+          "Technical Support"
+        ]
       },
-      "parameters" : [ {
-        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
-        "in" : "header",
-        "name" : "X-Request-Id",
-        "schema" : {
-          "type" : "string"
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "schema": {
+            "type": "string"
+          }
         }
-      } ]
+      ]
     }
   },
-  "components" : {
-    "schemas" : {
-      "AppInfoResponse" : {
-        "type" : "object",
-        "properties" : {
-          "environment" : {
-            "type" : "string"
+  "components": {
+    "schemas": {
+      "AppInfoResponse": {
+        "type": "object",
+        "properties": {
+          "environment": {
+            "type": "string"
           },
-          "name" : {
-            "type" : "string"
+          "name": {
+            "type": "string"
           },
-          "version" : {
-            "type" : "string"
+          "version": {
+            "type": "string"
           }
         }
       },
-      "ReEvent" : {
-        "type" : "object",
-        "description" : "Lista dei record trovati",
-        "properties" : {
-          "businessProcess" : {
-            "type" : "string",
-            "description" : "Campo che identifica il processo di business",
-            "example" : "nodoInviaRPT"
+      "ReEvent": {
+        "type": "object",
+        "description": "Lista dei record trovati",
+        "properties": {
+          "businessProcess": {
+            "type": "string",
+            "description": "Campo che identifica il processo di business",
+            "example": "nodoInviaRPT"
           },
-          "callType" : {
-            "type" : "string",
-            "description" : "Identifica il tipo di chiamata. Esempio: SERVER, CLIENT",
-            "example" : "SERVER",
-            "enum" : [ "SERVER", "CLIENT" ]
+          "callType": {
+            "type": "string",
+            "description": "Identifica il tipo di chiamata. Esempio: SERVER, CLIENT",
+            "example": "SERVER",
+            "enum": [
+              "SERVER",
+              "CLIENT"
+            ]
           },
-          "cartId" : {
-            "type" : "string",
-            "description" : "Identificativo del carrello",
-            "example" : "12345678900982273480765907-0001"
+          "cartId": {
+            "type": "string",
+            "description": "Identificativo del carrello",
+            "example": "12345678900982273480765907-0001"
           },
-          "ccp" : {
-            "type" : "string",
-            "description" : "Codice contesto pagmaneto",
-            "example" : "TEST_4178733642"
+          "ccp": {
+            "type": "string",
+            "description": "Codice contesto pagmaneto",
+            "example": "TEST_4178733642"
           },
-          "channel" : {
-            "type" : "string",
-            "description" : "Identificativo del canale che eroga i servizi per il PSP",
-            "example" : "60000000001_01"
+          "channel": {
+            "type": "string",
+            "description": "Identificativo del canale che eroga i servizi per il PSP",
+            "example": "60000000001_01"
           },
-          "clientOperationId" : {
-            "type" : "string",
-            "description" : "Identificativo dell'operazione client eseguita",
-            "example" : "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
+          "clientOperationId": {
+            "type": "string",
+            "description": "Identificativo dell'operazione client eseguita",
+            "example": "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
           },
-          "componente" : {
-            "type" : "string",
-            "description" : "Identifica chi ha scritto l'evento. Esempio: WISP_CONVERTER",
-            "example" : "WISP_CONVERTER",
-            "enum" : [ "WISP_SOAP_CONVERTER", "WISP_CONVERTER" ]
+          "componente": {
+            "type": "string",
+            "description": "Identifica chi ha scritto l'evento. Esempio: WISP_CONVERTER",
+            "example": "WISP_CONVERTER",
+            "enum": [
+              "WISP_SOAP_CONVERTER",
+              "WISP_CONVERTER"
+            ]
           },
-          "compressedPayload" : {
-            "type" : "string",
-            "description" : "HTTP payload compress GZIP",
-            "example" : "abadasdbasbdasd"
+          "compressedPayload": {
+            "type": "string",
+            "description": "HTTP payload compress GZIP",
+            "example": "abadasdbasbdasd"
           },
-          "compressedPayloadLength" : {
-            "type" : "integer",
-            "description" : "HTTP payload compress length",
-            "format" : "int32",
-            "example" : 454
+          "compressedPayloadLength": {
+            "type": "integer",
+            "description": "HTTP payload compress length",
+            "format": "int32",
+            "example": 454
           },
-          "domainId" : {
-            "type" : "string",
-            "description" : "Id dell'EC",
-            "example" : "12345678900"
+          "domainId": {
+            "type": "string",
+            "description": "Id dell'EC",
+            "example": "12345678900"
           },
-          "eventCategory" : {
-            "type" : "string",
-            "description" : "Identifica se Ã¨ un evento ai morsetti, ovvero di interfaccia, o interno, come cambio stato. Esempio: INTERFACE, INTERN",
-            "example" : "INTERFACE",
-            "enum" : [ "INTERFACE", "INTERNAL" ]
+          "eventCategory": {
+            "type": "string",
+            "description": "Identifica se Ã¨ un evento ai morsetti, ovvero di interfaccia, o interno, come cambio stato. Esempio: INTERFACE, INTERN",
+            "example": "INTERFACE",
+            "enum": [
+              "INTERFACE",
+              "INTERNAL"
+            ]
           },
-          "eventSubcategory" : {
-            "type" : "string",
-            "description" : "Identifica il tipo di morsetto in base alla categoriaEvento. Esempio: REQ, RESP, INTERN",
-            "example" : "RESP",
-            "enum" : [ "REQ", "RESP", "INTERN" ]
+          "eventSubcategory": {
+            "type": "string",
+            "description": "Identifica il tipo di morsetto in base alla categoriaEvento. Esempio: REQ, RESP, INTERN",
+            "example": "RESP",
+            "enum": [
+              "REQ",
+              "RESP",
+              "INTERN"
+            ]
           },
-          "executionTimeMs" : {
-            "type" : "integer",
-            "description" : "HTTP execution time",
-            "format" : "int64",
-            "example" : 456
+          "executionTimeMs": {
+            "type": "integer",
+            "description": "HTTP execution time",
+            "format": "int64",
+            "example": 456
           },
-          "httpCallRemoteAddress" : {
-            "type" : "string",
-            "description" : "HTTP remote address",
-            "example" : "127.0.0.1"
+          "httpCallRemoteAddress": {
+            "type": "string",
+            "description": "HTTP remote address",
+            "example": "127.0.0.1"
           },
-          "httpHeaders" : {
-            "type" : "string",
-            "description" : "HTTP headers",
-            "example" : "Accept-Encoding :[\"gzip, deflate, br\"]"
+          "httpHeaders": {
+            "type": "string",
+            "description": "HTTP headers",
+            "example": "Accept-Encoding :[\"gzip, deflate, br\"]"
           },
-          "httpMethod" : {
-            "type" : "string",
-            "description" : "HTTP method",
-            "example" : "POST"
+          "httpMethod": {
+            "type": "string",
+            "description": "HTTP method",
+            "example": "POST"
           },
-          "httpStatusCode" : {
-            "type" : "integer",
-            "description" : "HTTP status",
-            "format" : "int32",
-            "example" : 200
+          "httpStatusCode": {
+            "type": "integer",
+            "description": "HTTP status",
+            "format": "int32",
+            "example": 200
           },
-          "httpUri" : {
-            "type" : "string",
-            "description" : "HTTP URI",
-            "example" : "https://api.platform.pagopa.it/nodo/nodo-per-psp/v1"
+          "httpUri": {
+            "type": "string",
+            "description": "HTTP URI",
+            "example": "https://api.platform.pagopa.it/nodo/nodo-per-psp/v1"
           },
-          "id" : {
-            "type" : "string",
-            "description" : "Id",
-            "example" : "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
+          "id": {
+            "type": "string",
+            "description": "Id",
+            "example": "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
           },
-          "info" : {
-            "type" : "string",
-            "description" : "Informazioni generiche, es URI di chi ha chiamato o di chi sta chiamando",
-            "example" : "https://api.platform.pagopa.it/nodo/nodo-per-psp/v1"
+          "info": {
+            "type": "string",
+            "description": "Informazioni generiche, es URI di chi ha chiamato o di chi sta chiamando",
+            "example": "https://api.platform.pagopa.it/nodo/nodo-per-psp/v1"
           },
-          "insertedTimestamp" : {
-            "type" : "string",
-            "description" : "Data di inserimento evento",
-            "format" : "date-time",
-            "example" : "2024-03-18T09:04:27.42017Z"
+          "insertedTimestamp": {
+            "type": "string",
+            "description": "Data di inserimento evento",
+            "format": "date-time",
+            "example": "2024-03-18T09:04:27.42017Z"
           },
-          "iuv" : {
-            "type" : "string",
-            "description" : "Identificativo univoco versamento",
-            "example" : "982273480765907"
+          "iuv": {
+            "type": "string",
+            "description": "Identificativo univoco versamento",
+            "example": "982273480765907"
           },
-          "noticeNumber" : {
-            "type" : "string",
-            "description" : "Numero avviso",
-            "example" : "3982273480765907"
+          "noticeNumber": {
+            "type": "string",
+            "description": "Numero avviso",
+            "example": "3982273480765907"
           },
-          "operationErrorCode" : {
-            "type" : "string",
-            "description" : "Error code se stato Failed",
-            "example" : "WIC-1000"
+          "operationErrorCode": {
+            "type": "string",
+            "description": "Error code se stato Failed",
+            "example": "WIC-1000"
           },
-          "operationErrorDetail" : {
-            "type" : "string",
-            "description" : "Detail se stato Failed",
-            "example" : "Error while parsing payload. {0}"
+          "operationErrorDetail": {
+            "type": "string",
+            "description": "Detail se stato Failed",
+            "example": "Error while parsing payload. {0}"
           },
-          "operationErrorTitle" : {
-            "type" : "string",
-            "description" : "Title se stato Failed",
-            "example" : "Generic parsing error"
+          "operationErrorTitle": {
+            "type": "string",
+            "description": "Title se stato Failed",
+            "example": "Generic parsing error"
           },
-          "operationId" : {
-            "type" : "string",
-            "description" : "Identificativo dell'operazione eseguita",
-            "example" : "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
+          "operationId": {
+            "type": "string",
+            "description": "Identificativo dell'operazione eseguita",
+            "example": "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
           },
-          "operationStatus" : {
-            "type" : "string",
-            "description" : "Stato complessivo. Success|Failed",
-            "example" : "Success"
+          "operationStatus": {
+            "type": "string",
+            "description": "Stato complessivo. Success|Failed",
+            "example": "Success"
           },
-          "outcome" : {
-            "type" : "string",
-            "description" : "Esito dell'operazione eseguita. Esempio: SEND, SEND_FAILURE, RECEIVED, RECEIVED_FAILURE, NEVER_RECEIVED, EXECUTED_INTERNAL_STEP",
-            "example" : "SEND",
-            "enum" : [ "SEND", "SEND_FAILURE", "RECEIVED", "RECEIVED_FAILURE", "NEVER_RECEIVED", "EXECUTED_INTERNAL_STEP" ]
+          "outcome": {
+            "type": "string",
+            "description": "Esito dell'operazione eseguita. Esempio: SEND, SEND_FAILURE, RECEIVED, RECEIVED_FAILURE, NEVER_RECEIVED, EXECUTED_INTERNAL_STEP",
+            "example": "SEND",
+            "enum": [
+              "SEND",
+              "SEND_FAILURE",
+              "RECEIVED",
+              "RECEIVED_FAILURE",
+              "NEVER_RECEIVED",
+              "EXECUTED_INTERNAL_STEP"
+            ]
           },
-          "paymentToken" : {
-            "type" : "string",
-            "description" : "Numero univoco del pagamento",
-            "example" : "AABB123"
+          "paymentToken": {
+            "type": "string",
+            "description": "Numero univoco del pagamento",
+            "example": "AABB123"
           },
-          "primitive" : {
-            "type" : "string",
-            "description" : "Nome della primitiva",
-            "example" : "nodoInviaRPT"
+          "primitive": {
+            "type": "string",
+            "description": "Nome della primitiva",
+            "example": "nodoInviaRPT"
           },
-          "psp" : {
-            "type" : "string",
-            "description" : "Id del prestatore servizi di pagamento",
-            "example" : "60000000001"
+          "psp": {
+            "type": "string",
+            "description": "Id del prestatore servizi di pagamento",
+            "example": "60000000001"
           },
-          "requestId" : {
-            "type" : "string",
-            "description" : "Request Id",
-            "example" : "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
+          "requestId": {
+            "type": "string",
+            "description": "Request Id",
+            "example": "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
           },
-          "sessionId" : {
-            "type" : "string",
-            "description" : "Identificativo dell'operazione asincrona giÃ  eseguita",
-            "example" : "982273480765907"
+          "sessionId": {
+            "type": "string",
+            "description": "Identificativo dell'operazione asincrona giÃ  eseguita",
+            "example": "982273480765907"
           },
-          "station" : {
-            "type" : "string",
-            "description" : "Identificativo della stazione che eroga i servizi per la PA",
-            "example" : "11111111111_05"
+          "station": {
+            "type": "string",
+            "description": "Identificativo della stazione che eroga i servizi per la PA",
+            "example": "11111111111_05"
           },
-          "status" : {
-            "type" : "string",
-            "description" : "Stato dell'RPT o del Carrello se la categoriaEvento Ã¨ INTERN, altrienti Ã¨ null",
-            "example" : "EXTRACTED_DATA_FROM_RPT"
+          "status": {
+            "type": "string",
+            "description": "Stato dell'RPT o del Carrello se la categoriaEvento Ã¨ INTERN, altrienti Ã¨ null",
+            "example": "EXTRACTED_DATA_FROM_RPT"
           }
         }
       },
-      "ReEventResponse" : {
-        "type" : "object",
-        "properties" : {
-          "count" : {
-            "type" : "integer",
-            "description" : "Totale dei record trovati",
-            "format" : "int32",
-            "example" : 100
+      "ReEventResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "description": "Totale dei record trovati",
+            "format": "int32",
+            "example": 100
           },
-          "data" : {
-            "type" : "array",
-            "description" : "Lista dei record trovati",
-            "items" : {
-              "$ref" : "#/components/schemas/ReEvent"
+          "data": {
+            "type": "array",
+            "description": "Lista dei record trovati",
+            "items": {
+              "$ref": "#/components/schemas/ReEvent"
             }
           }
         }
       }
     },
-    "securitySchemes" : {
-      "ApiKey" : {
-        "description" : "The API key to access this function app.",
-        "in" : "header",
-        "name" : "Ocp-Apim-Subscription-Key",
-        "type" : "apiKey"
+    "securitySchemes": {
+      "ApiKey": {
+        "description": "The API key to access this function app.",
+        "in": "header",
+        "name": "Ocp-Apim-Subscription-Key",
+        "type": "apiKey"
       }
     }
   }
