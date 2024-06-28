@@ -7,7 +7,6 @@ import it.gov.pagopa.wispconverter.technicalsupport.repository.model.ReEventEnti
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -35,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 class TechnicalSupportControllerTest {
 
@@ -48,6 +47,47 @@ class TechnicalSupportControllerTest {
     @MockBean
     private ReEventRepository reEventRepository;
 
+    private static String generateOperationId() {
+        return UUID.randomUUID().toString();
+    }
+
+    private static String generateIuv() {
+        return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 17);
+    }
+
+    private static String getNoticeNumber(String iuv) {
+        return "3" + iuv;
+    }
+
+    public static byte[] zip(String str) throws IOException {
+        byte[] strBytes = str.getBytes(StandardCharsets.UTF_8);
+        ByteArrayOutputStream bais = new ByteArrayOutputStream(strBytes.length);
+        GZIPOutputStream gzipOut = new GZIPOutputStream(bais);
+        gzipOut.write(strBytes);
+        gzipOut.close();
+        byte[] compressed = bais.toByteArray();
+        bais.close();
+        return compressed;
+    }
+
+    public static byte[] unzip(byte[] compressed) throws IOException {
+        ByteArrayInputStream bais = new ByteArrayInputStream(compressed);
+        GZIPInputStream gzipInputStream = new GZIPInputStream(bais);
+        return gzipInputStream.readAllBytes();
+    }
+
+    public static String getUtf8String(byte[] bytes) {
+        return new String(bytes, StandardCharsets.UTF_8);
+    }
+
+    private static String base64Encode(byte[] compressed) {
+        return getUtf8String(Base64.getEncoder().encode(compressed));
+    }
+
+    private static byte[] base64Decode(String base64Encoded) {
+        return Base64.getDecoder().decode(base64Encoded);
+    }
+
     @Test
     void findByIuvOK() {
         String organizationId = "12345678900";
@@ -58,11 +98,11 @@ class TechnicalSupportControllerTest {
 
         List<ReEventEntity> reEventEntityList = Collections.singletonList(ReEventEntity.builder()
                 .partitionKey(dateFrom)
-                .idDominio(organizationId)
+                .domainId(organizationId)
                 .iuv(iuv)
                 .build());
 
-        Mockito.when(reEventRepository.findByIdDominioAndIuv(any(),any(),any(),any())).thenReturn(reEventEntityList);
+        Mockito.when(reEventRepository.findByIdDominioAndIuv(any(), any(), any(), any())).thenReturn(reEventEntityList);
 
         String url = String.format("http://localhost:%s/organizations/%s/iuv/%s?dateFrom=%s&dateTo=%s",
                 port,
@@ -92,10 +132,10 @@ class TechnicalSupportControllerTest {
 
         List<ReEventEntity> reEventEntityList = Collections.singletonList(ReEventEntity.builder()
                 .partitionKey(dateFrom)
-                .idDominio(organizationId)
+                .domainId(organizationId)
                 .noticeNumber(noticeNumber)
                 .build());
-        Mockito.when(reEventRepository.findByIdDominioAndNoticeNumber(any(),any(),any(),any())).thenReturn(reEventEntityList);
+        Mockito.when(reEventRepository.findByIdDominioAndNoticeNumber(any(), any(), any(), any())).thenReturn(reEventEntityList);
 
         String url = String.format("http://localhost:%s/organizations/%s/notice-number/%s?dateFrom=%s&dateTo=%s",
                 port,
@@ -115,7 +155,6 @@ class TechnicalSupportControllerTest {
         assertThat(reEventResponse.getData().get(0).getNoticeNumber()).isEqualTo(noticeNumber);
     }
 
-
     @Test
     void findByOperationIdOK() {
         String operationId = generateOperationId();
@@ -128,7 +167,7 @@ class TechnicalSupportControllerTest {
                 .operationId(operationId)
                 .build());
 
-        Mockito.when(reEventRepository.findByOperationId(any(),any(),any())).thenReturn(reEventEntityList);
+        Mockito.when(reEventRepository.findByOperationId(any(), any(), any())).thenReturn(reEventEntityList);
 
         String url = String.format("http://localhost:%s/operation-id/%s?dateFrom=%s&dateTo=%s",
                 port,
@@ -164,7 +203,7 @@ class TechnicalSupportControllerTest {
                 .compressedPayload(compressedPayload)
                 .compressedPayloadLength(compressedPayloadLength)
                 .build());
-        Mockito.when(reEventRepository.findByOperationId(any(),any(),any())).thenReturn(reEventEntityList);
+        Mockito.when(reEventRepository.findByOperationId(any(), any(), any())).thenReturn(reEventEntityList);
 
         String url = String.format("http://localhost:%s/operation-id/%s?dateFrom=%s&dateTo=%s",
                 port,
@@ -186,47 +225,6 @@ class TechnicalSupportControllerTest {
 
         String payloadReverse = getUtf8String(unzip(base64Decode(reEventResponse.getData().get(0).getCompressedPayload())));
         assertThat(payloadReverse).isEqualTo(payload);
-    }
-
-
-
-    private static String generateOperationId(){
-        return UUID.randomUUID().toString();
-    }
-    private static String generateIuv() {
-        return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 17);
-    }
-    private static String getNoticeNumber(String iuv) {
-        return "3"+iuv;
-    }
-
-
-    public static byte[] zip(String str) throws IOException {
-        byte[] strBytes = str.getBytes(StandardCharsets.UTF_8);
-        ByteArrayOutputStream bais = new ByteArrayOutputStream(strBytes.length);
-        GZIPOutputStream gzipOut = new GZIPOutputStream(bais);
-        gzipOut.write(strBytes);
-        gzipOut.close();
-        byte[] compressed = bais.toByteArray();
-        bais.close();
-        return compressed;
-    }
-
-    public static byte[] unzip(byte[] compressed) throws IOException {
-      ByteArrayInputStream bais = new ByteArrayInputStream(compressed);
-      GZIPInputStream gzipInputStream = new GZIPInputStream(bais);
-      return gzipInputStream.readAllBytes();
-    }
-
-    public static String getUtf8String(byte[] bytes){
-        return new String(bytes, StandardCharsets.UTF_8);
-    }
-
-    private static String base64Encode(byte[] compressed){
-        return getUtf8String(Base64.getEncoder().encode(compressed));
-    }
-    private static byte[] base64Decode(String base64Encoded){
-        return Base64.getDecoder().decode(base64Encoded);
     }
 
 }

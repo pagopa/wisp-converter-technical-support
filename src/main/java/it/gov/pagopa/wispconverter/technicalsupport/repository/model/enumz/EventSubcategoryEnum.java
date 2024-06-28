@@ -1,6 +1,7 @@
 package it.gov.pagopa.wispconverter.technicalsupport.repository.model.enumz;
 
-public enum CategoriaEventoEnum {
-    INTERFACCIA,
-    INTERNO;
+public enum EventSubcategoryEnum {
+    REQ,
+    RESP,
+    INTERN
 }
