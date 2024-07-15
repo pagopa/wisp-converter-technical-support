@@ -74,7 +74,7 @@ microservice-chart:
     OTEL_METRICS_EXPORTER: otlp
     OTEL_LOGS_EXPORTER: none
     OTEL_TRACES_SAMPLER: "always_on"
-    COSMOS_URI: "https://pagopa-weu-nodo-wispconv-cosmos-account.documents.azure.com:443/"
+    COSMOS_URI: "https://pagopa-p-weu-nodo-wispconv-cosmos-account.documents.azure.com:443/"
   secretProvider:
     create: true
     envSecrets:
