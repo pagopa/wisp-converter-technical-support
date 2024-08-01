@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: ""
   image:
     repository: ghcr.io/pagopa/pagopa-wisp-converter-technical-support
-    tag: "0.0.4-7-PAGOPA-1834-fix-re-dto"
+    tag: "0.0.8"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -74,7 +74,7 @@ microservice-chart:
     OTEL_METRICS_EXPORTER: otlp
     OTEL_LOGS_EXPORTER: none
     OTEL_TRACES_SAMPLER: "always_on"
-    COSMOS_URI: "https://pagopa-weu-nodo-wispconv-cosmos-account.documents.azure.com:443/"
+    COSMOS_URI: "https://pagopa-p-weu-nodo-wispconv-cosmos-account.documents.azure.com:443/"
   secretProvider:
     create: true
     envSecrets:
