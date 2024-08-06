@@ -17,5 +17,7 @@ public class Constants {
     public static final String DATE_FROM = "dateFrom";
     public static final String DATE_TO = "dateTo";
 
+    public static final String SUBSCRIPTION_KEY_PATTERN = "\"?Ocp-Apim-Subscription-Key\"?: ?\\[(\\S+ ?\\S+|\\S+, \\S+)]";
+
 
 }
