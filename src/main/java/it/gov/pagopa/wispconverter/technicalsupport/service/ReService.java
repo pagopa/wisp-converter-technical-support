@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -19,42 +20,51 @@ import java.util.List;
 public class ReService {
 
     static final String PATTERN_FORMAT = "yyyy-MM-dd";
-    
+
     private final ReEventRepository reEventRepository;
     private final ReEventMapper reEventMapper;
-
-    public List<ReEventDto> findByNoticeNumber(LocalDate datefrom, LocalDate dateTo, String organization, String noticeNumber){
-        List<ReEventEntity> reEventEntities = reEventRepository.findByIdDominioAndNoticeNumber(
-                partitionKeyFromInstant(datefrom),
-                partitionKeyFromInstant(dateTo),
-                organization,
-                noticeNumber);
-        return reEventMapper.toReEventDtoList(reEventEntities);
-    }
-
-    public List<ReEventDto> findByIuv(LocalDate datefrom, LocalDate dateTo, String organization, String iuv){
-        List<ReEventEntity> reEventEntities = reEventRepository.findByIdDominioAndIuv(
-                partitionKeyFromInstant(datefrom),
-                partitionKeyFromInstant(dateTo),
-                organization,
-                iuv);
-        return reEventMapper.toReEventDtoList(reEventEntities);
-    }
-
-    public List<ReEventDto> findByOperationId(LocalDate datefrom, LocalDate dateTo, String operationId){
-        List<ReEventEntity> reEventEntities = reEventRepository.findByOperationId(
-                partitionKeyFromInstant(datefrom),
-                partitionKeyFromInstant(dateTo),
-                operationId);
-        return reEventMapper.toReEventDtoList(reEventEntities);
-    }
-
 
     public static String partitionKeyFromInstant(LocalDate insertedTimestamp) {
         return insertedTimestamp == null ? null : DateTimeFormatter
                 .ofPattern(PATTERN_FORMAT)
                 .withZone(ZoneId.systemDefault())
                 .format(insertedTimestamp);
+    }
+
+    public List<ReEventDto> findByNoticeNumber(LocalDate dateFromAsLocalDate, LocalDate dateToAsLocalDate, String organization, String noticeNumber) {
+
+        String dateFrom = partitionKeyFromInstant(dateFromAsLocalDate);
+        String dateTo = partitionKeyFromInstant(dateToAsLocalDate);
+
+        Set<String> sessionIds = reEventRepository.findSessionIdByNoticeNumberAndDomainId(dateFrom, dateTo, organization, noticeNumber);
+        Set<String> noticeNumbers = reEventRepository.findNoticeNumberBySessionId(dateFrom, dateTo, sessionIds);
+        Set<String> paymentTokens = reEventRepository.findPaymentTokenByNoticeNumber(dateFrom, dateTo, organization, noticeNumbers);
+        Set<String> operationIds = reEventRepository.findOperationIdByFoundData(dateFrom, dateTo, organization, sessionIds, noticeNumbers, paymentTokens);
+        List<ReEventEntity> reEventEntities = reEventRepository.findByOperationIdAndSessionId(dateFrom, dateTo, operationIds, sessionIds);
+
+        return reEventMapper.toReEventDtoList(reEventEntities);
+    }
+
+    public List<ReEventDto> findByIuv(LocalDate dateFromAsLocalDate, LocalDate dateToAsLocalDate, String organization, String iuv) {
+
+        String dateFrom = partitionKeyFromInstant(dateFromAsLocalDate);
+        String dateTo = partitionKeyFromInstant(dateToAsLocalDate);
+
+        Set<String> sessionIds = reEventRepository.findSessionIdByIuvAndDomainId(dateFrom, dateTo, organization, iuv);
+        Set<String> noticeNumbers = reEventRepository.findNoticeNumberBySessionId(dateFrom, dateTo, sessionIds);
+        Set<String> paymentTokens = reEventRepository.findPaymentTokenByNoticeNumber(dateFrom, dateTo, organization, noticeNumbers);
+        Set<String> operationIds = reEventRepository.findOperationIdByFoundData(dateFrom, dateTo, organization, sessionIds, noticeNumbers, paymentTokens);
+        List<ReEventEntity> reEventEntities = reEventRepository.findByOperationIdAndSessionId(dateFrom, dateTo, operationIds, sessionIds);
+
+        return reEventMapper.toReEventDtoList(reEventEntities);
+    }
+
+    public List<ReEventDto> findByOperationId(LocalDate datefrom, LocalDate dateTo, String operationId) {
+        List<ReEventEntity> reEventEntities = reEventRepository.findByOperationId(
+                partitionKeyFromInstant(datefrom),
+                partitionKeyFromInstant(dateTo),
+                operationId);
+        return reEventMapper.toReEventDtoList(reEventEntities);
     }
 
 }

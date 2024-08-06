@@ -102,7 +102,7 @@ class TechnicalSupportControllerTest {
                 .iuv(iuv)
                 .build());
 
-        Mockito.when(reEventRepository.findByIdDominioAndIuv(any(), any(), any(), any())).thenReturn(reEventEntityList);
+        Mockito.when(reEventRepository.findByOperationIdAndSessionId(any(), any(), any(), any())).thenReturn(reEventEntityList);
 
         String url = String.format("http://localhost:%s/organizations/%s/iuv/%s?dateFrom=%s&dateTo=%s",
                 port,
@@ -118,7 +118,7 @@ class TechnicalSupportControllerTest {
         assertNotNull(reEventResponse);
         assertThat(reEventResponse.getCount()).isEqualTo(1);
         assertThat(reEventResponse.getData()).hasSize(1);
-        assertThat(reEventResponse.getData().get(0).getOrganizationId()).isEqualTo(organizationId);
+        assertThat(reEventResponse.getData().get(0).getDomainId()).isEqualTo(organizationId);
         assertThat(reEventResponse.getData().get(0).getIuv()).isEqualTo(iuv);
     }
 
@@ -135,7 +135,7 @@ class TechnicalSupportControllerTest {
                 .domainId(organizationId)
                 .noticeNumber(noticeNumber)
                 .build());
-        Mockito.when(reEventRepository.findByIdDominioAndNoticeNumber(any(), any(), any(), any())).thenReturn(reEventEntityList);
+        Mockito.when(reEventRepository.findByOperationIdAndSessionId(any(), any(), any(), any())).thenReturn(reEventEntityList);
 
         String url = String.format("http://localhost:%s/organizations/%s/notice-number/%s?dateFrom=%s&dateTo=%s",
                 port,
@@ -151,7 +151,7 @@ class TechnicalSupportControllerTest {
         assertNotNull(reEventResponse);
         assertThat(reEventResponse.getCount()).isEqualTo(1);
         assertThat(reEventResponse.getData()).hasSize(1);
-        assertThat(reEventResponse.getData().get(0).getOrganizationId()).isEqualTo(organizationId);
+        assertThat(reEventResponse.getData().get(0).getDomainId()).isEqualTo(organizationId);
         assertThat(reEventResponse.getData().get(0).getNoticeNumber()).isEqualTo(noticeNumber);
     }
 
