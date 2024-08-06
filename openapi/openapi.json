@@ -4,7 +4,7 @@
     "description": "A service that permits to handle converted WISP requests for technical support",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "wisp-converter-technical-support",
-    "version": "0.0.9"
+    "version": "0.0.10"
   },
   "servers": [
     {
