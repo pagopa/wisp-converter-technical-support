@@ -11,6 +11,7 @@ public class Constants {
     public static final String ORGANIZATION = "organizationId";
     public static final String IUV = "iuv";
     public static final String NOTICE_NUMBER = "noticeNumber";
+    public static final String SESSION_ID = "sessionId";
 
     public static final String OPERATION_ID = "operationId";
 

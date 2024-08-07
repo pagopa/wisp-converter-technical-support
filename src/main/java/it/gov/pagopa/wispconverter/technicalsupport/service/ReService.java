@@ -1,5 +1,7 @@
 package it.gov.pagopa.wispconverter.technicalsupport.service;
 
+import it.gov.pagopa.wispconverter.technicalsupport.exception.AppError;
+import it.gov.pagopa.wispconverter.technicalsupport.exception.AppException;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.ReEventRepository;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.model.ReEventEntity;
 import it.gov.pagopa.wispconverter.technicalsupport.service.mapper.ReEventMapper;
@@ -51,6 +53,26 @@ public class ReService {
         String dateTo = partitionKeyFromInstant(dateToAsLocalDate);
 
         Set<String> sessionIds = reEventRepository.findSessionIdByIuvAndDomainId(dateFrom, dateTo, organization, iuv);
+        Set<String> noticeNumbers = reEventRepository.findNoticeNumberBySessionId(dateFrom, dateTo, sessionIds);
+        Set<String> paymentTokens = reEventRepository.findPaymentTokenByNoticeNumber(dateFrom, dateTo, organization, noticeNumbers);
+        Set<String> operationIds = reEventRepository.findOperationIdByFoundData(dateFrom, dateTo, organization, sessionIds, noticeNumbers, paymentTokens);
+        List<ReEventEntity> reEventEntities = reEventRepository.findByOperationIdAndSessionId(dateFrom, dateTo, operationIds, sessionIds);
+
+        return reEventMapper.toReEventDtoList(reEventEntities);
+    }
+
+    public List<ReEventDto> findBySessionId(LocalDate dateFromAsLocalDate, LocalDate dateToAsLocalDate, String sessionId) {
+
+        String dateFrom = partitionKeyFromInstant(dateFromAsLocalDate);
+        String dateTo = partitionKeyFromInstant(dateToAsLocalDate);
+
+        Set<String> sessionIds = Set.of(sessionId);
+        List<String> organizations = reEventRepository.findDomainIdBySessionId(dateFrom, dateTo, sessionId);
+        if (organizations.size() != 1) {
+            throw new AppException(AppError.INVALID_SESSIONID);
+        }
+
+        String organization = organizations.get(0);
         Set<String> noticeNumbers = reEventRepository.findNoticeNumberBySessionId(dateFrom, dateTo, sessionIds);
         Set<String> paymentTokens = reEventRepository.findPaymentTokenByNoticeNumber(dateFrom, dateTo, organization, noticeNumbers);
         Set<String> operationIds = reEventRepository.findOperationIdByFoundData(dateFrom, dateTo, organization, sessionIds, noticeNumbers, paymentTokens);

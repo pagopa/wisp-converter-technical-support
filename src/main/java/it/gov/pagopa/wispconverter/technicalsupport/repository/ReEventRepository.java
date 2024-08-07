@@ -51,6 +51,15 @@ public interface ReEventRepository extends CosmosRepository<ReEventEntity, Strin
                                             @Param("dateTo") String dateTo,
                                             @Param("sessionIds") Set<String> sessionId);
 
+    @Query("SELECT DISTINCT VALUE c.domainId " +
+            "FROM c " +
+            "WHERE (c.partitionKey >= @dateFrom AND c.partitionKey <= @dateTo) " +
+            "AND c.sessionId = @sessionId " +
+            "AND IS_DEFINED(c.domainId) AND c.domainId != null")
+    List<String> findDomainIdBySessionId(@Param("dateFrom") String dateFrom,
+                                         @Param("dateTo") String dateTo,
+                                         @Param("sessionId") String sessionId);
+
     @Query("SELECT DISTINCT VALUE c.paymentToken " +
             "FROM c " +
             "WHERE (c.partitionKey >= @dateFrom AND c.partitionKey <= @dateTo) " +

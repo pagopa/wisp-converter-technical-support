@@ -11,6 +11,7 @@ public enum AppError {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Unauthorized", "Error during authentication"),
     FORBIDDEN(HttpStatus.FORBIDDEN, "Forbidden", "This method is forbidden"),
     RESPONSE_NOT_READABLE(HttpStatus.BAD_GATEWAY, "Response Not Readable", "The response body is not readable"),
+    INVALID_SESSIONID(HttpStatus.BAD_GATEWAY, "Invalid sessionId", "The session identifier is not valid: is is not associated to a single organization or it does not exists."),
 
     UNKNOWN(null, null, null);
 
