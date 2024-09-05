@@ -7,7 +7,6 @@ import it.gov.pagopa.wispconverter.technicalsupport.repository.model.ReEventEnti
 import it.gov.pagopa.wispconverter.technicalsupport.service.mapper.ReEventMapper;
 import it.gov.pagopa.wispconverter.technicalsupport.service.model.ReEventDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class ReService {
 
