@@ -11,7 +11,6 @@ import it.gov.pagopa.wispconverter.technicalsupport.controller.model.ReEventResp
 import it.gov.pagopa.wispconverter.technicalsupport.service.ReService;
 import it.gov.pagopa.wispconverter.technicalsupport.service.model.ReEventDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +25,6 @@ import static it.gov.pagopa.wispconverter.technicalsupport.util.Constants.*;
 
 @RestController
 @Validated
-@Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Technical Support", description = "API for read event and payload from table storage")
 public class TechnicalSupportController {
