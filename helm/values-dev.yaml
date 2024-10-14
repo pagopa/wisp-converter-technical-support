@@ -67,20 +67,13 @@ microservice-chart:
     APP_LOGGING_LEVEL: 'DEBUG'
     DEFAULT_LOGGING_LEVEL: 'INFO'
     CORS_CONFIGURATION: '{"origins": ["*"], "methods": ["*"]}'
-    OTEL_SERVICE_NAME: "pagopa-wisp-converter-technical-support"
-    OTEL_RESOURCE_ATTRIBUTES: "service.environment=dev"
-    OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.elastic-system.svc:4317"
-    OTEL_TRACES_EXPORTER: otlp
-    OTEL_METRICS_EXPORTER: otlp
-    OTEL_LOGS_EXPORTER: none
-    OTEL_TRACES_SAMPLER: "always_on"
+    SERVICE_NAME: "pagopa-wisp-converter-technical-support"
     COSMOS_URI: "https://pagopa-d-weu-nodo-wispconv-cosmos-account.documents.azure.com:443/"
   secretProvider:
     create: true
     envSecrets:
       # required
       APPLICATIONINSIGHTS_CONNECTION_STRING: 'azure-insight-connection-string'
-      OTEL_EXPORTER_OTLP_HEADERS: elastic-apm-secret-token
       COSMOS_KEY: 'cosmosdb-wisp-converter-account-key'
     keyvault:
       name: "pagopa-d-nodo-kv"
