@@ -1,17 +1,16 @@
 package it.gov.pagopa.wispconverter.technicalsupport.service;
 
-import it.gov.pagopa.wispconverter.technicalsupport.exception.AppError;
-import it.gov.pagopa.wispconverter.technicalsupport.exception.AppException;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.mapper.ReEventMapper;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.ReEvent;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.ReEventRepository;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.model.ReEventEntity;
-import it.gov.pagopa.wispconverter.technicalsupport.service.mapper.ReEventMapper;
-import it.gov.pagopa.wispconverter.technicalsupport.service.model.ReEventDto;
+import it.gov.pagopa.wispconverter.technicalsupport.util.CommonUtility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -19,72 +18,51 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ReService {
 
-    static final String PATTERN_FORMAT = "yyyy-MM-dd";
-
     private final ReEventRepository reEventRepository;
+
     private final ReEventMapper reEventMapper;
 
-    public static String partitionKeyFromInstant(LocalDate insertedTimestamp) {
-        return insertedTimestamp == null ? null : DateTimeFormatter
-                .ofPattern(PATTERN_FORMAT)
-                .withZone(ZoneId.systemDefault())
-                .format(insertedTimestamp);
-    }
+    public List<ReEvent> findByNoticeNumber(LocalDate dateFromAsLocalDate, LocalDate dateToAsLocalDate, String organization, String noticeNumber) {
 
-    public List<ReEventDto> findByNoticeNumber(LocalDate dateFromAsLocalDate, LocalDate dateToAsLocalDate, String organization, String noticeNumber) {
-
-        String dateFrom = partitionKeyFromInstant(dateFromAsLocalDate);
-        String dateTo = partitionKeyFromInstant(dateToAsLocalDate);
+        String dateFrom = CommonUtility.partitionKeyFromInstant(dateFromAsLocalDate);
+        String dateTo = CommonUtility.partitionKeyFromInstant(dateToAsLocalDate);
 
         Set<String> sessionIds = reEventRepository.findSessionIdByNoticeNumberAndDomainId(dateFrom, dateTo, organization, noticeNumber);
-        Set<String> noticeNumbers = reEventRepository.findNoticeNumberBySessionId(dateFrom, dateTo, sessionIds);
-        Set<String> paymentTokens = reEventRepository.findPaymentTokenByNoticeNumber(dateFrom, dateTo, organization, noticeNumbers);
-        Set<String> operationIds = reEventRepository.findOperationIdByFoundData(dateFrom, dateTo, organization, sessionIds, noticeNumbers, paymentTokens);
-        List<ReEventEntity> reEventEntities = reEventRepository.findByOperationIdAndSessionId(dateFrom, dateTo, operationIds, sessionIds);
 
-        return reEventMapper.toReEventDtoList(reEventEntities);
+        return extractReEventsFromWispDismantling(dateFrom, dateTo, sessionIds);
     }
 
-    public List<ReEventDto> findByIuv(LocalDate dateFromAsLocalDate, LocalDate dateToAsLocalDate, String organization, String iuv) {
+    public List<ReEvent> findByIuv(LocalDate dateFromAsLocalDate,
+                                   LocalDate dateToAsLocalDate,
+                                   String organization,
+                                   String iuv) {
 
-        String dateFrom = partitionKeyFromInstant(dateFromAsLocalDate);
-        String dateTo = partitionKeyFromInstant(dateToAsLocalDate);
+        String dateFrom = CommonUtility.partitionKeyFromInstant(dateFromAsLocalDate);
+        String dateTo = CommonUtility.partitionKeyFromInstant(dateToAsLocalDate);
 
         Set<String> sessionIds = reEventRepository.findSessionIdByIuvAndDomainId(dateFrom, dateTo, organization, iuv);
-        Set<String> noticeNumbers = reEventRepository.findNoticeNumberBySessionId(dateFrom, dateTo, sessionIds);
-        Set<String> paymentTokens = reEventRepository.findPaymentTokenByNoticeNumber(dateFrom, dateTo, organization, noticeNumbers);
-        Set<String> operationIds = reEventRepository.findOperationIdByFoundData(dateFrom, dateTo, organization, sessionIds, noticeNumbers, paymentTokens);
-        List<ReEventEntity> reEventEntities = reEventRepository.findByOperationIdAndSessionId(dateFrom, dateTo, operationIds, sessionIds);
 
-        return reEventMapper.toReEventDtoList(reEventEntities);
+        return extractReEventsFromWispDismantling(dateFrom, dateTo, sessionIds);
     }
 
-    public List<ReEventDto> findBySessionId(LocalDate dateFromAsLocalDate, LocalDate dateToAsLocalDate, String sessionId) {
+    public List<ReEvent> findBySessionId(LocalDate dateFromAsLocalDate, LocalDate dateToAsLocalDate, String sessionId) {
 
-        String dateFrom = partitionKeyFromInstant(dateFromAsLocalDate);
-        String dateTo = partitionKeyFromInstant(dateToAsLocalDate);
+        String dateFrom = CommonUtility.partitionKeyFromInstant(dateFromAsLocalDate);
+        String dateTo = CommonUtility.partitionKeyFromInstant(dateToAsLocalDate);
 
-        Set<String> sessionIds = Set.of(sessionId);
-        List<String> organizations = reEventRepository.findDomainIdBySessionId(dateFrom, dateTo, sessionId);
-        if (organizations.size() != 1) {
-            throw new AppException(AppError.INVALID_SESSIONID);
-        }
-
-        String organization = organizations.get(0);
-        Set<String> noticeNumbers = reEventRepository.findNoticeNumberBySessionId(dateFrom, dateTo, sessionIds);
-        Set<String> paymentTokens = reEventRepository.findPaymentTokenByNoticeNumber(dateFrom, dateTo, organization, noticeNumbers);
-        Set<String> operationIds = reEventRepository.findOperationIdByFoundData(dateFrom, dateTo, organization, sessionIds, noticeNumbers, paymentTokens);
-        List<ReEventEntity> reEventEntities = reEventRepository.findByOperationIdAndSessionId(dateFrom, dateTo, operationIds, sessionIds);
-
-        return reEventMapper.toReEventDtoList(reEventEntities);
+        return extractReEventsFromWispDismantling(dateFrom, dateTo, Set.of(sessionId));
     }
 
-    public List<ReEventDto> findByOperationId(LocalDate datefrom, LocalDate dateTo, String operationId) {
-        List<ReEventEntity> reEventEntities = reEventRepository.findByOperationId(
-                partitionKeyFromInstant(datefrom),
-                partitionKeyFromInstant(dateTo),
-                operationId);
-        return reEventMapper.toReEventDtoList(reEventEntities);
-    }
+    private List<ReEvent> extractReEventsFromWispDismantling(String dateFrom, String dateTo, Set<String> sessionIds) {
 
+        List<ReEventEntity> reEventEntities = new LinkedList<>();
+        sessionIds.stream()
+                .flatMap(sessionId -> reEventRepository.findBySessionId(dateFrom, dateTo, sessionId).stream())
+                .forEach(reEventEntities::add);
+
+        // convert all entities to DTOs then sort them by inserted timestamp
+        List<ReEvent> reEvents = reEventMapper.toDto(reEventEntities);
+        reEvents.sort(Comparator.comparing(ReEvent::getInsertedTimestamp));
+        return reEvents;
+    }
 }

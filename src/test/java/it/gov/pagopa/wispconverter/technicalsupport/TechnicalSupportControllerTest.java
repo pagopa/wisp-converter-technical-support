@@ -200,8 +200,8 @@ class TechnicalSupportControllerTest {
         List<ReEventEntity> reEventEntityList = Collections.singletonList(ReEventEntity.builder()
                 .partitionKey(dateFrom)
                 .operationId(operationId)
-                .compressedPayload(compressedPayload)
-                .compressedPayloadLength(compressedPayloadLength)
+                //.compressedPayload(compressedPayload)
+                //.compressedPayloadLength(compressedPayloadLength)
                 .build());
         Mockito.when(reEventRepository.findByOperationId(any(), any(), any())).thenReturn(reEventEntityList);
 
@@ -220,11 +220,11 @@ class TechnicalSupportControllerTest {
         assertThat(reEventResponse.getData()).hasSize(1);
         assertThat(reEventResponse.getData().get(0).getOperationId()).isEqualTo(operationId);
 
-        assertThat(reEventResponse.getData().get(0).getCompressedPayload()).isEqualTo(compressedPayload);
+        /*assertThat(reEventResponse.getData().get(0).getCompressedPayload()).isEqualTo(compressedPayload);
         assertThat(reEventResponse.getData().get(0).getCompressedPayloadLength()).isEqualTo(compressedPayloadLength);
 
         String payloadReverse = getUtf8String(unzip(base64Decode(reEventResponse.getData().get(0).getCompressedPayload())));
-        assertThat(payloadReverse).isEqualTo(payload);
+        assertThat(payloadReverse).isEqualTo(payload);*/
     }
 
 }

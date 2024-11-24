@@ -3,6 +3,9 @@ package it.gov.pagopa.wispconverter.technicalsupport.util;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +28,14 @@ public class CommonUtility {
      */
     public static String deNull(Object value) {
         return Optional.ofNullable(value).orElse("").toString();
+    }
+
+    /**
+     * @param value value to nullify.
+     * @return return null string if value is null or empty
+     */
+    public static String nullify(String value) {
+        return value == null || value.isEmpty() ? null : value;
     }
 
     /**
@@ -51,5 +62,10 @@ public class CommonUtility {
         return Calendar.getInstance().getTimeInMillis() - startTime;
     }
 
-
+    public static String partitionKeyFromInstant(LocalDate insertedTimestamp) {
+        return insertedTimestamp == null ? null : DateTimeFormatter
+                .ofPattern(Constants.PATTERN_FORMAT)
+                .withZone(ZoneId.systemDefault())
+                .format(insertedTimestamp);
+    }
 }

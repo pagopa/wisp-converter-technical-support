@@ -18,6 +18,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.Nullable;
 
+import java.util.List;
+
 @Configuration
 @EnableCosmosRepositories("it.gov.pagopa.wispconverter.technicalsupport.repository")
 @EnableConfigurationProperties
@@ -38,6 +40,9 @@ public class CosmosDBConfig extends AbstractCosmosConfiguration {
     @Value("${azure.cosmos.populate-query-metrics}")
     private Boolean cosmosQueryMetrics;
 
+    @Value("${azure.cosmos.read.region}")
+    private String readRegion;
+
     @Bean
     public CosmosClientBuilder getCosmosClientBuilder() {
         var azureKeyCredential = new AzureKeyCredential(cosmosKey);
@@ -46,6 +51,7 @@ public class CosmosDBConfig extends AbstractCosmosConfiguration {
         return new CosmosClientBuilder()
                 .endpoint(cosmosUri)
                 .credential(azureKeyCredential)
+                .preferredRegions(List.of(readRegion))
                 .directMode(directConnectionConfig, gatewayConnectionConfig);
     }
 
