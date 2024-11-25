@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: ""
   image:
     repository: ghcr.io/pagopa/pagopa-wisp-converter-technical-support
-    tag: "0.2.1-5-feat-flow-analysis-enhancements"
+    tag: "0.2.1-6-feat-flow-analysis-enhancements"
     pullPolicy: Always
   livenessProbe:
     httpGet:
