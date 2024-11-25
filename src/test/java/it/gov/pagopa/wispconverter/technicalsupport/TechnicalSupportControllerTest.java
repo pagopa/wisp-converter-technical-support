@@ -7,7 +7,6 @@ import it.gov.pagopa.wispconverter.technicalsupport.repository.model.ReEventEnti
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,7 +30,6 @@ import java.util.zip.GZIPOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -102,7 +100,7 @@ class TechnicalSupportControllerTest {
                 .iuv(iuv)
                 .build());
 
-        Mockito.when(reEventRepository.findByOperationIdAndSessionId(any(), any(), any(), any())).thenReturn(reEventEntityList);
+        //Mockito.when(reEventRepository.findByOperationIdAndSessionId(any(), any(), any(), any())).thenReturn(reEventEntityList);
 
         String url = String.format("http://localhost:%s/organizations/%s/iuv/%s?dateFrom=%s&dateTo=%s",
                 port,
@@ -135,7 +133,7 @@ class TechnicalSupportControllerTest {
                 .domainId(organizationId)
                 .noticeNumber(noticeNumber)
                 .build());
-        Mockito.when(reEventRepository.findByOperationIdAndSessionId(any(), any(), any(), any())).thenReturn(reEventEntityList);
+        //Mockito.when(reEventRepository.findByOperationIdAndSessionId(any(), any(), any(), any())).thenReturn(reEventEntityList);
 
         String url = String.format("http://localhost:%s/organizations/%s/notice-number/%s?dateFrom=%s&dateTo=%s",
                 port,
@@ -167,7 +165,7 @@ class TechnicalSupportControllerTest {
                 .operationId(operationId)
                 .build());
 
-        Mockito.when(reEventRepository.findByOperationId(any(), any(), any())).thenReturn(reEventEntityList);
+        //Mockito.when(reEventRepository.findByOperationId(any(), any(), any())).thenReturn(reEventEntityList);
 
         String url = String.format("http://localhost:%s/operation-id/%s?dateFrom=%s&dateTo=%s",
                 port,
@@ -203,7 +201,7 @@ class TechnicalSupportControllerTest {
                 //.compressedPayload(compressedPayload)
                 //.compressedPayloadLength(compressedPayloadLength)
                 .build());
-        Mockito.when(reEventRepository.findByOperationId(any(), any(), any())).thenReturn(reEventEntityList);
+        //Mockito.when(reEventRepository.findByOperationId(any(), any(), any())).thenReturn(reEventEntityList);
 
         String url = String.format("http://localhost:%s/operation-id/%s?dateFrom=%s&dateTo=%s",
                 port,

@@ -9,10 +9,13 @@ import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimenta
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.PaymentFlowDetail;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.PaymentFlowStatus;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.PaymentFlowStep;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.ReceiptStatusSnapshotResponse;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.ReceiptsStatusSnapshot;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.RTRepository;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.ReEventDataExplorerRepository;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.ReEventExperimentalRepository;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.model.RTEntity;
+import it.gov.pagopa.wispconverter.technicalsupport.repository.model.RTGroupedByStatusEntity;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.model.ReEventDataExplorerEntity;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.model.ReEventEntity;
 import it.gov.pagopa.wispconverter.technicalsupport.service.model.PaymentUniqueID;
@@ -22,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -210,21 +214,29 @@ public class ExperimentalService {
         return paymentFlows;
     }
 
+
+    public ReceiptStatusSnapshotResponse extractReceiptSnapshot(LocalDateTime dateFromAsLocalDateTime, LocalDateTime dateToAsLocalDateTime) {
+
+        String dateFrom = CommonUtility.timestampFromInstant(dateFromAsLocalDateTime);
+        String dateTo = CommonUtility.timestampFromInstant(dateToAsLocalDateTime);
+
+        Set<RTGroupedByStatusEntity> rtCountByStatus = rtRepository.findByTimestampGroupByStatus(dateFrom, dateTo);
+        List<ReceiptsStatusSnapshot> snapshotComponents = rtCountByStatus.stream()
+                .map(entity -> ReceiptsStatusSnapshot.builder()
+                        .status(entity.getReceiptStatus())
+                        .count(entity.getEventStatusCount())
+                        .build())
+                .toList();
+
+        return ReceiptStatusSnapshotResponse.builder()
+                .snapshot(snapshotComponents)
+                .lowerBound(dateFromAsLocalDateTime)
+                .upperBound(dateToAsLocalDateTime)
+                .build();
+    }
+
     private PaymentFlowDetail extractPaymentFlowDetail(List<ReEvent> events, String domainId, String iuv) {
-        /*
-        nodoInviaRPT | nodoInviaCarrelloRPT
-        redirect
-        checkPosition
-        activatePaymentNoticeV2
-        closePayment-v2
-        sendPaymentOutcomeV2
-        receipt-ok
-        -- ko --
-        rpt-timeout-trigger
-        ecommerce-hang-timeout-trigger
-        payment-token-timeout-trigger
-        receipt-ko
-         */
+
         PaymentFlowDetail paymentFlowDetail = new PaymentFlowDetail();
 
         LinkedHashMap<String, List<ReEvent>> eventsByBusinessProcess = events.stream()

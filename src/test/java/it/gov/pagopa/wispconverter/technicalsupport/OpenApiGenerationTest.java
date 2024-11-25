@@ -1,6 +1,9 @@
 package it.gov.pagopa.wispconverter.technicalsupport;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.gov.pagopa.wispconverter.technicalsupport.repository.RTRepository;
+import it.gov.pagopa.wispconverter.technicalsupport.repository.ReEventDataExplorerRepository;
+import it.gov.pagopa.wispconverter.technicalsupport.repository.ReEventExperimentalRepository;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.ReEventRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 class OpenApiGenerationTest {
 
@@ -34,6 +37,15 @@ class OpenApiGenerationTest {
 
     @MockBean
     private ReEventRepository reEventRepository;
+
+    @MockBean
+    private ReEventExperimentalRepository reEventExperimentalRepository;
+
+    @MockBean
+    private ReEventDataExplorerRepository reEventDataExplorerRepository;
+
+    @MockBean
+    private RTRepository rtRepository;
 
     @Test
     void swaggerSpringPlugin() throws Exception {

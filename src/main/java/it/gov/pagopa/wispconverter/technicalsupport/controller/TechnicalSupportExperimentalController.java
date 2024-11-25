@@ -6,13 +6,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.*;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.ReceiptStatusSnapshotResponse;
 import it.gov.pagopa.wispconverter.technicalsupport.service.ExperimentalService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static it.gov.pagopa.wispconverter.technicalsupport.util.Constants.*;
@@ -137,14 +140,21 @@ public class TechnicalSupportExperimentalController {
             @RequestParam(name = DATE_FROM) @Schema(example = "2024-03-18", description = "Lower limit date") LocalDate dateFrom,
             @RequestParam(name = DATE_TO) @Schema(example = "2024-03-18", description = "Upper limit date") LocalDate dateTo) {
 
-        List<PaymentFlowStatus> paymentFlows = experimentalService.getPaymentStatusFindByIuv(dateFrom, dateTo, organizationId, iuv);
-        return paymentFlows;
+        return experimentalService.getPaymentStatusFindByIuv(dateFrom, dateTo, organizationId, iuv);
     }
 
-    /* TODO
-     - modificare la read rimuovendo il payment status, lascia solo il dettaglio degli stati
-     - aggiungere una payment status, definendo lo stato di payment e receipt
-     - aggiungere una receipt snapshot, con la query standard che si esegue per monitorare i rilasci
-     */
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully retrieved event",
+                    content = @Content(schema = @Schema(implementation = ReEventExperimentalResponse.class)))
+    })
+    @GetMapping(value = "/monitoring/receipts/snapshot", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ReceiptStatusSnapshotResponse extractReceiptSnapshot(
+            @RequestParam(name = DATE_FROM) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Schema(example = "2024-03-18T12:00:00", description = "Lower limit date") LocalDateTime dateFrom,
+            @RequestParam(name = DATE_TO) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Schema(example = "2024-03-18T13:00:00", description = "Upper limit date") LocalDateTime dateTo) {
+
+        return experimentalService.extractReceiptSnapshot(dateFrom, dateTo);
+    }
 
 }
