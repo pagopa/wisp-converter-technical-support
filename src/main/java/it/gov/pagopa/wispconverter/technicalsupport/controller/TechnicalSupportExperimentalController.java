@@ -43,7 +43,7 @@ public class TechnicalSupportExperimentalController {
             @RequestParam(name = DATE_TO) @Schema(example = "2024-03-18", description = "Upper limit date") LocalDate dateTo,
             @RequestParam(name = SHOW_DETAILS, defaultValue = "false") @Schema(example = "false", description = "Show internal details of whole process", defaultValue = "false") Boolean showDetails,
             @RequestParam(name = SHOW_COMPACT_FORM, defaultValue = "true") @Schema(example = "true", description = "Show data in a compact form, reducing to essential information", defaultValue = "true") Boolean showCompactForm,
-            @RequestParam(name = SHOW_PAYLOADS, defaultValue = "true") @Schema(example = "true", description = "Show request and response payloads in INTERFACE events", defaultValue = "true") Boolean showPayloads) {
+            @RequestParam(name = SHOW_PAYLOADS, defaultValue = "false") @Schema(example = "false", description = "Show request and response payloads in INTERFACE events", defaultValue = "false") Boolean showPayloads) {
 
         List<PaymentFlow> paymentFlows = experimentalService.findByIuvEnhanced(dateFrom, dateTo, organizationId, iuv, showDetails, showCompactForm, showPayloads);
         return ReEventExperimentalResponse.builder()
