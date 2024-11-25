@@ -3,9 +3,16 @@ package it.gov.pagopa.wispconverter.technicalsupport.util;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.GZIPInputStream;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommonUtility {
@@ -25,6 +32,14 @@ public class CommonUtility {
      */
     public static String deNull(Object value) {
         return Optional.ofNullable(value).orElse("").toString();
+    }
+
+    /**
+     * @param value value to nullify.
+     * @return return null string if value is null or empty
+     */
+    public static String nullify(String value) {
+        return value == null || value.isEmpty() ? null : value;
     }
 
     /**
@@ -51,5 +66,37 @@ public class CommonUtility {
         return Calendar.getInstance().getTimeInMillis() - startTime;
     }
 
+    public static String partitionKeyFromInstant(LocalDate insertedTimestamp) {
+        return insertedTimestamp == null ? null : DateTimeFormatter
+                .ofPattern(Constants.PATTERN_FORMAT)
+                .withZone(ZoneId.systemDefault())
+                .format(insertedTimestamp);
+    }
 
+    public static String decompressGZip(String gzipContent) {
+        String result;
+        if (gzipContent == null || gzipContent.isEmpty()) {
+            result = "";
+
+        } else {
+
+            byte[] compressedData = Base64.getDecoder().decode(gzipContent);
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(compressedData);
+
+            try (GZIPInputStream gzipInputStream = new GZIPInputStream(byteArrayInputStream)) {
+
+                byte[] buffer = new byte[1024];
+                StringBuilder output = new StringBuilder();
+                int bytesRead;
+                while ((bytesRead = gzipInputStream.read(buffer)) != -1) {
+                    output.append(new String(buffer, 0, bytesRead));
+                }
+                result = output.toString();
+
+            } catch (IOException e) {
+                result = null;
+            }
+        }
+        return result;
+    }
 }
