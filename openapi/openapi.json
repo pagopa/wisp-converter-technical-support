@@ -13,8 +13,481 @@
   "tags" : [ {
     "description" : "API for read event and payload from table storage",
     "name" : "Technical Support"
+  }, {
+    "description" : "APIs for read event and payload from table storage",
+    "name" : "Technical Support - Enhanced features"
   } ],
   "paths" : {
+    "/experimental/monitoring/receipts/snapshot" : {
+      "get" : {
+        "operationId" : "extractReceiptSnapshot",
+        "parameters" : [ {
+          "description" : "Lower limit date",
+          "example" : "2024-03-18T12:00:00",
+          "in" : "query",
+          "name" : "dateFrom",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Lower limit date",
+            "example" : "2024-03-18T12:00:00"
+          }
+        }, {
+          "description" : "Upper limit date",
+          "example" : "2024-03-18T13:00:00",
+          "in" : "query",
+          "name" : "dateTo",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Upper limit date",
+            "example" : "2024-03-18T13:00:00"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReEventExperimentalResponse"
+                }
+              }
+            },
+            "description" : "Successfully retrieved event",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "tags" : [ "Technical Support - Enhanced features" ]
+      },
+      "parameters" : [ {
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "in" : "header",
+        "name" : "X-Request-Id",
+        "schema" : {
+          "type" : "string"
+        }
+      } ]
+    },
+    "/experimental/organizations/{organizationId}/iuv/{iuv}/details" : {
+      "get" : {
+        "operationId" : "findByIuv_1",
+        "parameters" : [ {
+          "description" : "Creditor institution identifier",
+          "example" : 12345678900,
+          "in" : "path",
+          "name" : "organizationId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Creditor institution identifier",
+            "example" : 12345678900
+          }
+        }, {
+          "description" : "IUV payment code",
+          "example" : 982273480765907,
+          "in" : "path",
+          "name" : "iuv",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "IUV payment code",
+            "example" : 982273480765907
+          }
+        }, {
+          "description" : "Lower limit date",
+          "example" : "2024-03-18",
+          "in" : "query",
+          "name" : "dateFrom",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Lower limit date",
+            "example" : "2024-03-18"
+          }
+        }, {
+          "description" : "Upper limit date",
+          "example" : "2024-03-18",
+          "in" : "query",
+          "name" : "dateTo",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Upper limit date",
+            "example" : "2024-03-18"
+          }
+        }, {
+          "description" : "Show internal details of whole process",
+          "example" : false,
+          "in" : "query",
+          "name" : "showDetails",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "description" : "Show internal details of whole process",
+            "example" : false,
+            "default" : "false"
+          }
+        }, {
+          "description" : "Show data in a compact form, reducing to essential information",
+          "example" : true,
+          "in" : "query",
+          "name" : "showCompactForm",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "description" : "Show data in a compact form, reducing to essential information",
+            "example" : true,
+            "default" : "true"
+          }
+        }, {
+          "description" : "Show request and response payloads in INTERFACE events",
+          "example" : true,
+          "in" : "query",
+          "name" : "showPayloads",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "description" : "Show request and response payloads in INTERFACE events",
+            "example" : true,
+            "default" : "true"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReEventExperimentalResponse"
+                }
+              }
+            },
+            "description" : "Successfully retrieved event",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "tags" : [ "Technical Support - Enhanced features" ]
+      },
+      "parameters" : [ {
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "in" : "header",
+        "name" : "X-Request-Id",
+        "schema" : {
+          "type" : "string"
+        }
+      } ]
+    },
+    "/experimental/organizations/{organizationId}/iuv/{iuv}/status" : {
+      "get" : {
+        "operationId" : "findStatusByIuv",
+        "parameters" : [ {
+          "description" : "Creditor institution identifier",
+          "example" : 12345678900,
+          "in" : "path",
+          "name" : "organizationId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Creditor institution identifier",
+            "example" : 12345678900
+          }
+        }, {
+          "description" : "IUV payment code",
+          "example" : 982273480765907,
+          "in" : "path",
+          "name" : "iuv",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "IUV payment code",
+            "example" : 982273480765907
+          }
+        }, {
+          "description" : "Lower limit date",
+          "example" : "2024-03-18",
+          "in" : "query",
+          "name" : "dateFrom",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Lower limit date",
+            "example" : "2024-03-18"
+          }
+        }, {
+          "description" : "Upper limit date",
+          "example" : "2024-03-18",
+          "in" : "query",
+          "name" : "dateTo",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Upper limit date",
+            "example" : "2024-03-18"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReEventExperimentalResponse"
+                }
+              }
+            },
+            "description" : "Successfully retrieved event",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "tags" : [ "Technical Support - Enhanced features" ]
+      },
+      "parameters" : [ {
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "in" : "header",
+        "name" : "X-Request-Id",
+        "schema" : {
+          "type" : "string"
+        }
+      } ]
+    },
+    "/experimental/organizations/{organizationId}/notice-number/{noticeNumber}/details" : {
+      "get" : {
+        "operationId" : "findByNoticeNumber_1",
+        "parameters" : [ {
+          "description" : "Creditor institution identifier",
+          "example" : 12345678900,
+          "in" : "path",
+          "name" : "organizationId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Creditor institution identifier",
+            "example" : 12345678900
+          }
+        }, {
+          "description" : "Notice number payment code",
+          "example" : 982273480765907,
+          "in" : "path",
+          "name" : "noticeNumber",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Notice number payment code",
+            "example" : 982273480765907
+          }
+        }, {
+          "description" : "Lower limit date",
+          "example" : "2024-03-18",
+          "in" : "query",
+          "name" : "dateFrom",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Lower limit date",
+            "example" : "2024-03-18"
+          }
+        }, {
+          "description" : "Upper limit date",
+          "example" : "2024-03-18",
+          "in" : "query",
+          "name" : "dateTo",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Upper limit date",
+            "example" : "2024-03-18"
+          }
+        }, {
+          "description" : "Show internal details of whole process",
+          "example" : false,
+          "in" : "query",
+          "name" : "showDetails",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "description" : "Show internal details of whole process",
+            "example" : false,
+            "default" : "false"
+          }
+        }, {
+          "description" : "Show data in a compact form, reducing to essential information",
+          "example" : true,
+          "in" : "query",
+          "name" : "showCompactForm",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "description" : "Show data in a compact form, reducing to essential information",
+            "example" : true,
+            "default" : "true"
+          }
+        }, {
+          "description" : "Show request and response payloads in INTERFACE events",
+          "example" : true,
+          "in" : "query",
+          "name" : "showPayloads",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "description" : "Show request and response payloads in INTERFACE events",
+            "example" : true,
+            "default" : "true"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReEventExperimentalResponse"
+                }
+              }
+            },
+            "description" : "Successfully retrieved event",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "tags" : [ "Technical Support - Enhanced features" ]
+      },
+      "parameters" : [ {
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "in" : "header",
+        "name" : "X-Request-Id",
+        "schema" : {
+          "type" : "string"
+        }
+      } ]
+    },
+    "/experimental/session-id/{sessionId}/details" : {
+      "get" : {
+        "operationId" : "findBySessionId_1",
+        "parameters" : [ {
+          "description" : "...",
+          "example" : "12345678900_aa0518a9-194d-4de2-999f-e462c3746e24",
+          "in" : "path",
+          "name" : "sessionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "...",
+            "example" : "12345678900_aa0518a9-194d-4de2-999f-e462c3746e24"
+          }
+        }, {
+          "description" : "Lower limit date",
+          "example" : "2024-03-18",
+          "in" : "query",
+          "name" : "dateFrom",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Lower limit date",
+            "example" : "2024-03-18"
+          }
+        }, {
+          "description" : "Upper limit date",
+          "example" : "2024-03-18",
+          "in" : "query",
+          "name" : "dateTo",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Upper limit date",
+            "example" : "2024-03-18"
+          }
+        }, {
+          "description" : "Show internal details of whole process",
+          "example" : false,
+          "in" : "query",
+          "name" : "showDetails",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "description" : "Show internal details of whole process",
+            "example" : false,
+            "default" : "false"
+          }
+        }, {
+          "description" : "Show data in a compact form, reducing to essential information",
+          "example" : true,
+          "in" : "query",
+          "name" : "showCompactForm",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "description" : "Show data in a compact form, reducing to essential information",
+            "example" : true,
+            "default" : "true"
+          }
+        }, {
+          "description" : "Show request and response payloads in INTERFACE events",
+          "example" : true,
+          "in" : "query",
+          "name" : "showPayloads",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "description" : "Show request and response payloads in INTERFACE events",
+            "example" : true,
+            "default" : "true"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReEventExperimentalResponse"
+                }
+              }
+            },
+            "description" : "Successfully retrieved event",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "tags" : [ "Technical Support - Enhanced features" ]
+      },
+      "parameters" : [ {
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "in" : "header",
+        "name" : "X-Request-Id",
+        "schema" : {
+          "type" : "string"
+        }
+      } ]
+    },
     "/info" : {
       "get" : {
         "operationId" : "healthCheck",
@@ -43,74 +516,6 @@
         } ],
         "summary" : "Return OK if application is started",
         "tags" : [ "Home" ]
-      },
-      "parameters" : [ {
-        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
-        "in" : "header",
-        "name" : "X-Request-Id",
-        "schema" : {
-          "type" : "string"
-        }
-      } ]
-    },
-    "/operation-id/{operationId}" : {
-      "get" : {
-        "operationId" : "findByOperationId",
-        "parameters" : [ {
-          "description" : "Identificativo dell'operazione eseguita",
-          "example" : "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf",
-          "in" : "path",
-          "name" : "operationId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "description" : "Identificativo dell'operazione eseguita",
-            "example" : "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
-          }
-        }, {
-          "description" : "Data di ricerca DA",
-          "example" : "2024-03-18",
-          "in" : "query",
-          "name" : "dateFrom",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "description" : "Data di ricerca DA",
-            "example" : "2024-03-18"
-          }
-        }, {
-          "description" : "Data di ricerca A",
-          "example" : "2024-03-18",
-          "in" : "query",
-          "name" : "dateTo",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "description" : "Data di ricerca A",
-            "example" : "2024-03-18"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ReEventResponse"
-                }
-              }
-            },
-            "description" : "Successfully retrieved event",
-            "headers" : {
-              "X-Request-Id" : {
-                "description" : "This header identifies the call",
-                "schema" : {
-                  "type" : "string"
-                }
-              }
-            }
-          }
-        },
-        "tags" : [ "Technical Support" ]
       },
       "parameters" : [ {
         "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
@@ -167,30 +572,6 @@
             "type" : "string",
             "description" : "Upper limit date",
             "example" : "2024-03-18"
-          }
-        }, {
-          "description" : "Show internal details of whole process",
-          "example" : false,
-          "in" : "query",
-          "name" : "showDetails",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "default" : "false",
-            "description" : "Show internal details of whole process",
-            "example" : false
-          }
-        }, {
-          "description" : "Show data in a compact form, reducing to essential information",
-          "example" : true,
-          "in" : "query",
-          "name" : "showCompactForm",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "default" : "true",
-            "description" : "Show data in a compact form, reducing to essential information",
-            "example" : true
           }
         } ],
         "responses" : {
@@ -270,18 +651,6 @@
             "type" : "string",
             "description" : "Upper limit date",
             "example" : "2024-03-18"
-          }
-        }, {
-          "description" : "Show internal details of whole process",
-          "example" : true,
-          "in" : "query",
-          "name" : "showDetails",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "default" : "false",
-            "description" : "Show internal details of whole process",
-            "example" : true
           }
         } ],
         "responses" : {
@@ -400,16 +769,97 @@
           }
         }
       },
+      "PaymentFlow" : {
+        "type" : "object",
+        "properties" : {
+          "session_id" : {
+            "type" : "string"
+          },
+          "started_at" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "steps_details" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PaymentFlowStep"
+            }
+          }
+        },
+        "description" : "List of flows executed on certain payment position"
+      },
+      "PaymentFlowMetadata" : {
+        "type" : "object",
+        "properties" : {
+          "number_of_flows_found" : {
+            "type" : "integer",
+            "description" : "Number of total flow executed on certain payment position",
+            "format" : "int32",
+            "example" : 2
+          },
+          "search_filters" : {
+            "$ref" : "#/components/schemas/PaymentFlowSearchFilterMetadata"
+          },
+          "show_data_in_compact_form" : {
+            "type" : "boolean"
+          },
+          "show_internal_statuses_details" : {
+            "type" : "boolean"
+          },
+          "show_payloads_in_interface_statuses" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "PaymentFlowSearchFilterMetadata" : {
+        "type" : "object",
+        "properties" : {
+          "iuv" : {
+            "type" : "string"
+          },
+          "lower_bound_date" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "notice_number" : {
+            "type" : "string"
+          },
+          "session_id" : {
+            "type" : "string"
+          },
+          "upper_bound_date" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "PaymentFlowStep" : {
+        "type" : "object",
+        "properties" : {
+          "events" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ReEvent"
+            }
+          },
+          "started_at" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "step" : {
+            "type" : "string"
+          }
+        }
+      },
       "ReEvent" : {
         "type" : "object",
-        "description" : "Lista dei record trovati",
         "properties" : {
-          "businessProcess" : {
+          "business_process" : {
             "type" : "string",
             "description" : "Campo che identifica il processo di business",
             "example" : "nodoInviaRPT"
           },
-          "cartId" : {
+          "cart_id" : {
             "type" : "string",
             "description" : "Identificativo del carrello",
             "example" : "12345678900982273480765907-0001"
@@ -424,35 +874,35 @@
             "description" : "Identificativo del canale che eroga i servizi per il PSP",
             "example" : "60000000001_01"
           },
-          "domainId" : {
+          "domain_id" : {
             "type" : "string",
             "description" : "Id dell'EC",
             "example" : "12345678900"
           },
-          "eventCategory" : {
+          "event_category" : {
             "type" : "string",
-            "description" : "Data di inserimento evento",
-            "example" : "2024-03-18T09:04:27.42017Z",
+            "description" : "...",
+            "example" : "INTERFACE",
             "enum" : [ "INTERFACE", "INTERNAL" ]
           },
-          "executionTimeMs" : {
+          "execution_time" : {
             "type" : "integer",
             "description" : "HTTP execution time",
             "format" : "int64",
             "example" : 456
           },
-          "httpMethod" : {
+          "http_method" : {
             "type" : "string",
             "description" : "HTTP method",
             "example" : "POST"
           },
-          "httpStatusCode" : {
+          "http_status_code" : {
             "type" : "integer",
             "description" : "HTTP status",
             "format" : "int32",
             "example" : 200
           },
-          "httpUri" : {
+          "http_uri" : {
             "type" : "string",
             "description" : "HTTP URI",
             "example" : "https://api.platform.pagopa.it/nodo/nodo-per-psp/v1"
@@ -467,32 +917,38 @@
             "description" : "Informazioni generiche, es URI di chi ha chiamato o di chi sta chiamando",
             "example" : "https://api.platform.pagopa.it/nodo/nodo-per-psp/v1"
           },
+          "inserted_timestamp" : {
+            "type" : "string",
+            "description" : "Data di inserimento evento",
+            "format" : "date-time",
+            "example" : "2024-03-18T09:04:27.42017Z"
+          },
           "iuv" : {
             "type" : "string",
             "description" : "Identificativo univoco versamento",
             "example" : "982273480765907"
           },
-          "noticeNumber" : {
+          "notice_number" : {
             "type" : "string",
             "description" : "Numero avviso",
             "example" : "3982273480765907"
           },
-          "operationErrorCode" : {
+          "operation_error_code" : {
             "type" : "string",
             "description" : "Error code se stato Failed",
             "example" : "WIC-1000"
           },
-          "operationErrorDetail" : {
+          "operation_error_detail" : {
             "type" : "string",
             "description" : "Detail se stato Failed",
             "example" : "Error while parsing payload. {0}"
           },
-          "operationErrorLine" : {
+          "operation_error_line" : {
             "type" : "string",
             "description" : "Title se stato Failed",
             "example" : "Generic parsing error"
           },
-          "operationId" : {
+          "operation_id" : {
             "type" : "string",
             "description" : "Identificativo dell'operazione eseguita",
             "example" : "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
@@ -502,7 +958,7 @@
             "description" : "Esito dell'operazione eseguita. Esempio: SEND, SEND_FAILURE, RECEIVED, RECEIVED_FAILURE, NEVER_RECEIVED, EXECUTED_INTERNAL_STEP",
             "example" : "OK"
           },
-          "paymentToken" : {
+          "payment_token" : {
             "type" : "string",
             "description" : "Numero univoco del pagamento",
             "example" : "AABB123"
@@ -512,27 +968,27 @@
             "description" : "Id del prestatore servizi di pagamento",
             "example" : "60000000001"
           },
-          "requestHeaders" : {
+          "request_headers" : {
             "type" : "string",
             "description" : "HTTP headers",
             "example" : "Accept-Encoding :[\"gzip, deflate, br\"]"
           },
-          "requestPayload" : {
+          "request_payload" : {
             "type" : "string",
             "description" : "HTTP payload compress GZIP",
             "example" : "abadasdbasbdasd"
           },
-          "responseHeaders" : {
+          "response_headers" : {
             "type" : "string",
             "description" : "HTTP headers",
             "example" : "Accept-Encoding :[\"gzip, deflate, br\"]"
           },
-          "responsePayload" : {
+          "response_payload" : {
             "type" : "string",
             "description" : "HTTP payload compress GZIP",
             "example" : "abadasdbasbdasd"
           },
-          "sessionId" : {
+          "session_id" : {
             "type" : "string",
             "description" : "Identificativo dell'operazione asincrona giÃ  eseguita",
             "example" : "982273480765907"
@@ -546,6 +1002,21 @@
             "type" : "string",
             "description" : "Stato dell'RPT o del Carrello se la categoriaEvento Ã¨ INTERN, altrienti Ã¨ null",
             "example" : "EXTRACTED_DATA_FROM_RPT"
+          }
+        }
+      },
+      "ReEventExperimentalResponse" : {
+        "type" : "object",
+        "properties" : {
+          "flows" : {
+            "type" : "array",
+            "description" : "List of flows executed on certain payment position",
+            "items" : {
+              "$ref" : "#/components/schemas/PaymentFlow"
+            }
+          },
+          "metadata" : {
+            "$ref" : "#/components/schemas/PaymentFlowMetadata"
           }
         }
       },
