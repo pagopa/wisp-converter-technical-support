@@ -197,7 +197,7 @@ public class ExperimentalService {
                 String paymentDomainId = paymentsUniqueID.getDomainId();
                 String paymentIuv = paymentsUniqueID.getCode();
                 String paymentCcp = paymentsUniqueID.getCcp();
-                if (paymentCcp == null || "n/a".equals(paymentCcp)) {
+                if (paymentCcp == null || "n/a".equalsIgnoreCase(paymentCcp)) {
                     paymentCcp = "na";
                 }
 
