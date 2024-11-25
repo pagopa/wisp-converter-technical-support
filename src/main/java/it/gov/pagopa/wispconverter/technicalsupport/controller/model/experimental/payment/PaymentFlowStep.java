@@ -1,8 +1,9 @@
-package it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental;
+package it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.payment;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.ReEvent;
 import lombok.*;
 
 import java.time.Instant;
@@ -14,17 +15,17 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PaymentFlow {
+public class PaymentFlowStep {
 
     @Schema(description = "")
-    @JsonProperty("session_id")
-    private String sessionId;
+    @JsonProperty("step")
+    private String step;
 
     @Schema(description = "")
     @JsonProperty("started_at")
     private Instant startedAt;
 
     @Schema(description = "")
-    @JsonProperty("steps_details")
-    private List<PaymentFlowStep> stepsDetails;
+    @JsonProperty("events")
+    private List<ReEvent> events;
 }

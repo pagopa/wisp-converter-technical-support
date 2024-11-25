@@ -5,12 +5,11 @@ import it.gov.pagopa.wispconverter.technicalsupport.controller.mapper.ReEventDat
 import it.gov.pagopa.wispconverter.technicalsupport.controller.mapper.ReEventMapper;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.EventCategoryEnum;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.ReEvent;
-import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.PaymentFlow;
-import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.PaymentFlowDetail;
-import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.PaymentFlowStatus;
-import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.PaymentFlowStep;
-import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.ReceiptStatusSnapshotResponse;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.ReceiptsStatusSnapshot;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.payment.PaymentFlow;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.payment.PaymentFlowDetail;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.payment.PaymentFlowStatus;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.payment.PaymentFlowStep;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.RTRepository;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.ReEventDataExplorerRepository;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.ReEventExperimentalRepository;
@@ -162,7 +161,13 @@ public class ExperimentalService {
         return List.of(convertEventsToPaymentFlow(reEvents, sessionId, showCompactForm, showPayloads));
     }
 
-
+    /**
+     * @param dateFromAsLocalDate
+     * @param dateToAsLocalDate
+     * @param organization
+     * @param iuv
+     * @return
+     */
     public List<PaymentFlowStatus> getPaymentStatusFindByIuv(LocalDate dateFromAsLocalDate,
                                                              LocalDate dateToAsLocalDate,
                                                              String organization,
@@ -192,7 +197,7 @@ public class ExperimentalService {
                 String paymentDomainId = paymentsUniqueID.getDomainId();
                 String paymentIuv = paymentsUniqueID.getCode();
                 String paymentCcp = paymentsUniqueID.getCcp();
-                if (paymentCcp == null) {
+                if (paymentCcp == null || "n/a".equals(paymentCcp)) {
                     paymentCcp = "na";
                 }
 
@@ -214,25 +219,23 @@ public class ExperimentalService {
         return paymentFlows;
     }
 
+    /**
+     * @param dateFromAsLocalDateTime
+     * @param dateToAsLocalDateTime
+     * @return
+     */
+    public List<ReceiptsStatusSnapshot> extractReceiptSnapshot(LocalDateTime dateFromAsLocalDateTime, LocalDateTime dateToAsLocalDateTime) {
 
-    public ReceiptStatusSnapshotResponse extractReceiptSnapshot(LocalDateTime dateFromAsLocalDateTime, LocalDateTime dateToAsLocalDateTime) {
-
-        String dateFrom = CommonUtility.timestampFromInstant(dateFromAsLocalDateTime);
-        String dateTo = CommonUtility.timestampFromInstant(dateToAsLocalDateTime);
+        String dateFrom = CommonUtility.timestampFromInstant(dateFromAsLocalDateTime.minusHours(1));
+        String dateTo = CommonUtility.timestampFromInstant(dateToAsLocalDateTime.minusHours(1));
 
         Set<RTGroupedByStatusEntity> rtCountByStatus = rtRepository.findByTimestampGroupByStatus(dateFrom, dateTo);
-        List<ReceiptsStatusSnapshot> snapshotComponents = rtCountByStatus.stream()
+        return rtCountByStatus.stream()
                 .map(entity -> ReceiptsStatusSnapshot.builder()
                         .status(entity.getReceiptStatus())
                         .count(entity.getEventStatusCount())
                         .build())
                 .toList();
-
-        return ReceiptStatusSnapshotResponse.builder()
-                .snapshot(snapshotComponents)
-                .lowerBound(dateFromAsLocalDateTime)
-                .upperBound(dateToAsLocalDateTime)
-                .build();
     }
 
     private PaymentFlowDetail extractPaymentFlowDetail(List<ReEvent> events, String domainId, String iuv) {

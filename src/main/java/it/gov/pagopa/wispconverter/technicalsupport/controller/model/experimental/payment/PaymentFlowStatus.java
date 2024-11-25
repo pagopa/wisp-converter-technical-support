@@ -1,4 +1,4 @@
-package it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental;
+package it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.payment;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,11 +1,10 @@
-package it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring;
-
+package it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.payment;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Builder
@@ -14,14 +13,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ReceiptStatusSnapshotResponse {
+public class PaymentFlowStatusResponse {
 
     @JsonProperty("lower_bound_date")
-    private LocalDateTime lowerBoundDate;
+    private LocalDate lowerBoundDate;
 
     @JsonProperty("upper_bound_date")
-    private LocalDateTime upperBoundDate;
+    private LocalDate upperBoundDate;
 
-    @JsonProperty("snapshot")
-    private List<ReceiptsStatusSnapshot> snapshot;
+    @JsonProperty("payments")
+    private List<PaymentFlowStatus> paymentStatuses;
 }
