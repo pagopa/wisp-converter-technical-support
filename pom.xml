@@ -13,7 +13,7 @@
 
     <groupId>it.gov.pagopa</groupId>
     <artifactId>wisp-converter-technical-support</artifactId>
-    <version>0.2.1-4-feat-flow-analysis-enhancements</version>
+    <version>0.2.1-5-feat-flow-analysis-enhancements</version>
     <name>pagoPA WISP Converter Technical support</name>
     <description>A service that permits to handle converted WISP requests for technical support</description>
 
