@@ -3,10 +3,10 @@ package it.gov.pagopa.wispconverter.technicalsupport.service;
 import com.azure.cosmos.models.PartitionKey;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.mapper.ReEventDataExplorerMapper;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.mapper.ReEventMapper;
-import it.gov.pagopa.wispconverter.technicalsupport.controller.model.EventCategoryEnum;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.EventCategory;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.ReEvent;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.PendingReceipt;
-import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.PendingReceiptsRequest;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.PendingReceiptsFilterRequest;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.ReceiptsStatusSnapshot;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.payment.*;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.RTRepository;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ExperimentalService {
+public class EnhancedFeaturesService {
 
     private final ReEventExperimentalRepository reEventRepository;
 
@@ -222,7 +222,7 @@ public class ExperimentalService {
     }
 
 
-    public List<PendingReceipt> extractPendingReceipts(PendingReceiptsRequest request) {
+    public List<PendingReceipt> extractPendingReceipts(PendingReceiptsFilterRequest request) {
 
         List<PendingReceipt> pendingReceipts = new LinkedList<>();
         String dateTimeFrom = CommonUtility.timestampFromInstant(request.getLowerBoundDate().minusHours(1));
@@ -292,7 +292,7 @@ public class ExperimentalService {
             String key = entrySet.getKey();
             List<ReEvent> eventsExtracted = entrySet.getValue();
             List<ReEvent> interfaceEvents = eventsExtracted.stream()
-                    .filter(event -> EventCategoryEnum.INTERFACE.equals(event.getEventCategory()))
+                    .filter(event -> EventCategory.INTERFACE.equals(event.getEventCategory()))
                     .toList();
 
             String outcome;

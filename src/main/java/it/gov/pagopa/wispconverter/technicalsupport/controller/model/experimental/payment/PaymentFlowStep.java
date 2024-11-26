@@ -17,15 +17,15 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PaymentFlowStep {
 
-    @Schema(description = "")
+    @Schema(example = "redirect", description = "The executed macro-step of the payment flow, containing several micro-steps")
     @JsonProperty("step")
     private String step;
 
-    @Schema(description = "")
+    @Schema(example = "2024-01-01T12:00:00", description = "The date on which the payment flow step is executed")
     @JsonProperty("started_at")
     private Instant startedAt;
 
-    @Schema(description = "")
+    @Schema(description = "The list of micro-steps contained by payment flow step")
     @JsonProperty("events")
     private List<ReEvent> events;
 }

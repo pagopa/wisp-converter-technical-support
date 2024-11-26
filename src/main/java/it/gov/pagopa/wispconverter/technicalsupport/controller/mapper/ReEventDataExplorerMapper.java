@@ -1,7 +1,7 @@
 package it.gov.pagopa.wispconverter.technicalsupport.controller.mapper;
 
 import com.microsoft.azure.kusto.data.KustoResultSetTable;
-import it.gov.pagopa.wispconverter.technicalsupport.controller.model.EventCategoryEnum;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.EventCategory;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.ReEvent;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.model.ReEventDataExplorerEntity;
 import it.gov.pagopa.wispconverter.technicalsupport.util.CommonUtility;
@@ -55,7 +55,7 @@ public abstract class ReEventDataExplorerMapper {
                 .businessProcess(requestEvent.getTipoEvento())
                 .operationId(requestEvent.getOperationId())
                 .insertedTimestamp(requestTimestamp.atZone(java.time.ZoneId.of("Europe/Rome")).toInstant())
-                .eventCategory(EventCategoryEnum.INTERFACE)
+                .eventCategory(EventCategory.INTERFACE)
                 .executionTimeMs(responseEvent != null ? responseEvent.getInsertedTimestamp().toEpochMilli() - requestTimestamp.toEpochMilli() : -1)
                 .status("NDP_STEP_PROCESSED")
                 .requestPayload(CommonUtility.nullify(requestPayload))

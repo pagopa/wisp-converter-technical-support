@@ -15,14 +15,14 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PendingReceiptsRequest {
+public class PendingReceiptsFilterRequest {
 
-    @Schema(example = "2024-01-01T12:00:00", description = "Lower limit date time (in yyyy-MM-ddThh:mm:ss) in 'Europe/Rome' timezone", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(example = "2024-01-01T12:00:00", description = "The lower limit of the date slot in 'Europe/Rome' timezone, used as delimiter for the search time (in yyyy-MM-ddThh:mm:ss)", requiredMode = Schema.RequiredMode.REQUIRED)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonProperty(value = "lower_bound_date", required = true)
     private LocalDateTime lowerBoundDate;
 
-    @Schema(example = "2024-01-01T12:00:00", description = "Upper limit date time (in yyyy-MM-ddThh:mm:ss) in 'Europe/Rome' timezone", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(example = "2024-01-01T12:00:00", description = "The upper limit of the date slot in 'Europe/Rome' timezone, used as delimiter for the search time (in yyyy-MM-ddThh:mm:ss)", requiredMode = Schema.RequiredMode.REQUIRED)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonProperty(value = "upper_bound_date", required = true)
     private LocalDateTime upperBoundDate;
@@ -31,7 +31,7 @@ public class PendingReceiptsRequest {
     @JsonProperty(value = "creditor_institution", required = true)
     private String creditorInstitution;
 
-    @Schema(description = "The list of IUV payment codes to be used as a search filter", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(description = "The list of IUV payment codes to be used as a search filter. They can be null if a search on whole creditor institution is required", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @JsonProperty(value = "iuvs")
     private Set<String> iuvs;
 }
