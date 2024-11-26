@@ -41,7 +41,10 @@ public class ExperimentalService {
 
     private final ReEventDataExplorerMapper reEventDataExplorerMapper;
 
-    public List<ReEvent> findByNoticeNumber(LocalDate dateFromAsLocalDate, LocalDate dateToAsLocalDate, String organization, String noticeNumber) {
+    public List<ReEvent> findByNoticeNumber(LocalDate dateFromAsLocalDate,
+                                            LocalDate dateToAsLocalDate,
+                                            String organization,
+                                            String noticeNumber) {
 
         String dateFrom = CommonUtility.partitionKeyFromInstant(dateFromAsLocalDate);
         String dateTo = CommonUtility.partitionKeyFromInstant(dateToAsLocalDate);
@@ -64,7 +67,9 @@ public class ExperimentalService {
         return extractReEventsFromWispDismantling(dateFrom, dateTo, sessionIds, true);
     }
 
-    public List<ReEvent> findBySessionId(LocalDate dateFromAsLocalDate, LocalDate dateToAsLocalDate, String sessionId) {
+    public List<ReEvent> findBySessionId(LocalDate dateFromAsLocalDate,
+                                         LocalDate dateToAsLocalDate,
+                                         String sessionId) {
 
         String dateFrom = CommonUtility.partitionKeyFromInstant(dateFromAsLocalDate);
         String dateTo = CommonUtility.partitionKeyFromInstant(dateToAsLocalDate);
@@ -73,91 +78,67 @@ public class ExperimentalService {
     }
 
     /**
-     * @param dateFromAsLocalDate
-     * @param dateToAsLocalDate
      * @param organization
      * @param iuv
-     * @param showDetails
-     * @param showCompactForm
-     * @param showPayloads
+     * @param filters
      * @return
      */
-    public List<PaymentFlow> findByIuvEnhanced(LocalDate dateFromAsLocalDate,
-                                               LocalDate dateToAsLocalDate,
-                                               String organization,
+    public List<PaymentFlow> findByIuvEnhanced(String organization,
                                                String iuv,
-                                               boolean showDetails,
-                                               boolean showCompactForm,
-                                               boolean showPayloads) {
+                                               PaymentFlowsFilterRequest filters) {
 
-        String dateFrom = CommonUtility.partitionKeyFromInstant(dateFromAsLocalDate);
-        String dateTo = CommonUtility.partitionKeyFromInstant(dateToAsLocalDate);
+        String dateFrom = CommonUtility.partitionKeyFromInstant(filters.getLowerBoundDate());
+        String dateTo = CommonUtility.partitionKeyFromInstant(filters.getUpperBoundDate());
 
         Set<String> sessionIds = reEventRepository.findSessionIdByIuvAndDomainId(dateFrom, dateTo, organization, iuv);
 
         List<PaymentFlow> paymentFlows = new LinkedList<>();
         for (String sessionId : sessionIds) {
-            List<ReEvent> reEvents = extractReEventsFromBothStorage(dateFrom, dateTo, sessionId, showDetails);
-            paymentFlows.add(convertEventsToPaymentFlow(reEvents, sessionId, showCompactForm, showPayloads));
+            List<ReEvent> reEvents = extractReEventsFromBothStorage(dateFrom, dateTo, sessionId, filters.getShowDetails());
+            paymentFlows.add(convertEventsToPaymentFlow(reEvents, sessionId, filters.getShowCompactForm(), filters.getShowPayloads()));
         }
 
         return paymentFlows;
     }
 
     /**
-     * @param dateFromAsLocalDate
-     * @param dateToAsLocalDate
      * @param organization
      * @param noticeNumber
-     * @param showDetails
-     * @param showCompactForm
-     * @param showPayloads
+     * @param filters
      * @return
      */
-    public List<PaymentFlow> findByNoticeNumberEnhanced(LocalDate dateFromAsLocalDate,
-                                                        LocalDate dateToAsLocalDate,
-                                                        String organization,
+    public List<PaymentFlow> findByNoticeNumberEnhanced(String organization,
                                                         String noticeNumber,
-                                                        boolean showDetails,
-                                                        boolean showCompactForm,
-                                                        boolean showPayloads) {
+                                                        PaymentFlowsFilterRequest filters) {
 
-        String dateFrom = CommonUtility.partitionKeyFromInstant(dateFromAsLocalDate);
-        String dateTo = CommonUtility.partitionKeyFromInstant(dateToAsLocalDate);
+        String dateFrom = CommonUtility.partitionKeyFromInstant(filters.getLowerBoundDate());
+        String dateTo = CommonUtility.partitionKeyFromInstant(filters.getUpperBoundDate());
 
         Set<String> sessionIds = reEventRepository.findSessionIdByNoticeNumberAndDomainId(dateFrom, dateTo, organization, noticeNumber);
 
         List<PaymentFlow> paymentFlows = new LinkedList<>();
         for (String sessionId : sessionIds) {
-            List<ReEvent> reEvents = extractReEventsFromBothStorage(dateFrom, dateTo, sessionId, showDetails);
-            paymentFlows.add(convertEventsToPaymentFlow(reEvents, sessionId, showCompactForm, showPayloads));
+            List<ReEvent> reEvents = extractReEventsFromBothStorage(dateFrom, dateTo, sessionId, filters.getShowDetails());
+            paymentFlows.add(convertEventsToPaymentFlow(reEvents, sessionId, filters.getShowCompactForm(), filters.getShowPayloads()));
         }
 
         return paymentFlows;
     }
 
     /**
-     * @param dateFromAsLocalDate
-     * @param dateToAsLocalDate
      * @param sessionId
-     * @param showDetails
-     * @param showCompactForm
-     * @param showPayloads
+     * @param filters
      * @return
      */
-    public List<PaymentFlow> findBySessionIdEnhanced(LocalDate dateFromAsLocalDate,
-                                                     LocalDate dateToAsLocalDate,
-                                                     String sessionId,
-                                                     boolean showDetails,
-                                                     boolean showCompactForm,
-                                                     boolean showPayloads) {
+    public List<PaymentFlow> findBySessionIdEnhanced(String sessionId,
+                                                     PaymentFlowsFilterRequest filters) {
 
-        String dateFrom = CommonUtility.partitionKeyFromInstant(dateFromAsLocalDate);
-        String dateTo = CommonUtility.partitionKeyFromInstant(dateToAsLocalDate);
+        String dateFrom = CommonUtility.partitionKeyFromInstant(filters.getLowerBoundDate());
+        String dateTo = CommonUtility.partitionKeyFromInstant(filters.getUpperBoundDate());
 
-        List<ReEvent> reEvents = extractReEventsFromBothStorage(dateFrom, dateTo, sessionId, showDetails);
+        List<ReEvent> reEvents = extractReEventsFromBothStorage(dateFrom, dateTo, sessionId, filters.getShowDetails());
 
-        return List.of(convertEventsToPaymentFlow(reEvents, sessionId, showCompactForm, showPayloads));
+        return List.of(convertEventsToPaymentFlow(reEvents, sessionId, filters.getShowCompactForm(), filters.getShowPayloads()));
     }
 
     /**
@@ -225,7 +206,8 @@ public class ExperimentalService {
      * @param dateToAsLocalDateTime
      * @return
      */
-    public List<ReceiptsStatusSnapshot> extractReceiptSnapshot(LocalDateTime dateFromAsLocalDateTime, LocalDateTime dateToAsLocalDateTime) {
+    public List<ReceiptsStatusSnapshot> extractReceiptSnapshot(LocalDateTime dateFromAsLocalDateTime,
+                                                               LocalDateTime dateToAsLocalDateTime) {
 
         String dateFrom = CommonUtility.timestampFromInstant(dateFromAsLocalDateTime.minusHours(1));
         String dateTo = CommonUtility.timestampFromInstant(dateToAsLocalDateTime.minusHours(1));

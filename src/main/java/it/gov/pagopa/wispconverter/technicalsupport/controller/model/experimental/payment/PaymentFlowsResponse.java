@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ReEventExperimentalResponse {
+public class PaymentFlowsResponse {
 
     @Schema(description = "List of flows executed on certain payment position")
     @JsonProperty("flows")
