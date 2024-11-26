@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
@@ -71,6 +72,25 @@ public class CommonUtility {
                 .ofPattern(Constants.PATTERN_FORMAT)
                 .withZone(ZoneId.systemDefault())
                 .format(insertedTimestamp);
+    }
+
+    public static String timestampFromInstant(LocalDateTime insertedTimestamp) {
+        return insertedTimestamp == null ? null : DateTimeFormatter
+                .ofPattern(Constants.TIMESTAMP_PATTERN_FORMAT)
+                .withZone(ZoneId.systemDefault())
+                .format(insertedTimestamp);
+    }
+
+    public static String decodeBase64(String base64String) {
+        String decodedValue;
+        if (base64String == null) {
+            decodedValue = null;
+        } else if (base64String.isBlank()) {
+            decodedValue = "";
+        } else {
+            decodedValue = new String(Base64.getDecoder().decode(base64String));
+        }
+        return decodedValue;
     }
 
     public static String decompressGZip(String gzipContent) {

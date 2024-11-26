@@ -1,654 +1,1121 @@
 {
-  "openapi": "3.0.1",
-  "info": {
-    "description": "A service that permits to handle converted WISP requests for technical support",
-    "termsOfService": "https://www.pagopa.gov.it/",
-    "title": "wisp-converter-technical-support",
-    "version": "0.2.1-2-fix-migration-to-new-statuses"
+  "openapi" : "3.0.1",
+  "info" : {
+    "description" : "A service that permits to handle converted WISP requests for technical support",
+    "termsOfService" : "https://www.pagopa.gov.it/",
+    "title" : "wisp-converter-technical-support",
+    "version" : "0.2.1-7-feat-flow-analysis-enhancements"
   },
-  "servers": [
-    {
-      "url": "http://localhost",
-      "description": "Generated server url"
-    }
-  ],
-  "tags": [
-    {
-      "description": "API for read event and payload from table storage",
-      "name": "Technical Support"
-    }
-  ],
-  "paths": {
-    "/info": {
-      "get": {
-        "operationId": "healthCheck",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AppInfoResponse"
+  "servers" : [ {
+    "url" : "http://localhost",
+    "description" : "Generated server url"
+  } ],
+  "tags" : [ {
+    "description" : "API for read event and payload from table storage",
+    "name" : "Technical Support"
+  }, {
+    "description" : "APIs for read events and other data about WISP Dismantling process",
+    "name" : "Technical Support - Enhanced features"
+  } ],
+  "paths" : {
+    "/enhanced/monitoring/receipts/pending" : {
+      "parameters" : [ {
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "in" : "header",
+        "name" : "X-Request-Id",
+        "schema" : {
+          "type" : "string"
+        }
+      } ],
+      "post" : {
+        "description" : "Retrieve the list of pending receipt that could have not been sent to creditor institution",
+        "operationId" : "extractPendingReceipts",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PendingReceiptsRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReceiptsStatusSnapshotResponse"
                 }
               }
             },
-            "description": "OK.",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
+            "description" : "Successfully extracted data",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
                 }
               }
             }
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ],
-        "summary": "Return OK if application is started",
-        "tags": [
-          "Home"
-        ]
-      },
-      "parameters": [
-        {
-          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
-          "in": "header",
-          "name": "X-Request-Id",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ]
+        "summary" : "Get pending receipts",
+        "tags" : [ "Technical Support - Enhanced features" ]
+      }
     },
-    "/operation-id/{operationId}": {
-      "get": {
-        "operationId": "findByOperationId",
-        "parameters": [
-          {
-            "description": "Identificativo dell'operazione eseguita",
-            "example": "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf",
-            "in": "path",
-            "name": "operationId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "Identificativo dell'operazione eseguita",
-              "example": "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
-            }
-          },
-          {
-            "description": "Data di ricerca DA",
-            "example": "2024-03-18",
-            "in": "query",
-            "name": "dateFrom",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "Data di ricerca DA",
-              "example": "2024-03-18"
-            }
-          },
-          {
-            "description": "Data di ricerca A",
-            "example": "2024-03-18",
-            "in": "query",
-            "name": "dateTo",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "Data di ricerca A",
-              "example": "2024-03-18"
-            }
+    "/enhanced/monitoring/receipts/snapshot" : {
+      "get" : {
+        "description" : "Retrieve a snapshot of receipt status at specific slot time.",
+        "operationId" : "extractReceiptSnapshot",
+        "parameters" : [ {
+          "description" : "Lower limit date time (in yyyy-MM-ddThh:mm:ss) in 'Europe/Rome' timezone",
+          "example" : "2024-01-01T12:00:00",
+          "in" : "query",
+          "name" : "dateFrom",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Lower limit date time (in yyyy-MM-ddThh:mm:ss) in 'Europe/Rome' timezone",
+            "example" : "2024-01-01T12:00:00"
           }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ReEventResponse"
+        }, {
+          "description" : "Upper limit date time (in yyyy-MM-ddThh:mm:ss) in 'Europe/Rome' timezone",
+          "example" : "2024-01-01T13:00:00",
+          "in" : "query",
+          "name" : "dateTo",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Upper limit date time (in yyyy-MM-ddThh:mm:ss) in 'Europe/Rome' timezone",
+            "example" : "2024-01-01T13:00:00"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReceiptsStatusSnapshotResponse"
                 }
               }
             },
-            "description": "Successfully retrieved event",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
+            "description" : "Successfully extracted snapshot",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
                 }
               }
             }
           }
         },
-        "tags": [
-          "Technical Support"
-        ]
+        "summary" : "Get snapshot of receipt status",
+        "tags" : [ "Technical Support - Enhanced features" ]
       },
-      "parameters": [
-        {
-          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
-          "in": "header",
-          "name": "X-Request-Id",
-          "schema": {
-            "type": "string"
-          }
+      "parameters" : [ {
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "in" : "header",
+        "name" : "X-Request-Id",
+        "schema" : {
+          "type" : "string"
         }
-      ]
+      } ]
     },
-    "/organizations/{organizationId}/iuv/{iuv}": {
-      "get": {
-        "operationId": "findByIuv",
-        "parameters": [
-          {
-            "description": "Id dell'EC",
-            "example": 12345678900,
-            "in": "path",
-            "name": "organizationId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "Id dell'EC",
-              "example": 12345678900
-            }
-          },
-          {
-            "description": "Identificativo univoco del versamento",
-            "example": 982273480765907,
-            "in": "path",
-            "name": "iuv",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "Identificativo univoco del versamento",
-              "example": 982273480765907
-            }
-          },
-          {
-            "description": "Data di ricerca DA",
-            "example": "2024-03-18",
-            "in": "query",
-            "name": "dateFrom",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "Data di ricerca DA",
-              "example": "2024-03-18"
-            }
-          },
-          {
-            "description": "Data di ricerca A",
-            "example": "2024-03-18",
-            "in": "query",
-            "name": "dateTo",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "Data di ricerca A",
-              "example": "2024-03-18"
-            }
+    "/enhanced/organizations/{organizationId}/iuv/{iuv}/details" : {
+      "parameters" : [ {
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "in" : "header",
+        "name" : "X-Request-Id",
+        "schema" : {
+          "type" : "string"
+        }
+      } ],
+      "post" : {
+        "description" : "Retrieve the details of a payment searching by IUV, analyzing all its status and events.",
+        "operationId" : "findByIuv",
+        "parameters" : [ {
+          "description" : "The identifier of the creditor institution",
+          "example" : 12345678900,
+          "in" : "path",
+          "name" : "organizationId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "The identifier of the creditor institution",
+            "example" : 12345678900
           }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ReEventResponse"
+        }, {
+          "description" : "The IUV code of the payment",
+          "example" : "000000999900000",
+          "in" : "path",
+          "name" : "iuv",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "The IUV code of the payment",
+            "example" : "000000999900000"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "string",
+                "description" : "The filters to be applied on the request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentFlowsResponse"
                 }
               }
             },
-            "description": "Successfully retrieved event",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
+            "description" : "Successfully retrieved details",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
                 }
               }
             }
           }
         },
-        "tags": [
-          "Technical Support"
-        ]
-      },
-      "parameters": [
-        {
-          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
-          "in": "header",
-          "name": "X-Request-Id",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ]
+        "summary" : "Get payment details searching by IUV",
+        "tags" : [ "Technical Support - Enhanced features" ]
+      }
     },
-    "/organizations/{organizationId}/notice-number/{noticeNumber}": {
-      "get": {
-        "operationId": "findByNoticeNumber",
-        "parameters": [
-          {
-            "description": "Id dell'EC",
-            "example": 12345678900,
-            "in": "path",
-            "name": "organizationId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "Id dell'EC",
-              "example": 12345678900
-            }
-          },
-          {
-            "description": "Numero avviso",
-            "example": 3982273480765907,
-            "in": "path",
-            "name": "noticeNumber",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "Numero avviso",
-              "example": 3982273480765907
-            }
-          },
-          {
-            "description": "Data di ricerca DA",
-            "example": "2024-03-18",
-            "in": "query",
-            "name": "dateFrom",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "Data di ricerca DA",
-              "example": "2024-03-18"
-            }
-          },
-          {
-            "description": "Data di ricerca A",
-            "example": "2024-03-18",
-            "in": "query",
-            "name": "dateTo",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "Data di ricerca A",
-              "example": "2024-03-18"
-            }
+    "/enhanced/organizations/{organizationId}/iuv/{iuv}/status" : {
+      "get" : {
+        "description" : "Retrieve the status of a payment, analyzing also the status fo the receipt.",
+        "operationId" : "findStatusByIuv",
+        "parameters" : [ {
+          "description" : "Creditor institution identifier",
+          "example" : 12345678900,
+          "in" : "path",
+          "name" : "organizationId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Creditor institution identifier",
+            "example" : 12345678900
           }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ReEventResponse"
+        }, {
+          "description" : "IUV payment code",
+          "example" : 982273480765907,
+          "in" : "path",
+          "name" : "iuv",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "IUV payment code",
+            "example" : 982273480765907
+          }
+        }, {
+          "description" : "Lower limit date (in yyyy-MM-dd)",
+          "example" : "2024-01-01",
+          "in" : "query",
+          "name" : "dateFrom",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Lower limit date (in yyyy-MM-dd)",
+            "example" : "2024-01-01"
+          }
+        }, {
+          "description" : "Upper limit date (in yyyy-MM-dd)",
+          "example" : "2024-01-01",
+          "in" : "query",
+          "name" : "dateTo",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Upper limit date (in yyyy-MM-dd)",
+            "example" : "2024-01-01"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentFlowStatusResponse"
                 }
               }
             },
-            "description": "Successfully retrieved event",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
+            "description" : "Successfully retrieved payment status",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
                 }
               }
             }
           }
         },
-        "tags": [
-          "Technical Support"
-        ]
+        "summary" : "Get payment status searching by IUV",
+        "tags" : [ "Technical Support - Enhanced features" ]
       },
-      "parameters": [
-        {
-          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
-          "in": "header",
-          "name": "X-Request-Id",
-          "schema": {
-            "type": "string"
-          }
+      "parameters" : [ {
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "in" : "header",
+        "name" : "X-Request-Id",
+        "schema" : {
+          "type" : "string"
         }
-      ]
+      } ]
     },
-    "/session-id/{sessionId}": {
-      "get": {
-        "operationId": "findBySessionId",
-        "parameters": [
-          {
-            "description": "Session identifier of the flow",
-            "example": "12345678900_aa0518a9-194d-4de2-999f-e462c3746e24",
-            "in": "path",
-            "name": "sessionId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "Session identifier of the flow",
-              "example": "12345678900_aa0518a9-194d-4de2-999f-e462c3746e24"
-            }
-          },
-          {
-            "description": "Data di ricerca DA",
-            "example": "2024-03-18",
-            "in": "query",
-            "name": "dateFrom",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "Data di ricerca DA",
-              "example": "2024-03-18"
-            }
-          },
-          {
-            "description": "Data di ricerca A",
-            "example": "2024-03-18",
-            "in": "query",
-            "name": "dateTo",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "Data di ricerca A",
-              "example": "2024-03-18"
-            }
+    "/enhanced/organizations/{organizationId}/notice-number/{noticeNumber}/details" : {
+      "parameters" : [ {
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "in" : "header",
+        "name" : "X-Request-Id",
+        "schema" : {
+          "type" : "string"
+        }
+      } ],
+      "post" : {
+        "description" : "Retrieve the details of a payment searching by notice number, analyzing all its status and events.",
+        "operationId" : "findByNoticeNumber",
+        "parameters" : [ {
+          "description" : "Creditor institution identifier",
+          "example" : 12345678900,
+          "in" : "path",
+          "name" : "organizationId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Creditor institution identifier",
+            "example" : 12345678900
           }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ReEventResponse"
+        }, {
+          "description" : "Notice number payment code",
+          "example" : 982273480765907,
+          "in" : "path",
+          "name" : "noticeNumber",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Notice number payment code",
+            "example" : 982273480765907
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "string",
+                "description" : "The filters to be applied on the request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentFlowsResponse"
                 }
               }
             },
-            "description": "Successfully retrieved event",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
+            "description" : "Successfully retrieved details",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
                 }
               }
             }
           }
         },
-        "tags": [
-          "Technical Support"
-        ]
-      },
-      "parameters": [
-        {
-          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
-          "in": "header",
-          "name": "X-Request-Id",
-          "schema": {
-            "type": "string"
-          }
+        "summary" : "Get payment details searching by notice number",
+        "tags" : [ "Technical Support - Enhanced features" ]
+      }
+    },
+    "/enhanced/session-id/{sessionId}/details" : {
+      "parameters" : [ {
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "in" : "header",
+        "name" : "X-Request-Id",
+        "schema" : {
+          "type" : "string"
         }
-      ]
+      } ],
+      "post" : {
+        "description" : "Retrieve the details of a payment searching by session ID, analyzing all its status and events.",
+        "operationId" : "findBySessionId",
+        "parameters" : [ {
+          "description" : "The session ID related to the single payment flow",
+          "example" : "12345678900_aa0518a9-194d-4de2-999f-e462c3746e24",
+          "in" : "path",
+          "name" : "sessionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "The session ID related to the single payment flow",
+            "example" : "12345678900_aa0518a9-194d-4de2-999f-e462c3746e24"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "string",
+                "description" : "The filters to be applied on the request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentFlowsResponse"
+                }
+              }
+            },
+            "description" : "Successfully retrieved event",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "summary" : "Get payment details searching by session ID",
+        "tags" : [ "Technical Support - Enhanced features" ]
+      }
+    },
+    "/info" : {
+      "get" : {
+        "operationId" : "healthCheck",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AppInfoResponse"
+                }
+              }
+            },
+            "description" : "OK.",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        } ],
+        "summary" : "Return OK if application is started",
+        "tags" : [ "Home" ]
+      },
+      "parameters" : [ {
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "in" : "header",
+        "name" : "X-Request-Id",
+        "schema" : {
+          "type" : "string"
+        }
+      } ]
+    },
+    "/organizations/{organizationId}/iuv/{iuv}" : {
+      "get" : {
+        "operationId" : "findByIuv_1",
+        "parameters" : [ {
+          "description" : "Creditor institution identifier",
+          "example" : 12345678900,
+          "in" : "path",
+          "name" : "organizationId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Creditor institution identifier",
+            "example" : 12345678900
+          }
+        }, {
+          "description" : "IUV payment code",
+          "example" : 982273480765907,
+          "in" : "path",
+          "name" : "iuv",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "IUV payment code",
+            "example" : 982273480765907
+          }
+        }, {
+          "description" : "Lower limit date",
+          "example" : "2024-03-18",
+          "in" : "query",
+          "name" : "dateFrom",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Lower limit date",
+            "example" : "2024-03-18"
+          }
+        }, {
+          "description" : "Upper limit date",
+          "example" : "2024-03-18",
+          "in" : "query",
+          "name" : "dateTo",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Upper limit date",
+            "example" : "2024-03-18"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReEventResponse"
+                }
+              }
+            },
+            "description" : "Successfully retrieved event",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "tags" : [ "Technical Support" ]
+      },
+      "parameters" : [ {
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "in" : "header",
+        "name" : "X-Request-Id",
+        "schema" : {
+          "type" : "string"
+        }
+      } ]
+    },
+    "/organizations/{organizationId}/notice-number/{noticeNumber}" : {
+      "get" : {
+        "operationId" : "findByNoticeNumber_1",
+        "parameters" : [ {
+          "description" : "Creditor institution identifier",
+          "example" : 12345678900,
+          "in" : "path",
+          "name" : "organizationId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Creditor institution identifier",
+            "example" : 12345678900
+          }
+        }, {
+          "description" : "NAV payment code",
+          "example" : 3982273480765907,
+          "in" : "path",
+          "name" : "noticeNumber",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "NAV payment code",
+            "example" : 3982273480765907
+          }
+        }, {
+          "description" : "Lower limit date",
+          "example" : "2024-03-18",
+          "in" : "query",
+          "name" : "dateFrom",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Lower limit date",
+            "example" : "2024-03-18"
+          }
+        }, {
+          "description" : "Upper limit date",
+          "example" : "2024-03-18",
+          "in" : "query",
+          "name" : "dateTo",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Upper limit date",
+            "example" : "2024-03-18"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReEventResponse"
+                }
+              }
+            },
+            "description" : "Successfully retrieved event",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "tags" : [ "Technical Support" ]
+      },
+      "parameters" : [ {
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "in" : "header",
+        "name" : "X-Request-Id",
+        "schema" : {
+          "type" : "string"
+        }
+      } ]
+    },
+    "/session-id/{sessionId}" : {
+      "get" : {
+        "operationId" : "findBySessionId_1",
+        "parameters" : [ {
+          "description" : "Session identifier of the flow",
+          "example" : "12345678900_aa0518a9-194d-4de2-999f-e462c3746e24",
+          "in" : "path",
+          "name" : "sessionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Session identifier of the flow",
+            "example" : "12345678900_aa0518a9-194d-4de2-999f-e462c3746e24"
+          }
+        }, {
+          "description" : "Data di ricerca DA",
+          "example" : "2024-03-18",
+          "in" : "query",
+          "name" : "dateFrom",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Data di ricerca DA",
+            "example" : "2024-03-18"
+          }
+        }, {
+          "description" : "Data di ricerca A",
+          "example" : "2024-03-18",
+          "in" : "query",
+          "name" : "dateTo",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "description" : "Data di ricerca A",
+            "example" : "2024-03-18"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReEventResponse"
+                }
+              }
+            },
+            "description" : "Successfully retrieved event",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "tags" : [ "Technical Support" ]
+      },
+      "parameters" : [ {
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "in" : "header",
+        "name" : "X-Request-Id",
+        "schema" : {
+          "type" : "string"
+        }
+      } ]
     }
   },
-  "components": {
-    "schemas": {
-      "AppInfoResponse": {
-        "type": "object",
-        "properties": {
-          "environment": {
-            "type": "string"
+  "components" : {
+    "schemas" : {
+      "AppInfoResponse" : {
+        "type" : "object",
+        "properties" : {
+          "environment" : {
+            "type" : "string"
           },
-          "name": {
-            "type": "string"
+          "name" : {
+            "type" : "string"
           },
-          "version": {
-            "type": "string"
+          "version" : {
+            "type" : "string"
           }
         }
       },
-      "ReEvent": {
-        "type": "object",
-        "description": "Lista dei record trovati",
-        "properties": {
-          "businessProcess": {
-            "type": "string",
-            "description": "Campo che identifica il processo di business",
-            "example": "nodoInviaRPT"
+      "PaymentFlow" : {
+        "type" : "object",
+        "properties" : {
+          "session_id" : {
+            "type" : "string"
           },
-          "callType": {
-            "type": "string",
-            "description": "Identifica il tipo di chiamata. Esempio: SERVER, CLIENT",
-            "example": "SERVER",
-            "enum": [
-              "SERVER",
-              "CLIENT"
-            ]
+          "started_at" : {
+            "type" : "string",
+            "format" : "date-time"
           },
-          "cartId": {
-            "type": "string",
-            "description": "Identificativo del carrello",
-            "example": "12345678900982273480765907-0001"
-          },
-          "ccp": {
-            "type": "string",
-            "description": "Codice contesto pagmaneto",
-            "example": "TEST_4178733642"
-          },
-          "channel": {
-            "type": "string",
-            "description": "Identificativo del canale che eroga i servizi per il PSP",
-            "example": "60000000001_01"
-          },
-          "clientOperationId": {
-            "type": "string",
-            "description": "Identificativo dell'operazione client eseguita",
-            "example": "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
-          },
-          "componente": {
-            "type": "string",
-            "description": "Identifica chi ha scritto l'evento. Esempio: WISP_CONVERTER",
-            "example": "WISP_CONVERTER",
-            "enum": [
-              "WISP_SOAP_CONVERTER",
-              "WISP_CONVERTER"
-            ]
-          },
-          "compressedPayload": {
-            "type": "string",
-            "description": "HTTP payload compress GZIP",
-            "example": "abadasdbasbdasd"
-          },
-          "compressedPayloadLength": {
-            "type": "integer",
-            "description": "HTTP payload compress length",
-            "format": "int32",
-            "example": 454
-          },
-          "domainId": {
-            "type": "string",
-            "description": "Id dell'EC",
-            "example": "12345678900"
-          },
-          "eventCategory": {
-            "type": "string",
-            "description": "Identifica se Ã¨ un evento ai morsetti, ovvero di interfaccia, o interno, come cambio stato. Esempio: INTERFACE, INTERN",
-            "example": "INTERFACE",
-            "enum": [
-              "INTERFACE",
-              "INTERNAL"
-            ]
-          },
-          "eventSubcategory": {
-            "type": "string",
-            "description": "Identifica il tipo di morsetto in base alla categoriaEvento. Esempio: REQ, RESP, INTERN",
-            "example": "RESP",
-            "enum": [
-              "REQ",
-              "RESP",
-              "INTERN"
-            ]
-          },
-          "executionTimeMs": {
-            "type": "integer",
-            "description": "HTTP execution time",
-            "format": "int64",
-            "example": 456
-          },
-          "httpCallRemoteAddress": {
-            "type": "string",
-            "description": "HTTP remote address",
-            "example": "127.0.0.1"
-          },
-          "httpHeaders": {
-            "type": "string",
-            "description": "HTTP headers",
-            "example": "Accept-Encoding :[\"gzip, deflate, br\"]"
-          },
-          "httpMethod": {
-            "type": "string",
-            "description": "HTTP method",
-            "example": "POST"
-          },
-          "httpStatusCode": {
-            "type": "integer",
-            "description": "HTTP status",
-            "format": "int32",
-            "example": 200
-          },
-          "httpUri": {
-            "type": "string",
-            "description": "HTTP URI",
-            "example": "https://api.platform.pagopa.it/nodo/nodo-per-psp/v1"
-          },
-          "id": {
-            "type": "string",
-            "description": "Id",
-            "example": "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
-          },
-          "info": {
-            "type": "string",
-            "description": "Informazioni generiche, es URI di chi ha chiamato o di chi sta chiamando",
-            "example": "https://api.platform.pagopa.it/nodo/nodo-per-psp/v1"
-          },
-          "insertedTimestamp": {
-            "type": "string",
-            "description": "Data di inserimento evento",
-            "format": "date-time",
-            "example": "2024-03-18T09:04:27.42017Z"
-          },
-          "iuv": {
-            "type": "string",
-            "description": "Identificativo univoco versamento",
-            "example": "982273480765907"
-          },
-          "noticeNumber": {
-            "type": "string",
-            "description": "Numero avviso",
-            "example": "3982273480765907"
-          },
-          "operationErrorCode": {
-            "type": "string",
-            "description": "Error code se stato Failed",
-            "example": "WIC-1000"
-          },
-          "operationErrorDetail": {
-            "type": "string",
-            "description": "Detail se stato Failed",
-            "example": "Error while parsing payload. {0}"
-          },
-          "operationErrorTitle": {
-            "type": "string",
-            "description": "Title se stato Failed",
-            "example": "Generic parsing error"
-          },
-          "operationId": {
-            "type": "string",
-            "description": "Identificativo dell'operazione eseguita",
-            "example": "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
-          },
-          "operationStatus": {
-            "type": "string",
-            "description": "Stato complessivo. Success|Failed",
-            "example": "Success"
-          },
-          "outcome": {
-            "type": "string",
-            "description": "Esito dell'operazione eseguita. Esempio: SEND, SEND_FAILURE, RECEIVED, RECEIVED_FAILURE, NEVER_RECEIVED, EXECUTED_INTERNAL_STEP",
-            "example": "SEND",
-            "enum": [
-              "SEND",
-              "SEND_FAILURE",
-              "RECEIVED",
-              "RECEIVED_FAILURE",
-              "NEVER_RECEIVED",
-              "EXECUTED_INTERNAL_STEP",
-              "EXCECUTED_INTERNAL_STEP"
-            ]
-          },
-          "paymentToken": {
-            "type": "string",
-            "description": "Numero univoco del pagamento",
-            "example": "AABB123"
-          },
-          "primitive": {
-            "type": "string",
-            "description": "Nome della primitiva",
-            "example": "nodoInviaRPT"
-          },
-          "psp": {
-            "type": "string",
-            "description": "Id del prestatore servizi di pagamento",
-            "example": "60000000001"
-          },
-          "requestId": {
-            "type": "string",
-            "description": "Request Id",
-            "example": "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
-          },
-          "sessionId": {
-            "type": "string",
-            "description": "Identificativo dell'operazione asincrona giÃ  eseguita",
-            "example": "982273480765907"
-          },
-          "station": {
-            "type": "string",
-            "description": "Identificativo della stazione che eroga i servizi per la PA",
-            "example": "11111111111_05"
-          },
-          "status": {
-            "type": "string",
-            "description": "Stato dell'RPT o del Carrello se la categoriaEvento Ã¨ INTERN, altrienti Ã¨ null",
-            "example": "EXTRACTED_DATA_FROM_RPT"
-          }
-        }
-      },
-      "ReEventResponse": {
-        "type": "object",
-        "properties": {
-          "count": {
-            "type": "integer",
-            "description": "Totale dei record trovati",
-            "format": "int32",
-            "example": 100
-          },
-          "data": {
-            "type": "array",
-            "description": "Lista dei record trovati",
-            "items": {
-              "$ref": "#/components/schemas/ReEvent"
+          "steps_details" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PaymentFlowStep"
             }
+          }
+        },
+        "description" : "List of flows executed on certain payment position"
+      },
+      "PaymentFlowDetail" : {
+        "type" : "object",
+        "properties" : {
+          "activate_payment_notice_v2" : {
+            "type" : "string"
+          },
+          "check_position" : {
+            "type" : "string"
+          },
+          "close_payment_v2" : {
+            "type" : "string"
+          },
+          "receipt_ko_send" : {
+            "type" : "string"
+          },
+          "receipt_ko_send_for_ecommerce_session_expired" : {
+            "type" : "string"
+          },
+          "receipt_ko_send_for_payment_token_expired" : {
+            "type" : "string"
+          },
+          "receipt_ko_send_for_rpt_expired" : {
+            "type" : "string"
+          },
+          "receipt_ok_send" : {
+            "type" : "string"
+          },
+          "redirect" : {
+            "type" : "string"
+          },
+          "rescheduled_receipt_send" : {
+            "type" : "string"
+          },
+          "send_payment_outcome_v2" : {
+            "type" : "string"
+          },
+          "trigger_primitive" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PaymentFlowMetadata" : {
+        "type" : "object",
+        "properties" : {
+          "number_of_flows_found" : {
+            "type" : "integer",
+            "description" : "Number of total flow executed on certain payment position",
+            "format" : "int32",
+            "example" : 2
+          },
+          "search_filters" : {
+            "$ref" : "#/components/schemas/PaymentFlowSearchFilterMetadata"
+          },
+          "show_data_in_compact_form" : {
+            "type" : "boolean"
+          },
+          "show_internal_statuses_details" : {
+            "type" : "boolean"
+          },
+          "show_payloads_in_interface_statuses" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "PaymentFlowSearchFilterMetadata" : {
+        "type" : "object",
+        "properties" : {
+          "iuv" : {
+            "type" : "string"
+          },
+          "lower_bound_date" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "notice_number" : {
+            "type" : "string"
+          },
+          "session_id" : {
+            "type" : "string"
+          },
+          "upper_bound_date" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "PaymentFlowStatus" : {
+        "type" : "object",
+        "properties" : {
+          "payment_details" : {
+            "$ref" : "#/components/schemas/PaymentFlowDetail"
+          },
+          "payment_identifier" : {
+            "$ref" : "#/components/schemas/PaymentIdentifier"
+          },
+          "payment_outcome" : {
+            "type" : "string"
+          },
+          "receipt_sending_status" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PaymentFlowStatusResponse" : {
+        "type" : "object",
+        "properties" : {
+          "lower_bound_date" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "payments" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PaymentFlowStatus"
+            }
+          },
+          "upper_bound_date" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "PaymentFlowStep" : {
+        "type" : "object",
+        "properties" : {
+          "events" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ReEvent"
+            }
+          },
+          "started_at" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "step" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PaymentFlowsResponse" : {
+        "type" : "object",
+        "properties" : {
+          "flows" : {
+            "type" : "array",
+            "description" : "List of flows executed on certain payment position",
+            "items" : {
+              "$ref" : "#/components/schemas/PaymentFlow"
+            }
+          },
+          "metadata" : {
+            "$ref" : "#/components/schemas/PaymentFlowMetadata"
+          }
+        }
+      },
+      "PaymentIdentifier" : {
+        "type" : "object",
+        "properties" : {
+          "ccp" : {
+            "type" : "string"
+          },
+          "domain_id" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "session_id" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PendingReceiptsRequest" : {
+        "required" : [ "creditor_institution", "lower_bound_date", "upper_bound_date" ],
+        "type" : "object",
+        "properties" : {
+          "creditor_institution" : {
+            "type" : "string",
+            "description" : "The identifier of the creditor institution",
+            "example" : "12345678901"
+          },
+          "iuvs" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "description" : "The list of IUV payment codes to be used as a search filter",
+            "items" : {
+              "type" : "string",
+              "description" : "The list of IUV payment codes to be used as a search filter"
+            }
+          },
+          "lower_bound_date" : {
+            "type" : "string",
+            "description" : "Lower limit date time (in yyyy-MM-ddThh:mm:ss) in 'Europe/Rome' timezone",
+            "format" : "date-time"
+          },
+          "upper_bound_date" : {
+            "type" : "string",
+            "description" : "Upper limit date time (in yyyy-MM-ddThh:mm:ss) in 'Europe/Rome' timezone",
+            "format" : "date-time"
+          }
+        }
+      },
+      "ReEvent" : {
+        "type" : "object",
+        "properties" : {
+          "business_process" : {
+            "type" : "string",
+            "description" : "Campo che identifica il processo di business",
+            "example" : "nodoInviaRPT"
+          },
+          "cart_id" : {
+            "type" : "string",
+            "description" : "Identificativo del carrello",
+            "example" : "12345678900982273480765907-0001"
+          },
+          "ccp" : {
+            "type" : "string",
+            "description" : "Codice contesto pagmaneto",
+            "example" : "TEST_4178733642"
+          },
+          "channel" : {
+            "type" : "string",
+            "description" : "Identificativo del canale che eroga i servizi per il PSP",
+            "example" : "60000000001_01"
+          },
+          "domain_id" : {
+            "type" : "string",
+            "description" : "Id dell'EC",
+            "example" : "12345678900"
+          },
+          "event_category" : {
+            "type" : "string",
+            "description" : "...",
+            "example" : "INTERFACE",
+            "enum" : [ "INTERFACE", "INTERNAL" ]
+          },
+          "execution_time" : {
+            "type" : "integer",
+            "description" : "HTTP execution time",
+            "format" : "int64",
+            "example" : 456
+          },
+          "http_method" : {
+            "type" : "string",
+            "description" : "HTTP method",
+            "example" : "POST"
+          },
+          "http_status_code" : {
+            "type" : "integer",
+            "description" : "HTTP status",
+            "format" : "int32",
+            "example" : 200
+          },
+          "http_uri" : {
+            "type" : "string",
+            "description" : "HTTP URI",
+            "example" : "https://api.platform.pagopa.it/nodo/nodo-per-psp/v1"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Id",
+            "example" : "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
+          },
+          "info" : {
+            "type" : "string",
+            "description" : "Informazioni generiche, es URI di chi ha chiamato o di chi sta chiamando",
+            "example" : "https://api.platform.pagopa.it/nodo/nodo-per-psp/v1"
+          },
+          "inserted_timestamp" : {
+            "type" : "string",
+            "description" : "Data di inserimento evento",
+            "format" : "date-time",
+            "example" : "2024-03-18T09:04:27.42017Z"
+          },
+          "iuv" : {
+            "type" : "string",
+            "description" : "Identificativo univoco versamento",
+            "example" : "982273480765907"
+          },
+          "notice_number" : {
+            "type" : "string",
+            "description" : "Numero avviso",
+            "example" : "3982273480765907"
+          },
+          "operation_error_code" : {
+            "type" : "string",
+            "description" : "Error code se stato Failed",
+            "example" : "WIC-1000"
+          },
+          "operation_error_detail" : {
+            "type" : "string",
+            "description" : "Detail se stato Failed",
+            "example" : "Error while parsing payload. {0}"
+          },
+          "operation_error_line" : {
+            "type" : "string",
+            "description" : "Title se stato Failed",
+            "example" : "Generic parsing error"
+          },
+          "operation_id" : {
+            "type" : "string",
+            "description" : "Identificativo dell'operazione eseguita",
+            "example" : "fcfcbe1e-987a-4914-8fd2-d1e7b67762bf"
+          },
+          "outcome" : {
+            "type" : "string",
+            "description" : "Esito dell'operazione eseguita. Esempio: SEND, SEND_FAILURE, RECEIVED, RECEIVED_FAILURE, NEVER_RECEIVED, EXECUTED_INTERNAL_STEP",
+            "example" : "OK"
+          },
+          "payment_token" : {
+            "type" : "string",
+            "description" : "Numero univoco del pagamento",
+            "example" : "AABB123"
+          },
+          "psp" : {
+            "type" : "string",
+            "description" : "Id del prestatore servizi di pagamento",
+            "example" : "60000000001"
+          },
+          "request_headers" : {
+            "type" : "string",
+            "description" : "HTTP headers",
+            "example" : "Accept-Encoding :[\"gzip, deflate, br\"]"
+          },
+          "request_payload" : {
+            "type" : "string",
+            "description" : "HTTP payload compress GZIP",
+            "example" : "abadasdbasbdasd"
+          },
+          "response_headers" : {
+            "type" : "string",
+            "description" : "HTTP headers",
+            "example" : "Accept-Encoding :[\"gzip, deflate, br\"]"
+          },
+          "response_payload" : {
+            "type" : "string",
+            "description" : "HTTP payload compress GZIP",
+            "example" : "abadasdbasbdasd"
+          },
+          "session_id" : {
+            "type" : "string",
+            "description" : "Identificativo dell'operazione asincrona giÃ  eseguita",
+            "example" : "982273480765907"
+          },
+          "station" : {
+            "type" : "string",
+            "description" : "Identificativo della stazione che eroga i servizi per la PA",
+            "example" : "11111111111_05"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Stato dell'RPT o del Carrello se la categoriaEvento Ã¨ INTERN, altrienti Ã¨ null",
+            "example" : "EXTRACTED_DATA_FROM_RPT"
+          }
+        },
+        "description" : "Lista dei record trovati"
+      },
+      "ReEventResponse" : {
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer",
+            "description" : "Totale dei record trovati",
+            "format" : "int32",
+            "example" : 100
+          },
+          "data" : {
+            "type" : "array",
+            "description" : "Lista dei record trovati",
+            "items" : {
+              "$ref" : "#/components/schemas/ReEvent"
+            }
+          }
+        }
+      },
+      "ReceiptsStatusSnapshot" : {
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "status" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ReceiptsStatusSnapshotResponse" : {
+        "type" : "object",
+        "properties" : {
+          "lower_bound_date" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "snapshot" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ReceiptsStatusSnapshot"
+            }
+          },
+          "upper_bound_date" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }
       }
     },
-    "securitySchemes": {
-      "ApiKey": {
-        "description": "The API key to access this function app.",
-        "in": "header",
-        "name": "Ocp-Apim-Subscription-Key",
-        "type": "apiKey"
+    "securitySchemes" : {
+      "ApiKey" : {
+        "description" : "The API key to access this function app.",
+        "in" : "header",
+        "name" : "Ocp-Apim-Subscription-Key",
+        "type" : "apiKey"
       }
     }
   }

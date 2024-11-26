@@ -14,9 +14,9 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReEventResponse {
 
-    @Schema(description = "Totale dei record trovati", example = "100")
+    @Schema(example = "2", description = "The number of total flow found on certain payment identifier")
     private int count;
 
-    @Schema(description = "Lista dei record trovati")
+    @Schema(description = "The list of flows executed on certain payment identifier")
     private List<ReEvent> data;
 }

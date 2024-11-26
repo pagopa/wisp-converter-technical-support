@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: ""
   image:
     repository: ghcr.io/pagopa/pagopa-wisp-converter-technical-support
-    tag: "0.2.1-2-fix-migration-to-new-statuses"
+    tag: "0.2.1-9-feat-flow-analysis-enhancements"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -70,6 +70,7 @@ microservice-chart:
     SERVICE_NAME: "pagopa-wisp-converter-technical-support"
     COSMOS_URI: "https://pagopa-d-weu-nodo-wispconv-cosmos-account.documents.azure.com:443/"
     COSMOS_READ_REGION: "West Europe"
+    DATAEXPLORER_URL: "https://pagopaddataexplorer.westeurope.kusto.windows.net"
   secretProvider:
     create: true
     envSecrets:
