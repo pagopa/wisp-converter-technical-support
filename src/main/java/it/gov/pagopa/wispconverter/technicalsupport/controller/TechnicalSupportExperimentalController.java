@@ -6,8 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.ReceiptStatusSnapshotResponse;
-import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.ReceiptsStatusSnapshot;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.*;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.payment.*;
 import it.gov.pagopa.wispconverter.technicalsupport.service.ExperimentalService;
 import lombok.RequiredArgsConstructor;
@@ -144,19 +143,31 @@ public class TechnicalSupportExperimentalController {
 
     @Operation(summary = "Get snapshot of receipt status", description = "Retrieve a snapshot of receipt status at specific slot time.", tags = {"Technical Support - Enhanced features"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully extracted snapshot", content = @Content(schema = @Schema(implementation = ReceiptStatusSnapshotResponse.class)))
+            @ApiResponse(responseCode = "200", description = "Successfully extracted snapshot", content = @Content(schema = @Schema(implementation = ReceiptsStatusSnapshotResponse.class)))
     })
     @GetMapping(value = "/monitoring/receipts/snapshot", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ReceiptStatusSnapshotResponse extractReceiptSnapshot(
+    public ReceiptsStatusSnapshotResponse extractReceiptSnapshot(
             @RequestParam(name = DATE_FROM) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Schema(example = "2024-01-01T12:00:00", description = "Lower limit date time (in yyyy-MM-ddThh:mm:ss) in 'Europe/Rome' timezone") LocalDateTime dateFrom,
             @RequestParam(name = DATE_TO) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Schema(example = "2024-01-01T13:00:00", description = "Upper limit date time (in yyyy-MM-ddThh:mm:ss) in 'Europe/Rome' timezone") LocalDateTime dateTo) {
 
         List<ReceiptsStatusSnapshot> receiptsStatusSnapshots = experimentalService.extractReceiptSnapshot(dateFrom, dateTo);
-        return ReceiptStatusSnapshotResponse.builder()
+        return ReceiptsStatusSnapshotResponse.builder()
                 .snapshot(receiptsStatusSnapshots)
                 .lowerBoundDate(dateFrom)
                 .upperBoundDate(dateTo)
                 .build();
     }
 
+    @Operation(summary = "Get pending receipts", description = "Retrieve the list of pending receipt that could have not been sent to creditor institution", tags = {"Technical Support - Enhanced features"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully extracted data", content = @Content(schema = @Schema(implementation = ReceiptsStatusSnapshotResponse.class)))
+    })
+    @PostMapping(value = "/monitoring/receipts/pending", produces = MediaType.APPLICATION_JSON_VALUE)
+    public PendingReceiptsResponse extractPendingReceipts(@RequestBody PendingReceiptsRequest request) {
+
+        List<PendingReceipt> pendingReceipts = experimentalService.extractPendingReceipts(request);
+        return PendingReceiptsResponse.builder()
+                .pendingReceipts(pendingReceipts)
+                .build();
+    }
 }

@@ -34,6 +34,14 @@ public class ReEventDataExplorerRepository {
             | where noticeNumber == '%s' and idDominio == '%s'
             | order by insertedTimestamp""";
 
+    public static final String QUERY_FIND_SENDRTV2_BY_IUV = """
+            ReEvent
+            | where insertedTimestamp >= todatetime("%sT00:00:00")
+            | where insertedTimestamp <= todatetime("%sT23:59:59")
+            | where creditorReferenceId == '%s' and idDominio == '%s'
+            | where tipoEvento contains 'sendRTV2'
+            | where sottoTipoEvento == 'REQ'""";
+
     private final ReEventDataExplorerMapper reEventDataExplorerMapper;
 
     private final Client kustoClient;
@@ -41,9 +49,8 @@ public class ReEventDataExplorerRepository {
     @Value("${azure.dataexplorer.dbName}")
     private String database;
 
-    public List<ReEventDataExplorerEntity> find(String dateFrom, String dateTo, String noticeNumber, String domainId, String ccp) {
 
-        List<ReEventDataExplorerEntity> result = new LinkedList<>();
+    public List<ReEventDataExplorerEntity> find(String dateFrom, String dateTo, String noticeNumber, String domainId, String ccp) {
 
         String query;
         if (ccp == null || ccp.isEmpty()) {
@@ -51,7 +58,18 @@ public class ReEventDataExplorerRepository {
         } else {
             query = String.format(QUERY_FIND_BY_NOTICE_NUMBER_AND_CCP, dateFrom, dateTo, noticeNumber, domainId, ccp);
         }
+        return executeQuery(query);
+    }
 
+    public List<ReEventDataExplorerEntity> findSendRTV2Event(String dateFrom, String dateTo, String iuv, String domainId) {
+
+        String query = String.format(QUERY_FIND_SENDRTV2_BY_IUV, dateFrom, dateTo, iuv, domainId);
+        return executeQuery(query);
+    }
+
+    public List<ReEventDataExplorerEntity> executeQuery(String query) {
+
+        List<ReEventDataExplorerEntity> result = new LinkedList<>();
         try {
             KustoOperationResult response = kustoClient.execute(database, query);
             KustoResultSetTable primaryResults = response.getPrimaryResults();
@@ -62,7 +80,6 @@ public class ReEventDataExplorerRepository {
         } catch (Exception e) {
             throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
         }
-
         return result;
     }
 }

@@ -5,11 +5,10 @@ import it.gov.pagopa.wispconverter.technicalsupport.controller.mapper.ReEventDat
 import it.gov.pagopa.wispconverter.technicalsupport.controller.mapper.ReEventMapper;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.EventCategoryEnum;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.ReEvent;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.PendingReceipt;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.PendingReceiptsRequest;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.ReceiptsStatusSnapshot;
-import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.payment.PaymentFlow;
-import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.payment.PaymentFlowDetail;
-import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.payment.PaymentFlowStatus;
-import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.payment.PaymentFlowStep;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.payment.*;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.RTRepository;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.ReEventDataExplorerRepository;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.ReEventExperimentalRepository;
@@ -205,9 +204,11 @@ public class ExperimentalService {
                 Optional<RTEntity> receipt = rtRepository.findById(id, new PartitionKey(id));
 
                 paymentFlows.add(PaymentFlowStatus.builder()
-                        .domainId(paymentDomainId)
-                        .iuv(paymentIuv)
-                        .ccp(paymentCcp)
+                        .paymentIdentifier(PaymentIdentifier.builder()
+                                .domainId(paymentDomainId)
+                                .iuv(paymentIuv)
+                                .ccp(paymentCcp)
+                                .build())
                         .paymentOutcome(receipt.isPresent() ? receipt.get().getReceiptType() : "NOT_FOUND")
                         .receiptSendingStatus(receipt.isPresent() ? receipt.get().getReceiptStatus() : "NOT_FOUND")
                         .paymentDetails(extractPaymentFlowDetail(events, paymentDomainId, paymentIuv))
@@ -236,6 +237,65 @@ public class ExperimentalService {
                         .count(entity.getEventStatusCount())
                         .build())
                 .toList();
+    }
+
+
+    public List<PendingReceipt> extractPendingReceipts(PendingReceiptsRequest request) {
+
+        List<PendingReceipt> pendingReceipts = new LinkedList<>();
+        String dateTimeFrom = CommonUtility.timestampFromInstant(request.getLowerBoundDate().minusHours(1));
+        String dateTimeTo = CommonUtility.timestampFromInstant(request.getUpperBoundDate().minusHours(1));
+
+        String dateFrom = CommonUtility.partitionKeyFromInstant(request.getLowerBoundDate().toLocalDate());
+        String dateTo = CommonUtility.partitionKeyFromInstant(request.getUpperBoundDate().toLocalDate());
+
+        List<RTEntity> rtsInPendingStatus;
+
+        Set<String> iuvs = request.getIuvs();
+        if (iuvs == null || iuvs.isEmpty()) {
+            rtsInPendingStatus = rtRepository.findAllInPendingStatus(dateTimeFrom, dateTimeTo, request.getCreditorInstitution());
+        } else {
+            rtsInPendingStatus = rtRepository.findInPendingStatus(dateTimeFrom, dateTimeTo, request.getCreditorInstitution(), iuvs);
+        }
+
+        for (RTEntity rtInPendingStatus : rtsInPendingStatus) {
+
+            String iuv = rtInPendingStatus.getIuv();
+            String domainId = rtInPendingStatus.getDomainId();
+
+            List<ReEventDataExplorerEntity> events = reEventDataExplorerRepository.findSendRTV2Event(dateFrom, dateTo, iuv, domainId);
+
+            if (events == null || events.isEmpty()) {
+
+                pendingReceipts.add(PendingReceipt.builder()
+                        .receiptToSend("KO")
+                        .payment(PaymentIdentifier.builder()
+                                .iuv(iuv)
+                                .domainId(domainId)
+                                .sessionId(rtInPendingStatus.getSessionId())
+                                .build())
+                        .build());
+
+            } else {
+
+                for (ReEventDataExplorerEntity event : events) {
+
+                    pendingReceipts.add(PendingReceipt.builder()
+                            .receiptContent(String.format("{\"content\":\"%s\"}", CommonUtility.decodeBase64(event.getPayload())))
+                            .receiptToSend("OK")
+                            .payment(PaymentIdentifier.builder()
+                                    .iuv(iuv)
+                                    .domainId(domainId)
+                                    .sessionId(rtInPendingStatus.getSessionId())
+                                    .build())
+                            .build());
+                }
+            }
+
+
+        }
+
+        return pendingReceipts;
     }
 
     private PaymentFlowDetail extractPaymentFlowDetail(List<ReEvent> events, String domainId, String iuv) {

@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ReceiptStatusSnapshotResponse {
+public class ReceiptsStatusSnapshotResponse {
 
     @JsonProperty("lower_bound_date")
     private LocalDateTime lowerBoundDate;

@@ -81,6 +81,18 @@ public class CommonUtility {
                 .format(insertedTimestamp);
     }
 
+    public static String decodeBase64(String base64String) {
+        String decodedValue;
+        if (base64String == null) {
+            decodedValue = null;
+        } else if (base64String.isBlank()) {
+            decodedValue = "";
+        } else {
+            decodedValue = new String(Base64.getDecoder().decode(base64String));
+        }
+        return decodedValue;
+    }
+
     public static String decompressGZip(String gzipContent) {
         String result;
         if (gzipContent == null || gzipContent.isEmpty()) {

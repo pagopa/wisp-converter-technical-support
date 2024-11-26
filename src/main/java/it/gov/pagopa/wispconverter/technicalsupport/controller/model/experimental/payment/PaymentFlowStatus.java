@@ -12,14 +12,8 @@ import lombok.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PaymentFlowStatus {
 
-    @JsonProperty("iuv")
-    private String iuv;
-
-    @JsonProperty("domain_id")
-    private String domainId;
-
-    @JsonProperty("ccp")
-    private String ccp;
+    @JsonProperty("payment_identifier")
+    private PaymentIdentifier paymentIdentifier;
 
     @JsonProperty("payment_details")
     private PaymentFlowDetail paymentDetails;
