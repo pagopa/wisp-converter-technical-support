@@ -53,11 +53,11 @@ public class TechnicalSupportEnhancedController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved details", content = @Content(schema = @Schema(implementation = PaymentFlowsResponse.class)))
     })
-    @PostMapping(value = "/organizations/{" + ORGANIZATION + "}/iuv/{" + IUV + "}/details", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/organizations/{" + ORGANIZATION + "}/iuv/{" + IUV + "}/details", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public PaymentFlowsResponse findByIuv(
             @PathVariable(name = ORGANIZATION) @Schema(example = "12345678900", description = "The identifier of the creditor institution") String organizationId,
             @PathVariable(name = IUV) @Schema(example = "000000999900000", description = "The IUV code of the payment") String iuv,
-            @RequestBody @Schema(description = "The filters to be applied on the request") PaymentFlowsFilterRequest filters) {
+            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Filter criteria for the payment flow", required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PaymentFlowsFilterRequest.class))) PaymentFlowsFilterRequest filters) {
 
         List<PaymentFlow> paymentFlows = enhancedFeaturesService.findByIuvEnhanced(organizationId, iuv, filters);
         return PaymentFlowsResponse.builder()
@@ -80,11 +80,11 @@ public class TechnicalSupportEnhancedController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved details", content = @Content(schema = @Schema(implementation = PaymentFlowsResponse.class)))
     })
-    @PostMapping(value = "/organizations/{" + ORGANIZATION + "}/notice-number/{" + NOTICE_NUMBER + "}/details", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/organizations/{" + ORGANIZATION + "}/notice-number/{" + NOTICE_NUMBER + "}/details", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public PaymentFlowsResponse findByNoticeNumber(
             @PathVariable(name = ORGANIZATION) @Schema(example = "12345678900", description = "The identifier of the creditor institution") String organizationId,
             @PathVariable(name = NOTICE_NUMBER) @Schema(example = "351147559280022097", description = "The notice number code of the payment") String noticeNumber,
-            @RequestBody @Schema(description = "The filters to be applied on the request") PaymentFlowsFilterRequest filters) {
+            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Filter criteria for the payment flow", required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PaymentFlowsFilterRequest.class))) PaymentFlowsFilterRequest filters) {
 
         List<PaymentFlow> paymentFlows = enhancedFeaturesService.findByNoticeNumberEnhanced(organizationId, noticeNumber, filters);
         return PaymentFlowsResponse.builder()
@@ -107,10 +107,10 @@ public class TechnicalSupportEnhancedController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved event", content = @Content(schema = @Schema(implementation = PaymentFlowsResponse.class)))
     })
-    @PostMapping(value = "/session-id/{" + SESSION_ID + "}/details", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/session-id/{" + SESSION_ID + "}/details", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public PaymentFlowsResponse findBySessionId(
             @PathVariable(name = SESSION_ID) @Schema(example = "12345678901_aa0518a9-194d-4de2-999f-e462c3746e24", description = "The session ID related to the single payment flow") String sessionId,
-            @RequestBody @Schema(description = "The filters to be applied on the request") PaymentFlowsFilterRequest filters) {
+            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Filter criteria for the payment flow", required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PaymentFlowsFilterRequest.class))) PaymentFlowsFilterRequest filters) {
 
         List<PaymentFlow> paymentFlows = enhancedFeaturesService.findBySessionIdEnhanced(sessionId, filters);
         return PaymentFlowsResponse.builder()
@@ -150,8 +150,8 @@ public class TechnicalSupportEnhancedController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully extracted data", content = @Content(schema = @Schema(implementation = ReceiptsStatusSnapshotResponse.class)))
     })
-    @PostMapping(value = "/monitoring/receipts/pending", produces = MediaType.APPLICATION_JSON_VALUE)
-    public PendingReceiptsResponse extractPendingReceipts(@RequestBody PendingReceiptsFilterRequest request) {
+    @PostMapping(value = "/monitoring/receipts/pending", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public PendingReceiptsResponse extractPendingReceipts(@RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody PendingReceiptsFilterRequest request) {
 
         List<PendingReceipt> pendingReceipts = enhancedFeaturesService.extractPendingReceipts(request);
         return PendingReceiptsResponse.builder()

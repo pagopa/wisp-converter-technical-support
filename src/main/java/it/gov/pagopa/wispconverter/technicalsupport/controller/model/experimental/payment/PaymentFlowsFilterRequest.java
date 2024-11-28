@@ -20,7 +20,7 @@ public class PaymentFlowsFilterRequest {
     private LocalDate lowerBoundDate;
 
     @Schema(example = "2024-01-01", description = "The upper limit of the date slot, used as delimiter for the search time (in yyyy-MM-dd)", requiredMode = Schema.RequiredMode.REQUIRED)
-    @JsonProperty(value = "lower_bound_date", required = true)
+    @JsonProperty(value = "upper_bound_date", required = true)
     private LocalDate upperBoundDate;
 
     @Schema(example = "false", description = "The flag that permits to enable the display of internal states of the entire process", defaultValue = "false", requiredMode = Schema.RequiredMode.REQUIRED)
