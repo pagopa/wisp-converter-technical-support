@@ -45,7 +45,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ReceiptsStatusSnapshotResponse"
+                  "$ref" : "#/components/schemas/PendingReceiptsResponse"
                 }
               }
             },
@@ -122,6 +122,52 @@
           "type" : "string"
         }
       } ]
+    },
+    "/enhanced/monitoring/receipts/status" : {
+      "parameters" : [ {
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "in" : "header",
+        "name" : "X-Request-Id",
+        "schema" : {
+          "type" : "string"
+        }
+      } ],
+      "post" : {
+        "description" : "Retrieve the status of a list of receipts that could have been sent to creditor institution",
+        "operationId" : "extractReceiptsStatus",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ReceiptsStatusFilterRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReceiptsStatusResponse"
+                }
+              }
+            },
+            "description" : "Successfully extracted data",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "summary" : "Get receipts status",
+        "tags" : [ "Technical Support - Enhanced features" ]
+      }
     },
     "/enhanced/organizations/{organizationId}/iuv/{iuv}/details" : {
       "parameters" : [ {
@@ -982,6 +1028,26 @@
         },
         "description" : "The payment identification information related to the payment analyzed in the flow"
       },
+      "PendingReceipt" : {
+        "type" : "object",
+        "properties" : {
+          "payment" : {
+            "$ref" : "#/components/schemas/PaymentIdentifier"
+          },
+          "receipt_content" : {
+            "type" : "string",
+            "description" : "The content of the receipt that can be sent to creditor institution if required",
+            "example" : "eyJjb250ZW50IjoiPC4uLj4ifQ=="
+          },
+          "receipt_to_send" : {
+            "type" : "string",
+            "description" : "The type of receipt to be send if required",
+            "example" : "OK",
+            "enum" : [ "OK", "KO" ]
+          }
+        },
+        "description" : "The list of payments on which there is a pending receipt"
+      },
       "PendingReceiptsFilterRequest" : {
         "required" : [ "creditor_institution", "lower_bound_date", "upper_bound_date" ],
         "type" : "object",
@@ -1009,6 +1075,18 @@
             "type" : "string",
             "description" : "The upper limit of the date slot in 'Europe/Rome' timezone, used as delimiter for the search time (in yyyy-MM-ddThh:mm:ss)",
             "format" : "date-time"
+          }
+        }
+      },
+      "PendingReceiptsResponse" : {
+        "type" : "object",
+        "properties" : {
+          "pending_receipts" : {
+            "type" : "array",
+            "description" : "The list of payments on which there is a pending receipt",
+            "items" : {
+              "$ref" : "#/components/schemas/PendingReceipt"
+            }
           }
         }
       },
@@ -1182,6 +1260,98 @@
             "items" : {
               "$ref" : "#/components/schemas/ReEvent"
             }
+          }
+        }
+      },
+      "ReceiptsStatus" : {
+        "type" : "object",
+        "properties" : {
+          "ccp" : {
+            "type" : "string",
+            "description" : "The payment context code (aka CCP) of the payment tentative",
+            "example" : "001924757343397669-00001"
+          },
+          "domain_id" : {
+            "type" : "string",
+            "description" : "The identifier of the creditor institution",
+            "example" : "012345678901"
+          },
+          "iuv" : {
+            "type" : "string",
+            "description" : "The IUV code of the payment",
+            "example" : "001924757343397669"
+          },
+          "last_update" : {
+            "type" : "string",
+            "description" : "The datetime of the last update made on the receipt",
+            "format" : "date-time"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "The sending status of the receipt",
+            "example" : "SENT"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "The type of the receipt (OK or KO)",
+            "example" : "KO"
+          }
+        },
+        "description" : "The receipts classified by their status, extracted in the temporal snapshot"
+      },
+      "ReceiptsStatusFilterRequest" : {
+        "required" : [ "creditor_institution", "lower_bound_date", "upper_bound_date" ],
+        "type" : "object",
+        "properties" : {
+          "creditor_institution" : {
+            "type" : "string",
+            "description" : "The identifier of the creditor institution",
+            "example" : "12345678901"
+          },
+          "iuvs" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "description" : "The list of IUV payment codes to be used as a search filter. They can be null if a search on whole creditor institution is required",
+            "items" : {
+              "type" : "string",
+              "description" : "The list of IUV payment codes to be used as a search filter. They can be null if a search on whole creditor institution is required"
+            }
+          },
+          "lower_bound_date" : {
+            "type" : "string",
+            "description" : "The lower limit of the date slot in 'Europe/Rome' timezone, used as delimiter for the search time (in yyyy-MM-ddThh:mm:ss)",
+            "format" : "date-time"
+          },
+          "show_in_sent_status" : {
+            "type" : "boolean",
+            "description" : "The flag that permits to exclude the receipts in 'SENT' status"
+          },
+          "upper_bound_date" : {
+            "type" : "string",
+            "description" : "The upper limit of the date slot in 'Europe/Rome' timezone, used as delimiter for the search time (in yyyy-MM-ddThh:mm:ss)",
+            "format" : "date-time"
+          }
+        }
+      },
+      "ReceiptsStatusResponse" : {
+        "type" : "object",
+        "properties" : {
+          "lower_bound_date" : {
+            "type" : "string",
+            "description" : "The lower limit of the date slot in 'Europe/Rome' timezone, used as delimiter for the search time (in yyyy-MM-ddThh:mm:ss)",
+            "format" : "date-time"
+          },
+          "receipts" : {
+            "type" : "array",
+            "description" : "The receipts classified by their status, extracted in the temporal snapshot",
+            "items" : {
+              "$ref" : "#/components/schemas/ReceiptsStatus"
+            }
+          },
+          "upper_bound_date" : {
+            "type" : "string",
+            "description" : "The upper limit of the date slot in 'Europe/Rome' timezone, used as delimiter for the search time (in yyyy-MM-ddThh:mm:ss)",
+            "format" : "date-time"
           }
         }
       },

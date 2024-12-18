@@ -5,9 +5,7 @@ import it.gov.pagopa.wispconverter.technicalsupport.controller.mapper.ReEventDat
 import it.gov.pagopa.wispconverter.technicalsupport.controller.mapper.ReEventMapper;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.EventCategory;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.ReEvent;
-import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.PendingReceipt;
-import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.PendingReceiptsFilterRequest;
-import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.ReceiptsStatusSnapshot;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.monitoring.*;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.experimental.payment.*;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.RTRepository;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.ReEventDataExplorerRepository;
@@ -278,6 +276,44 @@ public class EnhancedFeaturesService {
         }
 
         return pendingReceipts;
+    }
+
+    public List<ReceiptsStatus> extractReceiptsStatus(ReceiptsStatusFilterRequest request) {
+
+        List<ReceiptsStatus> receiptsStatus = new LinkedList<>();
+        String dateTimeFrom = CommonUtility.timestampFromInstant(request.getLowerBoundDate().minusHours(1));
+        String dateTimeTo = CommonUtility.timestampFromInstant(request.getUpperBoundDate().minusHours(1));
+
+        List<RTEntity> rts;
+
+        String domainId = request.getCreditorInstitution();
+        Set<String> iuvs = request.getIuvs();
+        if (iuvs == null || iuvs.isEmpty()) {
+            if (request.isShowSent()) {
+                rts = rtRepository.findAllStatus(dateTimeFrom, dateTimeTo, domainId);
+            } else {
+                rts = rtRepository.findAllStatusExcludingSent(dateTimeFrom, dateTimeTo, domainId);
+            }
+        } else {
+            if (request.isShowSent()) {
+                rts = rtRepository.findStatusByIuv(dateTimeFrom, dateTimeTo, domainId, iuvs);
+            } else {
+                rts = rtRepository.findStatusByIuvExcludingSent(dateTimeFrom, dateTimeTo, domainId, iuvs);
+            }
+        }
+
+        for (RTEntity rt : rts) {
+            receiptsStatus.add(ReceiptsStatus.builder()
+                    .domainId(rt.getDomainId())
+                    .iuv(rt.getIuv())
+                    .ccp(rt.getCcp())
+                    .type(rt.getReceiptType())
+                    .status(rt.getReceiptStatus())
+                    .lastUpdate(rt.getTimestamp())
+                    .build());
+        }
+
+        return receiptsStatus;
     }
 
     private PaymentFlowDetail extractPaymentFlowDetail(List<ReEvent> events, String domainId, String iuv) {
