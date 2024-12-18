@@ -2,8 +2,8 @@ apiVersion: v2
 name: pagopa-wisp-converter-technical-support
 description: A service that permits to handle converted WISP requests for technical support
 type: application
-version: 0.40.0
-appVersion: 0.3.1
+version: 0.41.0
+appVersion: 0.3.2
 dependencies:
   - name: microservice-chart
     version: 3.0.0
