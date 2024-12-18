@@ -148,7 +148,7 @@ public class TechnicalSupportEnhancedController {
 
     @Operation(summary = "Get pending receipts", description = "Retrieve the list of pending receipt that could have not been sent to creditor institution", tags = {"Technical Support - Enhanced features"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully extracted data", content = @Content(schema = @Schema(implementation = ReceiptsStatusSnapshotResponse.class)))
+            @ApiResponse(responseCode = "200", description = "Successfully extracted data", content = @Content(schema = @Schema(implementation = PendingReceiptsResponse.class)))
     })
     @PostMapping(value = "/monitoring/receipts/pending", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public PendingReceiptsResponse extractPendingReceipts(@RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody PendingReceiptsFilterRequest request) {
@@ -156,6 +156,21 @@ public class TechnicalSupportEnhancedController {
         List<PendingReceipt> pendingReceipts = enhancedFeaturesService.extractPendingReceipts(request);
         return PendingReceiptsResponse.builder()
                 .pendingReceipts(pendingReceipts)
+                .build();
+    }
+
+    @Operation(summary = "Get receipts status", description = "Retrieve the status of a list of receipts that could have been sent to creditor institution", tags = {"Technical Support - Enhanced features"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully extracted data", content = @Content(schema = @Schema(implementation = ReceiptsStatusResponse.class)))
+    })
+    @PostMapping(value = "/monitoring/receipts/status", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ReceiptsStatusResponse extractReceiptsStatus(@RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody ReceiptsStatusFilterRequest request) {
+
+        List<ReceiptsStatus> receiptsStatus = enhancedFeaturesService.extractReceiptsStatus(request);
+        return ReceiptsStatusResponse.builder()
+                .receipts(receiptsStatus)
+                .lowerBoundDate(request.getLowerBoundDate())
+                .upperBoundDate(request.getUpperBoundDate())
                 .build();
     }
 }

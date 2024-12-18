@@ -24,7 +24,45 @@ public interface RTRepository extends CosmosRepository<RTEntity, String> {
 
     @Query("SELECT * " +
             "FROM c " +
-            "WHERE c._ts*1000 >= DateTimeToTimestamp(@dateFrom) AND c._ts*1000 < DateTimeToTimestamp(@dateTo) " +
+            "WHERE c.rtTimestamp >= DateTimeToTimestamp(@dateFrom) AND c.rtTimestamp < DateTimeToTimestamp(@dateTo) " +
+            "AND c.domainId = @domainId")
+    List<RTEntity> findAllStatus(@Param("dateFrom") String dateFrom,
+                                 @Param("dateTo") String dateTo,
+                                 @Param("domainId") String domainId);
+
+    @Query("SELECT * " +
+            "FROM c " +
+            "WHERE c.rtTimestamp >= DateTimeToTimestamp(@dateFrom) AND c.rtTimestamp < DateTimeToTimestamp(@dateTo) " +
+            "AND c.domainId = @domainId " +
+            "AND c.receiptStatus != 'SENT'")
+    List<RTEntity> findAllStatusExcludingSent(@Param("dateFrom") String dateFrom,
+                                              @Param("dateTo") String dateTo,
+                                              @Param("domainId") String domainId);
+
+    @Query("SELECT * " +
+            "FROM c " +
+            "WHERE c.rtTimestamp >= DateTimeToTimestamp(@dateFrom) AND c.rtTimestamp < DateTimeToTimestamp(@dateTo) " +
+            "AND c.domainId = @domainId " +
+            "AND c.iuv IN (@iuvs)")
+    List<RTEntity> findStatusByIuv(@Param("dateFrom") String dateFrom,
+                                   @Param("dateTo") String dateTo,
+                                   @Param("domainId") String domainId,
+                                   @Param("iuvs") Set<String> iuvs);
+
+    @Query("SELECT * " +
+            "FROM c " +
+            "WHERE c.rtTimestamp >= DateTimeToTimestamp(@dateFrom) AND c.rtTimestamp < DateTimeToTimestamp(@dateTo) " +
+            "AND c.domainId = @domainId " +
+            "AND c.iuv IN (@iuvs) " +
+            "AND c.receiptStatus != 'SENT'")
+    List<RTEntity> findStatusByIuvExcludingSent(@Param("dateFrom") String dateFrom,
+                                                @Param("dateTo") String dateTo,
+                                                @Param("domainId") String domainId,
+                                                @Param("iuvs") Set<String> iuvs);
+
+    @Query("SELECT * " +
+            "FROM c " +
+            "WHERE c.rtTimestamp >= DateTimeToTimestamp(@dateFrom) AND c.rtTimestamp < DateTimeToTimestamp(@dateTo) " +
             "AND c.domainId = @domainId " +
             "AND c.rt = null")
     List<RTEntity> findAllInPendingStatus(@Param("dateFrom") String dateFrom,
@@ -33,7 +71,7 @@ public interface RTRepository extends CosmosRepository<RTEntity, String> {
 
     @Query("SELECT * " +
             "FROM c " +
-            "WHERE c._ts*1000 >= DateTimeToTimestamp(@dateFrom) AND c._ts*1000 < DateTimeToTimestamp(@dateTo) " +
+            "WHERE c.rtTimestamp >= DateTimeToTimestamp(@dateFrom) AND c.rtTimestamp < DateTimeToTimestamp(@dateTo) " +
             "AND c.domainId = @domainId " +
             "AND c.iuv IN (@iuvs) " +
             "AND c.rt = null")

@@ -8,7 +8,7 @@ import java.util.Set;
 public class Constants {
 
     public static final String PATTERN_FORMAT = "yyyy-MM-dd";
-    public static final String TIMESTAMP_PATTERN_FORMAT = "yyyy-MM-dd'T'hh:mm:ss";
+    public static final String TIMESTAMP_PATTERN_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     public static final String HEADER_REQUEST_ID = "X-Request-Id";
 
     public static final String ORGANIZATION = "organizationId";

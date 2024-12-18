@@ -5,6 +5,8 @@ import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 
+import java.time.Instant;
+
 @Container(containerName = "receipts-rt")
 @Data
 @ToString(exclude = "rt")
@@ -35,4 +37,10 @@ public class RTEntity {
     private String rt;
 
     private Long rtTimestamp;
+
+    private Instant _ts;
+
+    public Instant getTimestamp() {
+        return this._ts;
+    }
 }
