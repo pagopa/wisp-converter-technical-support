@@ -1,7 +1,7 @@
 package it.gov.pagopa.wispconverter.technicalsupport.exception;
 
 
-import it.gov.pagopa.wispconverter.technicalsupport.model.ProblemJson;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.generic.ProblemJson;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
