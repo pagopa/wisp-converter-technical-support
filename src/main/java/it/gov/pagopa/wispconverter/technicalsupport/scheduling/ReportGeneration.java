@@ -28,6 +28,7 @@ public class ReportGeneration {
     @Async
     public void generateDailyReport() {
 
+        log.info("[Report Generation][Trigg] Triggered cron invocation for daily generation.");
         LocalDate yesterday = LocalDate.now().minusDays(1);
         String dayForReport = CommonUtility.partitionKeyFromInstant(yesterday);
         this.reportGenerationService.generateDailyReport(dayForReport);
@@ -37,6 +38,7 @@ public class ReportGeneration {
     @Async
     public void generateWeeklyReport() {
 
+        log.info("[Report Generation][Trigg] Triggered cron invocation for weekly generation.");
         LocalDate yesterday = LocalDate.now().minusDays(1);
         String dayForReport = CommonUtility.partitionKeyFromInstant(yesterday);
         this.reportGenerationService.generateWeeklyReport(dayForReport);
@@ -46,6 +48,7 @@ public class ReportGeneration {
     @Async
     public void generateMonthlyReport() {
 
+        log.info("[Report Generation][Trigg] Triggered cron invocation for monthly generation.");
         LocalDate yesterday = LocalDate.now().minusDays(1);
         String dayForReport = CommonUtility.partitionKeyFromInstant(yesterday);
         this.reportGenerationService.generateMonthlyReport(dayForReport);
