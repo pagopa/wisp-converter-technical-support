@@ -6,7 +6,7 @@ import com.microsoft.azure.kusto.data.KustoResultSetTable;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.mapper.ReEventDataExplorerMapper;
 import it.gov.pagopa.wispconverter.technicalsupport.exception.AppError;
 import it.gov.pagopa.wispconverter.technicalsupport.exception.AppException;
-import it.gov.pagopa.wispconverter.technicalsupport.repository.model.ReEventDataExplorerEntity;
+import it.gov.pagopa.wispconverter.technicalsupport.repository.model.re.ReEventDataExplorerEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

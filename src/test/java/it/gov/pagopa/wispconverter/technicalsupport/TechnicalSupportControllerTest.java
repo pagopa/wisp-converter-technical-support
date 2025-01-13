@@ -3,7 +3,7 @@ package it.gov.pagopa.wispconverter.technicalsupport;
 
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.ReEventResponse;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.ReEventRepository;
-import it.gov.pagopa.wispconverter.technicalsupport.repository.model.ReEventEntity;
+import it.gov.pagopa.wispconverter.technicalsupport.repository.model.re.ReEventEntity;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;

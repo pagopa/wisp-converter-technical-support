@@ -1,4 +1,4 @@
-package it.gov.pagopa.wispconverter.technicalsupport.repository.model;
+package it.gov.pagopa.wispconverter.technicalsupport.repository.model.re;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

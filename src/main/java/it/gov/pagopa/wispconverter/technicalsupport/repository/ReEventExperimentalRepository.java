@@ -3,7 +3,7 @@ package it.gov.pagopa.wispconverter.technicalsupport.repository;
 
 import com.azure.spring.data.cosmos.repository.CosmosRepository;
 import com.azure.spring.data.cosmos.repository.Query;
-import it.gov.pagopa.wispconverter.technicalsupport.repository.model.ReEventEntity;
+import it.gov.pagopa.wispconverter.technicalsupport.repository.model.re.ReEventEntity;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 

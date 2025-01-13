@@ -5,7 +5,7 @@ import it.gov.pagopa.wispconverter.technicalsupport.controller.mapper.ReportMapp
 import it.gov.pagopa.wispconverter.technicalsupport.repository.*;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.model.RPTRequestEntity;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.model.RTEntity;
-import it.gov.pagopa.wispconverter.technicalsupport.repository.model.ReEventEntity;
+import it.gov.pagopa.wispconverter.technicalsupport.repository.model.re.ReEventEntity;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.model.report.ReportEntity;
 import it.gov.pagopa.wispconverter.technicalsupport.service.model.report.RPTStatistic;
 import it.gov.pagopa.wispconverter.technicalsupport.service.model.report.RPTStatisticDetail;
@@ -206,7 +206,7 @@ public class ReportGenerationService {
     }
 
     public void generateMonthlyReport(String dayOfThisMonth) {
-        
+
         log.info("[Report Generation][Start] Started monthly report generation for month previous than day {}.", dayOfThisMonth);
         String yesterday = CommonUtility.getYesterday(dayOfThisMonth);
         mergeMultipleReports(CommonUtility.getMonthInDate(yesterday), ReportType.MONTHLY);
