@@ -124,7 +124,7 @@ app:
   envSecret:
     !!merge <<: *envSecret
 # 2 - Only-cronjob application
-cronjob:
+cron:
   !!merge <<: *microservice-chart
   ingress:
     !!merge <<: *ingress
