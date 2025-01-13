@@ -34,9 +34,9 @@ microservice-chart: &microservice-chart
     servicePort: 8080
   serviceAccount:
     create: false
-    annotations: {}
+    annotations: { }
     name: ""
-  podAnnotations: {}
+  podAnnotations: { }
   podSecurityContext:
     seccompProfile:
       type: RuntimeDefault
@@ -82,8 +82,8 @@ microservice-chart: &microservice-chart
       tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
   tmpVolumeMount:
     create: true
-  nodeSelector: {}
-  tolerations: []
+  nodeSelector: { }
+  tolerations: [ ]
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -110,9 +110,9 @@ microservice-chart: &microservice-chart
         repository: ghcr.io/pagopa/pagopa-wisp-converter-technical-support
         tag: "0.0.0"
         pullPolicy: Always
-      envConfig: {}
-      envSecret: {}
-# - Standard service application
+      envConfig: { }
+      envSecret: { }
+# 1 - Standard service application
 app:
   !!merge <<: *microservice-chart
   ingress:
@@ -123,12 +123,12 @@ app:
     !!merge <<: *envConfig
   envSecret:
     !!merge <<: *envSecret
-# - Only-cronjob application
+# 2 - Only-cronjob application
 cronjob:
   !!merge <<: *microservice-chart
   ingress:
     !!merge <<: *ingress
-    path: /pagopa-wisp-converter-technical-support-jobs/(.*)
+    path: /pagopa-wisp-converter-technical-support-jobs(/|$)(.*)
   resources:
     !!merge <<: *resources
     requests:
