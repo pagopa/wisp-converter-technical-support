@@ -1,4 +1,4 @@
-microservice-chart:
+microservice-chart: &microservice-chart
   namespace: "nodo"
   nameOverride: ""
   fullnameOverride: ""
@@ -27,29 +27,29 @@ microservice-chart:
     type: ClusterIP
     ports:
       - 8080
-  ingress:
+  ingress: &ingress
     create: true
     host: "weudev.nodo.internal.dev.platform.pagopa.it"
     path: /pagopa-wisp-converter-technical-support(/|$)(.*)
     servicePort: 8080
   serviceAccount:
     create: false
-    annotations: {}
+    annotations: { }
     name: ""
-  podAnnotations: {}
+  podAnnotations: { }
   podSecurityContext:
     seccompProfile:
       type: RuntimeDefault
   securityContext:
     allowPrivilegeEscalation: false
-  resources:
+  resources: &resources
     requests:
       memory: "512Mi"
       cpu: "0.25"
     limits:
       memory: "768Mi"
       cpu: "0.50"
-  autoscaling:
+  autoscaling: &autoscaling
     enable: true
     minReplica: 1
     maxReplica: 1
@@ -61,7 +61,7 @@ microservice-chart:
           # Required
           type: Utilization # Allowed types are 'Utilization' or 'AverageValue'
           value: "75"
-  envConfig:
+  envConfig: &envConfig
     WEBSITE_SITE_NAME: 'pagopawispconverterts' # required to show cloud role name in application insights
     ENV: 'aks-dev'
     APP_LOGGING_LEVEL: 'DEBUG'
@@ -73,7 +73,7 @@ microservice-chart:
     DATAEXPLORER_URL: "https://pagopaddataexplorer.westeurope.kusto.windows.net"
   secretProvider:
     create: true
-    envSecrets:
+    envSecrets: &envSecret
       # required
       APPLICATIONINSIGHTS_CONNECTION_STRING: 'azure-insight-connection-string'
       COSMOS_KEY: 'cosmosdb-wisp-converter-account-key'
@@ -82,8 +82,8 @@ microservice-chart:
       tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
   tmpVolumeMount:
     create: true
-  nodeSelector: {}
-  tolerations: []
+  nodeSelector: { }
+  tolerations: [ ]
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -110,5 +110,45 @@ microservice-chart:
         repository: ghcr.io/pagopa/pagopa-wisp-converter-technical-support
         tag: "0.0.0"
         pullPolicy: Always
-      envConfig: {}
-      envSecret: {}
+      envConfig: { }
+      envSecret: { }
+
+# - Standard service application
+app:
+  !!merge <<: *microservice-chart
+  ingress:
+    !!merge <<: *ingress
+  resources:
+    !!merge <<: *resources
+  envConfig:
+    !!merge <<: *envConfig
+  envSecret:
+    !!merge <<: *envSecret
+
+# - Only-cronjob application
+cronjob:
+  !!merge <<: *microservice-chart
+  ingress:
+    !!merge <<: *ingress
+    path: /pagopa-wisp-converter-technical-support-jobs/(.*)
+  resources:
+    !!merge <<: *resources
+    requests:
+      memory: "512Mi"
+      cpu: "0.25"
+    limits:
+      memory: "768Mi"
+      cpu: "0.50"
+  autoscaling:
+    !!merge <<: *autoscaling
+    enable: false
+    minReplica: 1
+    maxReplica: 1
+  envConfig:
+    !!merge <<: *envConfig
+    CRONJOB_REPORTGENERATION_ENABLED: false
+    CRONJOB_REPORTGENERATION_DAILY_SCHEDULE: '00 01 * * *'
+    CRONJOB_REPORTGENERATION_WEEKLY_SCHEDULE: '00 06 * * 1'
+    CRONJOB_REPORTGENERATION_MONTHLY_SCHEDULE: '30 06 1 * *'
+  envSecret:
+    !!merge <<: *envSecret
