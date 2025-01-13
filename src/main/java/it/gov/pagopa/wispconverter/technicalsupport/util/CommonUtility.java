@@ -119,4 +119,12 @@ public class CommonUtility {
         }
         return result;
     }
+
+    public static float safeDivide(float denominator, float numerator) {
+        float value = 0;
+        if (denominator != 0) {
+            value = numerator / denominator;
+        }
+        return value;
+    }
 }

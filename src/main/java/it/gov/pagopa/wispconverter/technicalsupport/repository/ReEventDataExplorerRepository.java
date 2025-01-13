@@ -42,6 +42,14 @@ public class ReEventDataExplorerRepository {
             | where tipoEvento contains 'sendRTV2'
             | where sottoTipoEvento == 'REQ'""";
 
+    public static final String QUERY_FIND_TRIGGER_PRIMITIVE_COUNT = """
+            ReEvent
+            | where insertedTimestamp >= todatetime("%sT00:00:00")
+            | where insertedTimestamp <= todatetime("%sT23:59:59")
+            | where tipoEvento == 'nodoInviaRPT' or tipoEvento == 'nodoInviaCarrelloRPT'
+            | where sottoTipoEvento == 'REQ'
+            | count""";
+
     private final ReEventDataExplorerMapper reEventDataExplorerMapper;
 
     private final Client kustoClient;
@@ -67,6 +75,12 @@ public class ReEventDataExplorerRepository {
         return executeQuery(query);
     }
 
+    public Long countTriggerPrimitives(String dateFrom, String dateTo) {
+
+        String query = String.format(QUERY_FIND_TRIGGER_PRIMITIVE_COUNT, dateFrom, dateTo);
+        return executeQueryForCount(query);
+    }
+
     public List<ReEventDataExplorerEntity> executeQuery(String query) {
 
         List<ReEventDataExplorerEntity> result = new LinkedList<>();
@@ -76,6 +90,22 @@ public class ReEventDataExplorerRepository {
             while (primaryResults.hasNext()) {
                 primaryResults.next();
                 result.add(reEventDataExplorerMapper.toEntity(primaryResults));
+            }
+        } catch (Exception e) {
+            throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
+        }
+        return result;
+    }
+
+    public long executeQueryForCount(String query) {
+
+        long result = 0L;
+        try {
+            KustoOperationResult response = kustoClient.execute(database, query);
+            KustoResultSetTable primaryResults = response.getPrimaryResults();
+            while (primaryResults.hasNext()) {
+                primaryResults.next();
+                result = primaryResults.getLong("Count");
             }
         } catch (Exception e) {
             throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
