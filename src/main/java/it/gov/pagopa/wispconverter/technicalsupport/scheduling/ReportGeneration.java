@@ -37,11 +37,17 @@ public class ReportGeneration {
     @Async
     public void generateWeeklyReport() {
 
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        String dayForReport = CommonUtility.partitionKeyFromInstant(yesterday);
+        this.reportGenerationService.generateWeeklyReport(dayForReport);
     }
 
     @Scheduled(cron = "${cron.job.schedule.report-generation.monthly.cron}")
     @Async
     public void generateMonthlyReport() {
 
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        String dayForReport = CommonUtility.partitionKeyFromInstant(yesterday);
+        this.reportGenerationService.generateMonthlyReport(dayForReport);
     }
 }

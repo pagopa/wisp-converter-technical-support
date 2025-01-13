@@ -34,9 +34,9 @@ microservice-chart:
     servicePort: 8080
   serviceAccount:
     create: false
-    annotations: {}
+    annotations: { }
     name: ""
-  podAnnotations: {}
+  podAnnotations: { }
   podSecurityContext:
     seccompProfile:
       type: RuntimeDefault
@@ -71,6 +71,8 @@ microservice-chart:
     COSMOS_URI: "https://pagopa-u-weu-nodo-wispconv-cosmos-account.documents.azure.com:443/"
     COSMOS_READ_REGION: "West Europe"
     DATAEXPLORER_URL: "https://pagopaudataexplorer.westeurope.kusto.windows.net"
+    CRONJOB_REPORTGENERATION_ENABLED: true
+    CRONJOB_REPORTGENERATION_DAILY_SCHEDULE: '00 01 * * *'
   secretProvider:
     create: true
     envSecrets:
@@ -82,8 +84,8 @@ microservice-chart:
       tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
   tmpVolumeMount:
     create: true
-  nodeSelector: {}
-  tolerations: []
+  nodeSelector: { }
+  tolerations: [ ]
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -110,5 +112,5 @@ microservice-chart:
         repository: ghcr.io/pagopa/pagopa-wisp-converter-technical-support
         tag: "0.0.0"
         pullPolicy: Always
-      envConfig: {}
-      envSecret: {}
+      envConfig: { }
+      envSecret: { }

@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface RPTRequestRepository extends CosmosRepository<RPTRequestEntity, String> {
 
-    @Query("SELECT c.id, c.primitive" +
+    @Query("SELECT c.id, c.primitive " +
             "FROM c " +
             "WHERE c.PartitionKey = @date")
     List<RPTRequestEntity> findAllByPartitionKeyExcludingPayload(@Param("date") String date);

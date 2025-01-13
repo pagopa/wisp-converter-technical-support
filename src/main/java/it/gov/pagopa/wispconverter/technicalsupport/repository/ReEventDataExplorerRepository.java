@@ -105,7 +105,7 @@ public class ReEventDataExplorerRepository {
             KustoResultSetTable primaryResults = response.getPrimaryResults();
             while (primaryResults.hasNext()) {
                 primaryResults.next();
-                result = primaryResults.getLong("Count");
+                result = primaryResults.getLong(0);
             }
         } catch (Exception e) {
             throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);

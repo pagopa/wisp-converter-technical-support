@@ -21,15 +21,15 @@ public abstract class ReportMapper {
                 .triggerPrimitives(ReportTriggeredPrimitivesEntity.builder()
                         .totalCarts(dto.getTotalRPTCarts())
                         .totalNoCarts(dto.getTotalRPTSingles())
-                        .cartsCompleted(dto.getCompletedRPTCarts())
-                        .noCartsCompleted(dto.getCompletedRPTSingles())
+                        .cartsCompleted(dto.getCompletedRPTCarts().size())
+                        .noCartsCompleted(dto.getCompletedRPTSingles().size())
                         .allNotCompleted(NotCompletedTriggerPrimitivesEntity.builder()
-                                .rptTimeoutTrigger(notCompletedTriggeredPrimitives.get("rpt_timeout_trigger"))
-                                .receiptKo(notCompletedTriggeredPrimitives.get("receipt_ko"))
-                                .ecommerceHangTimeoutTrigger(notCompletedTriggeredPrimitives.get("ecommerce_hang_timeout_trigger"))
-                                .paymentTokenTimeoutTrigger(notCompletedTriggeredPrimitives.get("payment_token_timeout_trigger"))
-                                .receiptKo(notCompletedTriggeredPrimitives.get("receipt_ko"))
-                                .noState(notCompletedTriggeredPrimitives.get("no_state"))
+                                .rptTimeoutTrigger(notCompletedTriggeredPrimitives.getOrDefault("rpt_timeout_trigger", 0))
+                                .redirect(notCompletedTriggeredPrimitives.getOrDefault("redirect", 0))
+                                .ecommerceHangTimeoutTrigger(notCompletedTriggeredPrimitives.getOrDefault("ecommerce_hang_timeout_trigger", 0))
+                                .paymentTokenTimeoutTrigger(notCompletedTriggeredPrimitives.getOrDefault("payment_token_timeout_trigger", 0))
+                                .receiptKo(notCompletedTriggeredPrimitives.getOrDefault("receipt_ko", 0))
+                                .noState(notCompletedTriggeredPrimitives.getOrDefault("no_state", 0))
                                 .build())
                         .build())
                 .build();
@@ -67,12 +67,13 @@ public abstract class ReportMapper {
                         .build())
                 .build();
 
-        String type = dto.getType().name();
+        String date = dto.getDate();
         return ReportEntity.builder()
-                .id(dto.getDate() + "_" + type)
-                .date(type)
+                .id(date + "_" + dto.getType().name().toLowerCase())
+                .date(date)
                 .payments(reportPayments)
                 .receipts(reportReceipts)
                 .build();
     }
+
 }

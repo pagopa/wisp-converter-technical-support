@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
-@NoArgsConstructor
 public class ReportPaymentEntity {
 
     /**
@@ -29,4 +27,16 @@ public class ReportPaymentEntity {
      */
     @JsonProperty("trigger_primitives")
     private ReportTriggeredPrimitivesEntity triggerPrimitives;
+
+    public ReportPaymentEntity() {
+        this.totalOnNdp = 0L;
+        this.totalOnWisp = 0L;
+        this.triggerPrimitives = new ReportTriggeredPrimitivesEntity();
+    }
+
+    public void merge(ReportPaymentEntity other) {
+        this.totalOnNdp += other.totalOnNdp;
+        this.totalOnWisp += other.totalOnWisp;
+        this.triggerPrimitives.merge(other.triggerPrimitives);
+    }
 }

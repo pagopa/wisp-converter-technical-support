@@ -1,10 +1,12 @@
 package it.gov.pagopa.wispconverter.technicalsupport.service;
 
+import com.azure.cosmos.models.PartitionKey;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.mapper.ReportMapper;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.*;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.model.RPTRequestEntity;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.model.RTEntity;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.model.ReEventEntity;
+import it.gov.pagopa.wispconverter.technicalsupport.repository.model.report.ReportEntity;
 import it.gov.pagopa.wispconverter.technicalsupport.service.model.report.RPTStatistic;
 import it.gov.pagopa.wispconverter.technicalsupport.service.model.report.RPTStatisticDetail;
 import it.gov.pagopa.wispconverter.technicalsupport.service.model.report.ReportType;
@@ -16,9 +18,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +36,7 @@ public class ReportGenerationService {
     private static void setStatisticsForReceipt(RTEntity receipt,
                                                 RPTStatistic rptStats,
                                                 Pair<String, String> triggerPrimitivePair,
-                                                List<String> sessionIdsInError) {
+                                                Set<String> sessionIdsInError) {
 
         RPTStatisticDetail statistics;
 
@@ -55,9 +55,9 @@ public class ReportGenerationService {
                     rptStats.addReceiptOkSent();
                     // Include sessionId for define the counter of completed RPT carts/single RPT
                     if (Constants.STEP_TRIGGER_PRIMITIVE_NODOINVIARPT.equals(primitiveType)) {
-                        rptStats.addCompletedRPTSingles();
+                        rptStats.addCompletedRPTSingles(sessionId);
                     } else {
-                        rptStats.addCompletedRPTCarts();
+                        rptStats.addCompletedRPTCarts(sessionId);
                     }
                 } else {
                     sessionIdsInError.add(sessionId);
@@ -94,7 +94,7 @@ public class ReportGenerationService {
     }
 
     private static void updateStatsForOkOrKo(RPTStatistic rptStats,
-                                             List<String> sessionIdsInError,
+                                             Set<String> sessionIdsInError,
                                              String receiptType,
                                              RPTStatisticDetail statistics,
                                              String receiptId,
@@ -105,9 +105,9 @@ public class ReportGenerationService {
             statistics.addAsOkReceipt(receiptId);
             // Include sessionId for define the counter of completed RPT carts/single RPT
             if (Constants.STEP_TRIGGER_PRIMITIVE_NODOINVIARPT.equals(primitiveType)) {
-                rptStats.addCompletedRPTSingles();
+                rptStats.addCompletedRPTSingles(sessionId);
             } else {
-                rptStats.addCompletedRPTCarts();
+                rptStats.addCompletedRPTCarts(sessionId);
             }
         } else {
             sessionIdsInError.add(sessionId);
@@ -133,27 +133,27 @@ public class ReportGenerationService {
                 .map(triggerPrimitive -> Pair.of(triggerPrimitive.getId(), triggerPrimitive.getPrimitive()))
                 .collect(Collectors.toUnmodifiableSet());
         rptStats.setTotalTriggerPrimitivesOnWisp(allSessionIds.size());
-        log.info("[Report Generation][Step ] Executed count for trigger primitives on WISP Dismantling! Retrieved count: [{}]", numberOfTriggerPrimitivesOnNdp);
+        log.info("[Report Generation][Step ] Executed count for trigger primitives on WISP Dismantling! Retrieved count: [{}]", rptStats.getTotalTriggerPrimitivesOnWisp());
 
 
         log.info("[Report Generation][Step ] Executing extraction of statistics for each retrieved trigger primitive...");
         int numberOfPrimitives = triggerPrimitives.size();
         int alreadyAnalyzedCount = 0;
-        List<String> sessionIdsInError = new LinkedList<>();
+        Set<String> sessionIdsInError = new HashSet<>();
 
         for (Pair<String, String> triggerPrimitivePair : allSessionIds) {
 
             // Showing "already analyzed" count for better tracking process
             alreadyAnalyzedCount++;
             if (alreadyAnalyzedCount % 5000 == 0) {
-                float percentageAnalyzed = CommonUtility.safeDivide(alreadyAnalyzedCount * 100, numberOfPrimitives);
+                float percentageAnalyzed = CommonUtility.safeDivide(alreadyAnalyzedCount * 100f, numberOfPrimitives);
                 log.info("[Report Generation][Step ] At [{}] preliminary checks on receipts were generated on [{}/{}] triggered primitives ({}%)...", LocalDateTime.now(), alreadyAnalyzedCount, numberOfPrimitives, percentageAnalyzed);
             }
 
             if (Constants.STEP_TRIGGER_PRIMITIVE_NODOINVIARPT.equals(triggerPrimitivePair.getSecond())) {
-                rptStats.addCartOnTotal();
-            } else {
                 rptStats.addNoCartOnTotal();
+            } else {
+                rptStats.addCartOnTotal();
             }
 
             String sessionId = triggerPrimitivePair.getFirst();
@@ -173,32 +173,59 @@ public class ReportGenerationService {
         // Cataloguing errors by triggered business process
         alreadyAnalyzedCount = 0;
         int numberOfSessionIdsInError = sessionIdsInError.size();
+        Map<String, String> pairs = new HashMap<>();
+
         log.info("[Report Generation][Step ] Analysing the causes for which KO receipts were generated on [{}] sessions...", numberOfSessionIdsInError);
         for (String sessionId : sessionIdsInError) {
 
             // Showing "already analyzed" count for better tracking process
             alreadyAnalyzedCount++;
             if (alreadyAnalyzedCount % 5000 == 0) {
-                float percentageAnalyzed = CommonUtility.safeDivide(alreadyAnalyzedCount * 100, numberOfPrimitives);
+                float percentageAnalyzed = CommonUtility.safeDivide(alreadyAnalyzedCount * 100f, numberOfSessionIdsInError);
                 log.info("[Report Generation][Step ] At [{}] preliminary checks on receipts were generated on [{}/{}] triggered primitives ({}%)...", LocalDateTime.now(), alreadyAnalyzedCount, numberOfPrimitives, percentageAnalyzed);
             }
 
             // Add only one business process for each distinct sessionId
             List<ReEventEntity> events = reEventRepository.findRtTriggerRelatedEventBySessionId(sessionId);
-            events.stream()
-                    .map(event -> Pair.of(event.getSessionId(), event.getBusinessProcess()))
-                    .collect(Collectors.toUnmodifiableSet())
-                    .forEach(eventUniquePair -> rptStats.addNotCompletedTriggeredPrimitives(eventUniquePair.getSecond().replace("-", "_")));
-
+            events.forEach(event -> pairs.putIfAbsent(event.getSessionId(), event.getBusinessProcess()));
         }
 
-        log.info("[Report Generation][Step ] Executed extraction of statistics for each retrieved trigger primitive! Retrieved count: [{}]", numberOfTriggerPrimitivesOnNdp);
+        // aggiorna il conteggio delle primitive non concluse con successo per stato di errore
+        pairs.forEach((sessionId, businessProcess) -> rptStats.addNotCompletedTriggeredPrimitives(businessProcess.replace("-", "_")));
 
         reportRepository.save(reportMapper.toEntity(rptStats));
         log.info("[Report Generation][End  ] Ended report generation for {}.", day);
     }
 
-    public void generateWeeklyReport() {
+    public void generateWeeklyReport(String dayOfThisWeek) {
 
+        log.info("[Report Generation][Start] Started weekly report generation for week previous than day {}.", dayOfThisWeek);
+        String yesterday = CommonUtility.getYesterday(dayOfThisWeek);
+        mergeMultipleReports(CommonUtility.getWeekInDate(yesterday), ReportType.WEEKLY);
+        log.info("[Report Generation][End  ] Ended monthly report generation for week that includes day {}.", dayOfThisWeek);
+    }
+
+    public void generateMonthlyReport(String dayOfThisMonth) {
+        
+        log.info("[Report Generation][Start] Started monthly report generation for month previous than day {}.", dayOfThisMonth);
+        String yesterday = CommonUtility.getYesterday(dayOfThisMonth);
+        mergeMultipleReports(CommonUtility.getMonthInDate(yesterday), ReportType.MONTHLY);
+        log.info("[Report Generation][End  ] Ended monthly report generation for month that includes day {}.", dayOfThisMonth);
+    }
+
+    public void mergeMultipleReports(List<String> days, ReportType type) {
+
+        ReportEntity mergedReportEntity = new ReportEntity();
+        String dateRange = days.get(0) + "_" + days.get(days.size() - 1);
+        mergedReportEntity.setId(dateRange + "_" + type.name().toLowerCase());
+        mergedReportEntity.setDate(dateRange);
+
+        for (String day : days) {
+            String reportId = String.format("%s_%s", day, ReportType.DAILY.name().toLowerCase());
+            Optional<ReportEntity> entityOpt = reportRepository.findById(reportId, new PartitionKey(day));
+            entityOpt.ifPresent(mergedReportEntity::merge);
+        }
+
+        reportRepository.save(mergedReportEntity);
     }
 }

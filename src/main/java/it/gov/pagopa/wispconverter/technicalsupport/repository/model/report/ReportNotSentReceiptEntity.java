@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
-@NoArgsConstructor
 public class ReportNotSentReceiptEntity {
 
     /**
@@ -41,4 +39,20 @@ public class ReportNotSentReceiptEntity {
      */
     @JsonProperty("never_sent")
     private ReportNotSentReceiptStatsEntity neverSent;
+
+    public ReportNotSentReceiptEntity() {
+        this.rejected = new ReportNotSentReceiptStatsEntity();
+        this.notSentEndRetry = new ReportNotSentReceiptStatsEntity();
+        this.scheduled = new ReportNotSentReceiptStatsEntity();
+        this.ongoing = new ReportNotSentReceiptStatsEntity();
+        this.neverSent = new ReportNotSentReceiptStatsEntity();
+    }
+
+    public void merge(ReportNotSentReceiptEntity other) {
+        this.rejected.merge(other.rejected);
+        this.notSentEndRetry.merge(other.notSentEndRetry);
+        this.scheduled.merge(other.scheduled);
+        this.ongoing.merge(other.ongoing);
+        this.neverSent.merge(other.neverSent);
+    }
 }

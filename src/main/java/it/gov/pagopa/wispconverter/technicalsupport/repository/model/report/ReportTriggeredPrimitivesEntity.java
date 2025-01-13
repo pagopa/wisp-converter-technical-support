@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
-@NoArgsConstructor
 public class ReportTriggeredPrimitivesEntity {
 
     /**
@@ -41,4 +39,21 @@ public class ReportTriggeredPrimitivesEntity {
      */
     @JsonProperty("all_not_completed")
     private NotCompletedTriggerPrimitivesEntity allNotCompleted;
+
+    public ReportTriggeredPrimitivesEntity() {
+        this.totalCarts = 0L;
+        this.totalNoCarts = 0L;
+        this.cartsCompleted = 0;
+        this.noCartsCompleted = 0;
+        this.allNotCompleted = new NotCompletedTriggerPrimitivesEntity();
+    }
+
+    public void merge(ReportTriggeredPrimitivesEntity other) {
+
+        this.totalCarts += other.totalCarts;
+        this.totalNoCarts += other.totalNoCarts;
+        this.cartsCompleted += other.cartsCompleted;
+        this.noCartsCompleted += other.noCartsCompleted;
+        this.allNotCompleted.merge(other.allNotCompleted);
+    }
 }

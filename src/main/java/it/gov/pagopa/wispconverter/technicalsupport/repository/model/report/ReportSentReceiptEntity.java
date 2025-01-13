@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
-@NoArgsConstructor
 public class ReportSentReceiptEntity {
 
     /**
@@ -23,4 +21,14 @@ public class ReportSentReceiptEntity {
      */
     @JsonProperty("with_ko_receipts")
     private Integer withKoReceipts;
+
+    public ReportSentReceiptEntity() {
+        this.withOkReceipts = 0;
+        this.withKoReceipts = 0;
+    }
+
+    public void merge(ReportSentReceiptEntity other) {
+        this.withOkReceipts += other.withOkReceipts;
+        this.withKoReceipts += other.withKoReceipts;
+    }
 }

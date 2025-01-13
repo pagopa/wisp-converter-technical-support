@@ -4,14 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
-@NoArgsConstructor
 public class ReportNotSentReceiptStatsEntity {
 
     /**
@@ -29,6 +28,18 @@ public class ReportNotSentReceiptStatsEntity {
     /**
      * List of identifier of not sent receipts
      */
-    @JsonProperty("scheduled")
-    private List<String> receipts;
+    @JsonProperty("receipts")
+    private Set<String> receipts;
+
+    public ReportNotSentReceiptStatsEntity() {
+        this.receiptOkCount = 0;
+        this.receiptKoCount = 0;
+        this.receipts = new HashSet<>();
+    }
+
+    public void merge(ReportNotSentReceiptStatsEntity other) {
+        this.receiptOkCount += other.receiptOkCount;
+        this.receiptKoCount += other.receiptKoCount;
+        this.receipts.addAll(other.receipts);
+    }
 }

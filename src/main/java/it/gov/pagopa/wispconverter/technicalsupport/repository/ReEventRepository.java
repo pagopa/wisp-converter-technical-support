@@ -51,5 +51,5 @@ public interface ReEventRepository extends CosmosRepository<ReEventEntity, Strin
             "WHERE c.sessionId = @sessionId " +
             "AND c.status = 'COMMUNICATION_WITH_CREDITOR_INSTITUTION_PROCESSED' " +
             "AND c.businessProcess IN ('rpt-timeout-trigger', 'redirect', 'ecommerce-hang-timeout-trigger', 'payment-token-timeout-trigger', 'receipt-ko', 'receipt-ok')")
-    List<ReEventEntity> findRtTriggerRelatedEventBySessionId(@Param("noticeNumber") String sessionId);
+    List<ReEventEntity> findRtTriggerRelatedEventBySessionId(@Param("sessionId") String sessionId);
 }

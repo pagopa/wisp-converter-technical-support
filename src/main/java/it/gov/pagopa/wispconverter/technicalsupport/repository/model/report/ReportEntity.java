@@ -5,14 +5,12 @@ import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
-@Container(containerName = "report")
+@Container(containerName = "reports")
 @Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
-@NoArgsConstructor
 public class ReportEntity {
 
     @Id
@@ -30,4 +28,14 @@ public class ReportEntity {
      * Statistics about handled receipts
      */
     private ReportReceiptEntity receipts;
+
+    public ReportEntity() {
+        this.payments = new ReportPaymentEntity();
+        this.receipts = new ReportReceiptEntity();
+    }
+
+    public void merge(ReportEntity other) {
+        this.payments.merge(other.payments);
+        this.receipts.merge(other.receipts);
+    }
 }

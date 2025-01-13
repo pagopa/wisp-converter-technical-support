@@ -3,7 +3,9 @@ package it.gov.pagopa.wispconverter.technicalsupport.service.model.report;
 import lombok.Data;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @Data
 public class RPTStatistic {
@@ -17,8 +19,8 @@ public class RPTStatistic {
     private long totalRPTCarts;
     private long totalRPTSingles;
 
-    private int completedRPTCarts;
-    private int completedRPTSingles;
+    private Set<String> completedRPTCarts;
+    private Set<String> completedRPTSingles;
 
     private int receiptOkSent;
     private int receiptKoSent;
@@ -33,8 +35,8 @@ public class RPTStatistic {
         this.totalRPTSingles = 0;
         this.receiptOkSent = 0;
         this.receiptKoSent = 0;
-        this.completedRPTCarts = 0;
-        this.completedRPTSingles = 0;
+        this.completedRPTCarts = new HashSet<>();
+        this.completedRPTSingles = new HashSet<>();
         this.notCompletedTriggeredPrimitivesByStatus = new HashMap<>();
         this.notCompletedRPTs = new NotCompletedRPTStatistic();
     }
@@ -55,12 +57,12 @@ public class RPTStatistic {
         this.receiptKoSent++;
     }
 
-    public void addCompletedRPTCarts() {
-        this.completedRPTCarts++;
+    public void addCompletedRPTCarts(String sessionId) {
+        this.completedRPTCarts.add(sessionId);
     }
 
-    public void addCompletedRPTSingles() {
-        this.completedRPTSingles++;
+    public void addCompletedRPTSingles(String sessionId) {
+        this.completedRPTSingles.add(sessionId);
     }
 
     public void addNotCompletedTriggeredPrimitives(String status) {

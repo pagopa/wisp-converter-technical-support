@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
-@NoArgsConstructor
 public class NotCompletedTriggerPrimitivesEntity {
 
     /**
@@ -47,4 +45,22 @@ public class NotCompletedTriggerPrimitivesEntity {
      */
     @JsonProperty("no_state")
     private Integer noState;
+
+    public NotCompletedTriggerPrimitivesEntity() {
+        this.rptTimeoutTrigger = 0;
+        this.redirect = 0;
+        this.receiptKo = 0;
+        this.paymentTokenTimeoutTrigger = 0;
+        this.ecommerceHangTimeoutTrigger = 0;
+        this.noState = 0;
+    }
+
+    public void merge(NotCompletedTriggerPrimitivesEntity other) {
+        this.rptTimeoutTrigger += other.rptTimeoutTrigger;
+        this.redirect += other.redirect;
+        this.receiptKo += other.receiptKo;
+        this.paymentTokenTimeoutTrigger += other.paymentTokenTimeoutTrigger;
+        this.ecommerceHangTimeoutTrigger += other.ecommerceHangTimeoutTrigger;
+        this.noState += other.noState;
+    }
 }
