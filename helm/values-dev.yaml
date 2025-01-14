@@ -34,9 +34,9 @@ microservice-chart: &microservice-chart
     servicePort: 8080
   serviceAccount:
     create: false
-    annotations: {}
+    annotations: { }
     name: ""
-  podAnnotations: {}
+  podAnnotations: { }
   podSecurityContext:
     seccompProfile:
       type: RuntimeDefault
@@ -82,8 +82,8 @@ microservice-chart: &microservice-chart
       tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
   tmpVolumeMount:
     create: true
-  nodeSelector: {}
-  tolerations: []
+  nodeSelector: { }
+  tolerations: [ ]
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -110,8 +110,8 @@ microservice-chart: &microservice-chart
         repository: ghcr.io/pagopa/pagopa-wisp-converter-technical-support
         tag: "0.0.0"
         pullPolicy: Always
-      envConfig: {}
-      envSecret: {}
+      envConfig: { }
+      envSecret: { }
 # 1 - Standard service application
 app:
   !!merge <<: *microservice-chart
@@ -145,8 +145,8 @@ cron:
   envConfig:
     !!merge <<: *envConfig
     CRONJOB_REPORTGENERATION_ENABLED: 'false'
-    CRONJOB_REPORTGENERATION_DAILY_SCHEDULE: '00 01 * * *'
-    CRONJOB_REPORTGENERATION_WEEKLY_SCHEDULE: '00 06 * * 1'
-    CRONJOB_REPORTGENERATION_MONTHLY_SCHEDULE: '30 06 1 * *'
+    CRONJOB_REPORTGENERATION_DAILY_SCHEDULE: '00 00 01 * * *'
+    CRONJOB_REPORTGENERATION_WEEKLY_SCHEDULE: '00 00 06 * * 1'
+    CRONJOB_REPORTGENERATION_MONTHLY_SCHEDULE: '00 30 06 1 * *'
   envSecret:
     !!merge <<: *envSecret

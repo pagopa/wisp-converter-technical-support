@@ -5,7 +5,6 @@ import it.gov.pagopa.wispconverter.technicalsupport.util.CommonUtility;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +24,6 @@ public class ReportGeneration {
 
 
     @Scheduled(cron = "${cron.job.schedule.report-generation.daily.cron}")
-    @Async
     public void generateDailyReport() {
 
         log.info("[Report Generation][Trigg] Triggered cron invocation for daily generation.");
@@ -35,7 +33,6 @@ public class ReportGeneration {
     }
 
     @Scheduled(cron = "${cron.job.schedule.report-generation.weekly.cron}")
-    @Async
     public void generateWeeklyReport() {
 
         log.info("[Report Generation][Trigg] Triggered cron invocation for weekly generation.");
@@ -45,7 +42,6 @@ public class ReportGeneration {
     }
 
     @Scheduled(cron = "${cron.job.schedule.report-generation.monthly.cron}")
-    @Async
     public void generateMonthlyReport() {
 
         log.info("[Report Generation][Trigg] Triggered cron invocation for monthly generation.");
