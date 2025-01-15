@@ -182,7 +182,7 @@ public class ReportGenerationService {
             alreadyAnalyzedCount++;
             if (alreadyAnalyzedCount % 5000 == 0) {
                 float percentageAnalyzed = CommonUtility.safeDivide(alreadyAnalyzedCount * 100f, numberOfSessionIdsInError);
-                log.info("[Report Generation][Step ] At [{}] analysis of causes on which KO receipts were made on [{}/{}] triggered primitives ({}%)...", LocalDateTime.now(), alreadyAnalyzedCount, numberOfPrimitives, percentageAnalyzed);
+                log.info("[Report Generation][Step ] At [{}] analysis of causes on which KO receipts were made on [{}/{}] triggered primitives ({}%)...", LocalDateTime.now(), alreadyAnalyzedCount, numberOfSessionIdsInError, percentageAnalyzed);
             }
 
             // Add only one business process for each distinct sessionId
