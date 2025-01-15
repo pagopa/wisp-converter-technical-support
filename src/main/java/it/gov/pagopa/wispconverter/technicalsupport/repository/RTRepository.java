@@ -14,6 +14,10 @@ import java.util.Set;
 @Repository
 public interface RTRepository extends CosmosRepository<RTEntity, String> {
 
+    @Query("SELECT c.id, c.receiptStatus, c.receiptType " +
+            "FROM c " +
+            "WHERE c.sessionId = @sessionId")
+    List<RTEntity> findStatusInfoBySessionId(@Param("sessionId") String sessionId);
 
     @Query("SELECT COUNT(1) AS eventStatusCount, c.receiptStatus " +
             "FROM c " +

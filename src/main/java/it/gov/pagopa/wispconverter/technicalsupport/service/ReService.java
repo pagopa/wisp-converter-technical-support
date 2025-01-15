@@ -3,7 +3,7 @@ package it.gov.pagopa.wispconverter.technicalsupport.service;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.mapper.ReEventMapper;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.ReEvent;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.ReEventRepository;
-import it.gov.pagopa.wispconverter.technicalsupport.repository.model.ReEventEntity;
+import it.gov.pagopa.wispconverter.technicalsupport.repository.model.re.ReEventEntity;
 import it.gov.pagopa.wispconverter.technicalsupport.util.CommonUtility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

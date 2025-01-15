@@ -3,7 +3,7 @@ package it.gov.pagopa.wispconverter.technicalsupport.controller.mapper;
 import com.microsoft.azure.kusto.data.KustoResultSetTable;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.EventCategory;
 import it.gov.pagopa.wispconverter.technicalsupport.controller.model.ReEvent;
-import it.gov.pagopa.wispconverter.technicalsupport.repository.model.ReEventDataExplorerEntity;
+import it.gov.pagopa.wispconverter.technicalsupport.repository.model.re.ReEventDataExplorerEntity;
 import it.gov.pagopa.wispconverter.technicalsupport.util.CommonUtility;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;

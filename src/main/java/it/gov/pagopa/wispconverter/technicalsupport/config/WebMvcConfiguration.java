@@ -1,7 +1,7 @@
 package it.gov.pagopa.wispconverter.technicalsupport.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.gov.pagopa.wispconverter.technicalsupport.model.AppCorsConfiguration;
+import it.gov.pagopa.wispconverter.technicalsupport.controller.model.generic.AppCorsConfiguration;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package it.gov.pagopa.wispconverter.technicalsupport.model;
+package it.gov.pagopa.wispconverter.technicalsupport.controller.model.generic;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;

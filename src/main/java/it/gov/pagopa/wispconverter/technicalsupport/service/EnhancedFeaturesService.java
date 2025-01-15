@@ -12,8 +12,8 @@ import it.gov.pagopa.wispconverter.technicalsupport.repository.ReEventDataExplor
 import it.gov.pagopa.wispconverter.technicalsupport.repository.ReEventExperimentalRepository;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.model.RTEntity;
 import it.gov.pagopa.wispconverter.technicalsupport.repository.model.RTGroupedByStatusEntity;
-import it.gov.pagopa.wispconverter.technicalsupport.repository.model.ReEventDataExplorerEntity;
-import it.gov.pagopa.wispconverter.technicalsupport.repository.model.ReEventEntity;
+import it.gov.pagopa.wispconverter.technicalsupport.repository.model.re.ReEventDataExplorerEntity;
+import it.gov.pagopa.wispconverter.technicalsupport.repository.model.re.ReEventEntity;
 import it.gov.pagopa.wispconverter.technicalsupport.service.model.PaymentUniqueID;
 import it.gov.pagopa.wispconverter.technicalsupport.util.CommonUtility;
 import it.gov.pagopa.wispconverter.technicalsupport.util.Constants;

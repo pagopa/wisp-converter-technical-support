@@ -1,4 +1,4 @@
-package it.gov.pagopa.wispconverter.technicalsupport.repository.model;
+package it.gov.pagopa.wispconverter.technicalsupport.repository.model.re;
 
 import com.azure.spring.data.cosmos.core.mapping.Container;
 import com.azure.spring.data.cosmos.core.mapping.GeneratedValue;
